@@ -14,7 +14,7 @@ c                                          3=silica gel,4=type-1M,5=Enth Whl,
 c                                          6=ICC_ELE,7=Addison 100% Fresh Air,
 c					   8=Kathabar XXX?, 9=Munters Unit, 10=Drykor UDT 7.5, 
 c					   11=Residential DH, 12=Residential Desiccant,
-c					   13=Semco, 14=MAU, 15=Munters HCU)
+c					   13=Semco, 14=MAU, 15=Munters HCU 16=HRV/ERV)
 c				<2> ipflag  - print variable
 c
 c      System-specific   0      1       2      3       4        5      
@@ -651,6 +651,22 @@ c						   Par(8-12)! Not used
 		Ql = 4770.*scfmo*(wpin-wpo)/1000.		! MBtuh Latent Load
           Gas = 0.								! no gas use
 	ENDIF
+
+  if (isys .eq. 16) then     ! **** Generic HRV / ERV, independant eff ****
+	    eff_S = DBLE(Par(3))
+      eff_L = DBLE(Par(4))
+	    W_cfm = DBLE(Par(5))
+	    W_cfm2= DBLE(Par(6))
+          wattp = W_cfm*scfm
+          tkw   = (W_cfm+W_cfm2)*scfm/1000.   !total unit power
+          Tpo   = Tpin + (Trin-Tpin)*eff_S + wattp*3.413/(mdot*0.241)
+          wpo   = wpin + (wrin-wpin) * eff_L
+          Qs    = 1.08  * scfm * (Tpin - Tpo)/1000.0
+          Ql    = 4770. * scfm * (wpin - wpo)/1000.0 
+          gas   = 0.0
+  endif
+
+
 	
 c	write(55,*) '108 Outputs:',Tpo,wpo,tkw,gas,qs,ql
 
