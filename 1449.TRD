@@ -284,6 +284,24 @@ EQUATIONS 9
 *|#*|<     Recirc Mode When Unoccupied            |pulldown_2.txt|6|2|7
 *|#*|]
 *
+*|[ HRV | Heat Recovery Ventilator
+*|<color1> black
+*|<size1> 11
+*|<style1> none
+*|<align1> left
+*|*     
+*|<color1> FUCHSIA
+*|<size1> 12
+*|<style1> BOLD
+*
+EQUATIONS 3
+  HRV_eS = 0.67
+*| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
+  HRV_eL = 0
+*| Latent Recovery Efficiency (HRV_eL) |(0-1)|(0-1)|0|1|0|1.00|9999
+  HRV_CFM = 55
+*| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
+*|]
 EQUATIONS 2
 DCAP_NOM = DPAR13
 DPAR3 = EQL(DS_TYPE,0)*DPAR3a + EQL(DS_TYPE,1)*DSET + EQL(DS_TYPE,2)*DSET/(DCAP_NOM+1e-15)*8.347/24./8.*100.
@@ -552,6 +570,22 @@ EQUATIONS 28
   ilck83  = 0.0000000000000E+00
 *|     3rd Interlock Device (ilck83)    (Specify negative device # for "Anti" interlock) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
   fsched8  = 0.0000000000000E+00
+*|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
+*|]
+*|[ STPT | HRV / ERV (Device=9)
+  fctyp9 = 0
+*|<      Fan Control Type (fctyp9)              |pulldown_7.txt|3|2|19
+  ftim_ON9  = 0.0000000000000E+00
+*|     Fan ON Time (ftim_ON9) |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
+  ftim_OFF9  = 0.0000000000000E+00
+*|     Fan OFF Time (ftim_OFF9)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
+  ilck91  = -7.0000000000000E+00
+*|     1st Interlock Device (ilck91)  |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+  ilck92  = 0.0000000000000E+00
+*|     2nd Interlock Device (ilck92) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+  ilck93  = 0.0000000000000E+00
+*|     3rd Interlock Device (ilck93)    (Specify negative device # for "Anti" interlock) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+  fsched9  = 0.0000000000000E+00
 *|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
 *|]
 *
@@ -1028,6 +1062,7 @@ PARAMETERS 41
     fctyp6   ftim_ON6 ftim_OFF6 ilck61 ilck62 ilck63 fsched6
     fctyp7   ftim_ON7 ftim_OFF7 ilck71 ilck72 ilck73 fsched7 
     fctyp8   ftim_ON8 ftim_OFF8 ilck81 ilck82 ilck83 fsched8 
+    fctyp9   ftim_ON9 ftim_OFF9 ilck91 ilck92 ilck93 fsched9 
 INPUTS 7
 T_CTL  TMIN  TMAX  HUM_CTL   HMAX 0,0  0,0
 60   60    76    Humlo  Humlo 0 100
