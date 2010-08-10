@@ -29,6 +29,7 @@ c    14-20  AC FAN (5):	 (Cntl_type , Time_ON, Time_OFF, Interlock 1, 2 & 3, Sch
 c    21-27 Des FAN (6):	""
 c    28-34 Vnt FAN (7):	""
 c    35-41 Exh FAN (8)	""
+c    42-48 HRV/ERV (9)
 c						Cntrl_type:   0 - none, 1 - Always ON, 2 - schedule, 3 - DUTY cycle, 4 - Serial ON/OFF
 c						Time_ON:	minimum ON time (in hours, multiple of time step)
 c						Time_OFF:	minimum OFF time (in hours, multiple of time step)
@@ -105,7 +106,7 @@ C    REQUIRED BY THE MULTI-DLL VERSION OF TRNSYS
 
 	Implicit none
 	INTEGER*4 INFO(15),ICNTRL
-      double precision XIN(7),PAR(41),OUT(44),TIME, T, DTDT
+      double precision XIN(7),PAR(48),OUT(44),TIME, T, DTDT
 	double precision RTFh,RTFc,RTFd,RTFv,Tin,RHin,Cin,
      & RTFh_last,RTFc_last,RTFd_last,RTFv_last,Tin_last,TIME_last,
      & RHin_last,Cin_last,Tmax,Tmin,RHmax,Cmax,Tmax0,RHmax0,
@@ -117,12 +118,12 @@ C    REQUIRED BY THE MULTI-DLL VERSION OF TRNSYS
 	integer ipflag
 	
 	Integer i,j,ihr,ii
-	logical throw_away(8)
-	Integer rtf_vector(8),Ilock(8,3),
-     &		Cntl_type(8),fschd(8),fan_sched_data(10,24),ifsch,
-     &		rtf_vector_last(8),cd_counter(8)
-      double precision time_when_OFF(8),time_when_ON(8),cum_on_tim(8),
-     &		Time_OFF(8),Time_ON(8)
+	logical throw_away(9)
+	Integer rtf_vector(9),Ilock(9,3),
+     &		Cntl_type(9),fschd(9),fan_sched_data(10,24),ifsch,
+     &		rtf_vector_last(9),cd_counter(9)
+      double precision time_when_OFF(9),time_when_ON(9),cum_on_tim(9),
+     &		Time_OFF(9),Time_ON(9)
 	double precision duty_tim,tim_into_cycle,tim_remain,dts
 C    SET THE VERSION INFORMATION FOR TRNSYS
       IF(INFO(7).EQ.-2) THEN
@@ -144,20 +145,20 @@ C
 
 C  FIRST CALL OF SIMULATION
       IF (INFO(7) .EQ. -1) THEN
-       CALL TYPECK(1,INFO,7,41,0)  !check no. of inputs, parameters
-       INFO(6)=44					! number of outputs
+       CALL TYPECK(1,INFO,7,48,0)  !check no. of inputs, parameters
+       INFO(6)=46					! number of outputs
        INFO(9)=1					! Output does depend on time                  
-       OUT(1:26)=0.0			! alll current vars = zero
-	 OUT(27)=TIME			! last time = starting time	
-       OUT(28)=0.				! last Tin = zero  (so we will start in heating in next step) 
-       OUT(29)=0.				! last RHin = zero (no dehumid required) 
-       OUT(30)=0.				! last Cin eq zero (no vent required)
-	 OUT(31:44)=0.
+       OUT(1:27)=0.0			! alll current vars = zero
+	 OUT(28)=TIME			! last time = starting time	
+       OUT(29)=0.				! last Tin = zero  (so we will start in heating in next step) 
+       OUT(30)=0.				! last RHin = zero (no dehumid required) 
+       OUT(31)=0.				! last Cin eq zero (no vent required)
+	 OUT(32:46)=0.
 
 
 c	  --- read in coefficients for Fan Control Schedule (if data is required)
 
-	 ifsch = par(20)+par(27)+par(34)+par(41)
+	 ifsch = par(20)+par(27)+par(34)+par(41)+par(48)
 	 If( ifsch .gt. 0) then
 		open(unit = 1001,file = "Fan_sched.COF")
 		do i=1,10
@@ -174,26 +175,26 @@ C
 
       if (TIME .ne. OUT(5)) then  ! swap in LAST data if TIME advances
 	  dt = TIME - OUT(5)		 ! timestep
-	  out(23:44) = out(1:22)
+	  out(24:46) = out(1:23)
       do i=1,8
 	 If (cd_counter(i) .gt. 0) cd_counter(i) = cd_counter(i) - 1
 	enddo
 	endif
 	           
-      RTFh_last=out(23)
-      RTFc_last=out(24)
-      RTFd_last=out(25)
-      RTFv_last=out(26)
+      RTFh_last=out(24)
+      RTFc_last=out(25)
+      RTFd_last=out(26)
+      RTFv_last=out(27)
 
-      TIME_last=out(27)
+      TIME_last=out(28)
       
-	tin_last =out(28)
-      RHin_last=out(29)
-      Cin_last =out(30)
+	tin_last =out(29)
+      RHin_last=out(30)
+      Cin_last =out(31)
 
-	Ta_last = out(39)
-	Te_last = out(40)
-      rtf_vector_last(5:8) = out(41:44)
+	Ta_last = out(40)
+	Te_last = out(41)
+      rtf_vector_last(5:9) = out(42:46)
 
       Tin   = xin(1)
       Tmin  = xin(2)           
@@ -218,7 +219,7 @@ C
 	C_dbnd = par(13)		! ventostat deadband		All deadbands 1/2 above and 1/2 below set point
 
 	ii=0
-	do i=5,8 
+	do i=5,9 
        Cntl_type(i) = int(abs(par(14+ii)))
 	 if (int(par(14+ii)) .eq. -3) then
 	   throw_away(i) = .false.
@@ -369,7 +370,7 @@ c		all 'time' & 'tim' variables are in fractional hours
 	rtf_vector(4) = rtfv
 
 	dts = dt/10.
-	do i=5,8
+	do i=5,9
 	  rtf_vector(i)=0
 c----------------------------------------------- none (w/ optional fan delay)
 
@@ -496,7 +497,7 @@ c	OUTPUT VARIABLES
 	out(17) = Ta
 	out(18) = Te
 
-	out(19:22) = rtf_vector(5:8)					! OUT 19-22  ON & OFF times for acf, df, vf, xf
+	out(19:23) = rtf_vector(5:9)					! OUT 19-23  ON & OFF times for acf, df, vf, xf
 	                              
       if (ipflag .gt. 0) then
         write(123,100) info(7),out(1:44)
@@ -504,6 +505,7 @@ c	  write(123,'(7f)') par(14:20)
 c	  write(123,'(7f)') par(21:27)
 c	  write(123,'(7f)') par(28:34)
 c	  write(123,'(7f)') par(35:41)
+c	  write(123,'(7f)') par(42:48)
 100     format(i4,44f7.2)                    
 	endif
 
