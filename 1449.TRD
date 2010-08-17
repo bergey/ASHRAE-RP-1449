@@ -507,7 +507,7 @@ EQUATIONS 5
 *|* (devices 1 thru 4:  heating, cooling, dehumid, demand vent) 
 *|<STYLE1> BOLD
 *
-EQUATIONS 28
+EQUATIONS 35
 *|[ STPT | AHU Fan (Device=5)
   fctyp5 = 4
 *|<      Fan Control Type (fctyp5)              |pulldown_7.txt|3|2|18
