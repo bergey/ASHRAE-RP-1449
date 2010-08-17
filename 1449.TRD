@@ -302,7 +302,7 @@ EQUATIONS 4
   HRV_CFM = 55
 *| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
   HRV_W = 25
-*| Fan Power (total, both directions) (HRV_W) |W|W|0\1|0|500|9999
+*| Fan Power (total, both directions) (HRV_W) |W|W|0|1|0|500|9999
 *|]
 EQUATIONS 2
 DCAP_NOM = DPAR13
@@ -565,7 +565,7 @@ EQUATIONS 35
 *|     Fan ON Time (ftim_ON8) |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ftim_OFF8  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF8)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ilck81  = -7.0000000000000E+00
+  ilck81  = 0.0000000000000E+00
 *|     1st Interlock Device (ilck81)  |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
   ilck82  = 0.0000000000000E+00
 *|     2nd Interlock Device (ilck82) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
@@ -1052,7 +1052,7 @@ RH_CTL = (1-ZN_CTL)*RHI_1 + ZN_CTL*RHI_2
 *
 *********************************************************************
 UNIT 3 TYPE 152 SHORT TIMESTEP Controller
-PARAMETERS 41
+PARAMETERS 48
 *                                                 
 1  0.0  REHEAT Trht_offset OVR_cool RH_Gain T_Gain TDBND Ta_o  taua taue  HDBND CDBND
 * Cntl_type  Time_ON  Time_OFF  Interlock1 Interlock2 Interlock3 Fsched 
