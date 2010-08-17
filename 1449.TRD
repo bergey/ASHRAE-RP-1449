@@ -294,13 +294,15 @@ EQUATIONS 9
 *|<size1> 12
 *|<style1> BOLD
 *
-EQUATIONS 3
+EQUATIONS 4
   HRV_eS = 0.67
 *| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
   HRV_eL = 0
 *| Latent Recovery Efficiency (HRV_eL) |(0-1)|(0-1)|0|1|0|1.00|9999
   HRV_CFM = 55
 *| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
+  HRV_W = 25
+*| Fan Power (total, both directions) (HRV_W) |W|W|0\1|0|500|9999
 *|]
 EQUATIONS 2
 DCAP_NOM = DPAR13
@@ -1068,7 +1070,7 @@ T_CTL  TMIN  TMAX  HUM_CTL   HMAX 0,0  0,0
 60   60    76    Humlo  Humlo 0 100
 * trace 2482 2628
 **********************************************************************
-EQUATIONS 15
+EQUATIONS 16
 *    Enthalpy wheel controller (for DTYPE=5)
   f1     = AND(LT(TAO,45), LT(RHI,45))
   f2     = LT(RHI,35) + (1-LT(RHI,35)) * (45-RHI)*0.1
@@ -1089,6 +1091,7 @@ EQUATIONS 15
   RTFdf	 = [3,20]
   RTFvf  = [3,21]
   RTFxf  = [3,22] 
+  RTFhrv = [3,23]
   RTFacf_time = RTFacf
 *
 **********************************************************************
@@ -1193,12 +1196,19 @@ qr_tloss = Mret*(1.-leakr)*0.241*(TAI-TAI_tloss)
 Tret = (TAI_tloss*(1.-leakr) 	+ TAI_2*leakr)*(1-RTFe) + TAO*RTFe
 Wret = (WAI*(1.-leakr) 		+ WAI_2*leakr)*(1-RTFe) + WAO*RTFe
 Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
+
+EQUATIONS 4
+Mhrv = HRV_CFM * RTFhrv * 60 * 0.075 ! lbs/hr
+Phrv = HRV_W * RTFhrv ! Wh per hr
+Thrv = TAO + HRV_eS * (TAI_1-TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
+Whrv = WAO + HRV_eL * (WAI_1-TAI) 
+
 *********************************************************************
-*  Mix three air streams (return + des outlet(if DSOUT=0) + addl vent) 
+*  Mix four air streams (return + des outlet(if DSOUT=0) + addl vent) 
 EQUATIONS 3
-Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv)/(Md_r+Mret+Mv)
-waci = (Wdo*Md_r + Wret*Mret + WAO*Mv)/(Md_r+Mret+Mv)
-Caci = (Cdo*Md_r + Cret*Mret + C_o*Mv)/(Md_r+Mret+Mv)
+Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv + Thrv*Mhrv)/(Md_r+Mret+Mv+Mhrv)
+waci = (Wdo*Md_r + Wret*Mret + WAO*Mv + Whrv*Mhrv)/(Md_r+Mret+Mv+Mhrv)
+Caci = (Cdo*Md_r + Cret*Mret + C_o*Mv + C_o*Mhrv)/(Md_r+Mret+Mv+Mhrv)
 *********************************************************************
 *                    Cooling ON/OFF times
 EQUATIONS 3
