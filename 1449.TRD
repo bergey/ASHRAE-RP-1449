@@ -1199,16 +1199,16 @@ Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
 
 EQUATIONS 4
 Mhrv = HRV_CFM * RTFhrv * 60 * 0.075 ! lbs/hr
-Phrv = HRV_W * RTFhrv ! Wh per hr
+KWhrv = HRV_W * RTFhrv/1000 ! kWh per hr
 Thrv = TAO + HRV_eS * (TAI_1-TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
-Whrv = WAO + HRV_eL * (WAI_1-TAI) 
+Whrv = WAO + HRV_eL * (WAI_1-WAO) 
 
 *********************************************************************
 *  Mix four air streams (return + des outlet(if DSOUT=0) + addl vent) 
 EQUATIONS 3
-Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv + Thrv*Mhrv)/(Md_r+Mret+Mv+Mhrv)
-waci = (Wdo*Md_r + Wret*Mret + WAO*Mv + Whrv*Mhrv)/(Md_r+Mret+Mv+Mhrv)
-Caci = (Cdo*Md_r + Cret*Mret + C_o*Mv + C_o*Mhrv)/(Md_r+Mret+Mv+Mhrv)
+Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv )/(Md_r+Mret+Mv)
+waci = (Wdo*Md_r + Wret*Mret + WAO*Mv )/(Md_r+Mret+Mv)
+Caci = (Cdo*Md_r + Cret*Mret + C_o*Mv )/(Md_r+Mret+Mv)
 *********************************************************************
 *                    Cooling ON/OFF times
 EQUATIONS 3
@@ -1266,6 +1266,10 @@ EQUATIONS 6
   Wsupp = max(Ws,0.001)
   
   Tsupp_tloss = TAI_2 + (Tsupp-TAI_2)*EXP(-sduct_area/(Msupp*0.241*duct_Rval + 1e-10))
+* Add HRV airflow; independently ducted, not part of duct losses
+  Tsupp_tloss = (Tsumm_tloss*Msupp + Thrv*Mhrv) / (Msupp + Mhrv)
+  Wsupp = (Wsupp*Msupp + Whrv*Mhrv) / (Msupp + Mhrv)
+  Msupp = Msupp + Mhrv
   qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss)
 *
 ******************************************************************
@@ -1513,16 +1517,16 @@ INPUTS 9
 UNIT 71 TYPE 24 integrator - Other Data
 PARAMETERS 2
 ISTEP  0
-INPUTS 11
- RTF_shr  C_i   Cs   rtfvf   rtfxf   KWVF    KWXF   ANO  DNO btype   0,0
-  0       0     0    0       0       0       0      0    0   0     0.0
+INPUTS 12
+ RTF_shr  C_i   Cs   rtfvf   rtfxf   KWVF    KWXF   KWhrv ANO  DNO btype   0,0
+  0       0     0    0       0       0       0      0     0    0   0     0.0
 ******************************************************************************
 UNIT 52 TYPE 25 summary printer - Other data
 PARAMETERS 10
 ISTEP ISTEP 8760 91 0 0 0 0 0 1 
-INPUTS 11
-71,1      71,2    71,3 71,4   71,5   71,6  71,7   71,8  71,9  71,10   71,11
-rtf_shr   C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   ANO   DNO   btype   KWHT
+INPUTS 12
+71,1    71,2    71,3 71,4   71,5   71,6  71,7   71,8  71,9  71,10   71,11 71,12
+rtf_shr C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   KWhrv ANO   DNO     btype KWHT
 ******************************************************************************
 UNIT 72 TYPE 24 integrator - Testing Data
 PARAMETERS 2
