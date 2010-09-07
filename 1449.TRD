@@ -1204,7 +1204,7 @@ Thrv = TAO + HRV_eS * (TAI_1-TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only 
 Whrv = WAO + HRV_eL * (WAI_1-WAO) 
 
 *********************************************************************
-*  Mix four air streams (return + des outlet(if DSOUT=0) + addl vent) 
+*  Mix three air streams (return + des outlet(if DSOUT=0) + addl vent) 
 EQUATIONS 3
 Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv )/(Md_r+Mret+Mv)
 waci = (Wdo*Md_r + Wret*Mret + WAO*Mv )/(Md_r+Mret+Mv)
