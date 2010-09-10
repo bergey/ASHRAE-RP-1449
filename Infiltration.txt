@@ -1,4 +1,4 @@
-10
+15
 1,Default Building Infiltration,               0,     0,     0,    0,    0,    0,     0,     0,    0,    0
 2,Custom Infiltration,                         0,     0,     0,    0,    0,    0,     0,     0,    0,    0
 3,TRNSYS/ASHRAE Tight infiltraion model,     0.1, 0.011, 0.034,    0,    0,    0,     0,     0,    0,    0

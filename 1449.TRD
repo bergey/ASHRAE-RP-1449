@@ -295,13 +295,13 @@ EQUATIONS 9
 *|<style1> BOLD
 *
 EQUATIONS 4
-  HRV_eS = 0.67
+  HRV_eS = 6.7000000000000E-01
 *| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
-  HRV_eL = 0
+  HRV_eL = 0.0000000000000E+00
 *| Latent Recovery Efficiency (HRV_eL) |(0-1)|(0-1)|0|1|0|1.00|9999
-  HRV_CFM = 55
+  HRV_CFM = 5.5000000000000E+01
 *| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
-  HRV_W = 25
+  HRV_W = 2.5000000000000E+01
 *| Fan Power (total, both directions) (HRV_W) |W|W|0|1|0|500|9999
 *|]
 EQUATIONS 2
@@ -758,7 +758,7 @@ EQUATIONS 3
 *|<COLOR1> BLUE
 *|[Inf|Infiltration Type
 EQUATIONS 13
-ACH_TYPE = 9
+ACH_TYPE = 15
 *|< Infiltration type (ACH_TYPE)                  |Infiltration.txt|2|1|25
 K1 = 0
 *|< Infiltration type                  |Infiltration.txt|0|3|25
@@ -766,23 +766,23 @@ K2 = 0
 *|< Infiltration type                  |Infiltration.txt|0|4|25
 K3 = 0
 *|< Infiltration type                  |Infiltration.txt|0|5|25
-A = 0.67
+A = 0
 *|< Infiltration type                  |Infiltration.txt|0|6|25
-B = 0.25
+B = 0
 *|< Infiltration type                  |Infiltration.txt|0|7|25
-C = 0.19
+C = 0
 *|< Infiltration type                  |Infiltration.txt|0|8|25
-WW_Cs = 0
+WW_Cs = 0.054
 *|< Infiltration type                  |Infiltration.txt|0|9|25
-WW_Cw = 0
+WW_Cw = 0.156
 *|< Infiltration type                  |Infiltration.txt|0|10|25
-WW_s = 0
+WW_s = 0.30
 *|< Infiltration type                  |Infiltration.txt|0|11|25
-WW_G = 0
+WW_G = 0.48
 *|< Infiltration type                  |Infiltration.txt|0|12|25
 ACH_SET = 0.0000000000000E+00
 *|    New Infiltration:(Custom Infiltration) (ACH_SET)   |(0-3 ACH)|(0-3 ACH )|0|1|0.0000|3.0000|29
-ELA = 2.9320000000000E+02
+ELA = 5.2570000000000E+01
 *|    Effective Leakage Area (Sherman-Grimsrud) (ELA) |Sq.in|Sq.in|0|1|0.00|1000.00|29
 *|]
 *
@@ -1212,13 +1212,13 @@ qr_tloss = Mret*(1.-leakr)*0.241*(TAI-TAI_tloss)
 Tret = (TAI_tloss*(1.-leakr) 	+ TAI_2*leakr)*(1-RTFe) + TAO*RTFe
 Wret = (WAI*(1.-leakr) 		+ WAI_2*leakr)*(1-RTFe) + WAO*RTFe
 Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
-
+*
 EQUATIONS 4
 Mhrv = HRV_CFM * RTFhrv * 60 * 0.075 ! lbs/hr
 KWhrv = HRV_W * RTFhrv/1000 ! kWh per hr
 Thrv = TAO + HRV_eS * (TAI_1-TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
 Whrv = WAO + HRV_eL * (WAI_1-WAO) 
-
+*
 *********************************************************************
 *  Mix three air streams (return + des outlet(if DSOUT=0) + addl vent) 
 EQUATIONS 3
