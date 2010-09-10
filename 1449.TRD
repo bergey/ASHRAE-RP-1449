@@ -757,7 +757,7 @@ EQUATIONS 3
 * 
 *|<COLOR1> BLUE
 *|[Inf|Infiltration Type
-EQUATIONS 9
+EQUATIONS 13
 ACH_TYPE = 9
 *|< Infiltration type (ACH_TYPE)                  |Infiltration.txt|2|1|25
 K1 = 0
@@ -772,6 +772,14 @@ B = 0.25
 *|< Infiltration type                  |Infiltration.txt|0|7|25
 C = 0.19
 *|< Infiltration type                  |Infiltration.txt|0|8|25
+WW_Cs = 0
+*|< Infiltration type                  |Infiltration.txt|0|9|25
+WW_Cw = 0
+*|< Infiltration type                  |Infiltration.txt|0|10|25
+WW_s = 0
+*|< Infiltration type                  |Infiltration.txt|0|11|25
+WW_G = 0
+*|< Infiltration type                  |Infiltration.txt|0|12|25
 ACH_SET = 0.0000000000000E+00
 *|    New Infiltration:(Custom Infiltration) (ACH_SET)   |(0-3 ACH)|(0-3 ACH )|0|1|0.0000|3.0000|29
 ELA = 2.9320000000000E+02
@@ -973,7 +981,7 @@ EQUATIONS 7
   TMAX   = TChi - HVAC * (TChi-TClo)
   HMAX   = Humhi - HVAC * (Humhi-Humlo)
 ***************************************************************************
-EQUATIONS 17
+EQUATIONS 23
 TAI_SI1 = [5,1]
 TAI_SI2 = [5,7]
 TAI_1 = TAI_SI1*1.8 + 32
@@ -992,7 +1000,15 @@ fs =((1+R/2)/3)*(1-X^2/(2-R)^2)^(3/2)*(9.8*H/298)^0.5
 fw = C*(1-R)^(1/3)*A*(H/10)^B
 ACH_ASHRAE = (K1 + K2*ABS(TAI_SI-TAO_SI) + K3*VW_SI)
 ACH_SG = ELA_SI*(fs^2*(ABS(TAI_SI-TAO_SI))+fw^2*VW_SI^2)^0.5*2118.88/VOL*60
-ACH0 = EQL(ACH_TYPE,1)*ACH_file+EQL(ACH_TYPE,2)*ACH_SET + GT(ACH_TYPE,2)*LT(ACH_TYPE,6)*ACH_ASHRAE + GT(ACH_TYPE,5)* ACH_SG
+* Walker-Wilson Infiltration Model (via ASHRAE Fundamentals tables)
+WW_n = 0.67
+WW_c = ELA_SI*(2/1.2)^0.5*4^(0.5-WW_n) ! where 1.2 is density of air
+WW_Qs = WW_c*WW_Cs*ABS(TAI_SI-TAO_SI)^WW_n ! stack effect
+WW_Qw = WW_c*WW_Cw*(WW_s*WW_G*VW_SI)^(2*WW_n) ! wind induced infiltration
+WW_Q = (WW_Qs^2 + WW_Qw^2)^0.5
+ACH_WW = WW_Q*35.3147/VOL*60 ! VOL in cubic feet
+! Pick Infiltration Model
+ACH0 = EQL(ACH_TYPE,1)*ACH_file+EQL(ACH_TYPE,2)*ACH_SET + GT(ACH_TYPE,2)*LT(ACH_TYPE,6)*ACH_ASHRAE + GT(ACH_TYPE,5)*LT(ACH_TYPE,11)* ACH_SG + GT(ACH_TYPE,10)*ACH_WW
 *
 ************************************************************************
 UNIT 33 TYPE 33 PSYCH - Get Space Conditions for Zone 1(SI UNITS) 
