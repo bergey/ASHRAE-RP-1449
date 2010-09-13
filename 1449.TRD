@@ -1274,19 +1274,17 @@ EQUATIONS 3
 * All air passes through the AC unit for delivery to space
 * HG reheat assumed to be 75% of NOMINAL capacity
 *
-EQUATIONS 6
+EQUATIONS 7
    Qrh   = ACTON *.75*12000.
  * Qrh = Qh*1.0
-  Msupp = Mac + Md_s
-  Tsupp = Ts + Qrh*RTFrh/max(Msupp,1)/0.24
-  Wsupp = max(Ws,0.001)
+  Mducted = Mac + Md_s
+  Tsupp = Ts + Qrh*RTFrh/max(Mducted,1)/0.24
+  Wsupp = (max(Ws,0.001)*Mducted + Whrv*Mhrv) / (Mducted + Mhrv)
   
-  Tsupp_tloss = TAI_2 + (Tsupp-TAI_2)*EXP(-sduct_area/(Msupp*0.241*duct_Rval + 1e-10))
-* Add HRV airflow; independently ducted, not part of duct losses
-  Tsupp_tloss = (Tsumm_tloss*Msupp + Thrv*Mhrv) / (Msupp + Mhrv)
-  Wsupp = (Wsupp*Msupp + Whrv*Mhrv) / (Msupp + Mhrv)
-  Msupp = Msupp + Mhrv
-  qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss)
+* Add duct loss and HRV; HRV is independently ducted, not part of duct losses
+  Tsupp_tloss = ((TAI_2 + (Tsupp-TAI_2)*EXP(-sduct_area/(Mducted*0.241*duct_Rval + 1e-10)))*Mducted + Thrv*Mhrv) / (Mducted + Mhrv)
+  Msupp = Mducted + Mhrv
+  qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss) ! Fairly meaningless
 *
 ******************************************************************
 EQUATIONS 14
