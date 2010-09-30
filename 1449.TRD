@@ -14,6 +14,7 @@ assign for_71.dat 71
 assign for_81.dat 81
 assign for_91.dat 91
 assign for_99.dat 99
+assign type9_sched 14
 *
 EQUATIONS 4
   TSTART = 0
@@ -681,7 +682,7 @@ EQUATIONS 19
 *|* 
 *|[BLD1| Single-Zone Building
 *
-EQUATIONS 11
+EQUATIONS 9
   SinZone_bno   = 23
 *|< Building Use Type (SinZone_bno)                   |Single_Zone_Buildings.txt|2|1|25
   btype = 8
@@ -700,10 +701,6 @@ EQUATIONS 11
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|10|25
   peop_Q = 420
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|11|25
-  Lt_WPerFt = 0.3
-*|< Light Watt Per Ft2                  |Single_Zone_Buildings.txt|0|12|25
-  Eq_WPerFt = 0.3785
-*|< Equipment Watt Per Ft2              |Single_Zone_Buildings.txt|0|13|25
 ASSIGN bsc1.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
 * 
@@ -973,10 +970,9 @@ AI_SS = [12,52]
 *  OCC is used for people, lights, equipment
 *  HVAC is used for set points, fan control, and ventilation
 EQUATIONS 7
-  OCC    = [5,4]
+  SENS   = 
+  LAT    = 
   HVAC   = [5,6]
-  EQSD   = [5,9]
-  LTSD   = [5,10]
   TMIN   = HVAC * (THhi-THlo) + THlo
   TMAX   = TChi - HVAC * (TChi-TClo)
   HMAX   = Humhi - HVAC * (Humhi-Humlo)
@@ -1287,7 +1283,7 @@ EQUATIONS 7
   qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss) ! Fairly meaningless
 *
 ******************************************************************
-EQUATIONS 14
+EQUATIONS 12
 * HVAC Loads
 * Infiltration only when AC unit is off for commercial buildings (btype=9)
 * Infiltration is always on for residential btype=8
@@ -1295,9 +1291,6 @@ EQUATIONS 14
   IACH    = EQL(btype,8)*ACH0 + EQL(btype,9)*ACH0*(1-RTFacf) + EQL(btype,10)*ACH0*EQL(RTFacf+RTFdf,0)
   NPEOP   = OCC*Peop
   PEOPLE  = NPEOP * peop_Q
-  
-  LIGHTS =  ZAR * Lt_WPerFt * LTSD * 3.6  !Kj/h
-  EQP =  ZAR * Eq_WPerFt * EQSD * 3.6     !Kj/h  
 *
 *
   cfm_in = VCFM*rtfvf + DCFM*eql(DSIN,0)*rtfdf
@@ -1364,6 +1357,28 @@ VolFlow_2 = ZN_FRAC_S * supp_cfm * 0.075*60./2.2/1.09
 Q2_EQ_KJHR = (qs_tloss + qr_tloss)*1.055
 *
 *******************************************************************************
+UNIT 14 TYPE 9 Daily Schedules
+PARAMETERS 22
+6 1 4 .02 -1 1 0 0 -1 1 0 0 -1 1 0 0 -1 1 0 0 14 -1
+*******************************************************************************
+UNIT 15 TYPE 41 Weekly Schedules
+PARAMETERS 8
+2		! 1 Number of profiles for each day
+1		! 2 Input set for day 1
+1		! 3 Input set for day 2
+1		! 4 Input set for day 3
+1		! 5 Input set for day 4
+1		! 6 Input set for day 5
+2		! 7 Input set for day 6
+2		! 8 Input set for day 7
+INPUTS 4
+14,1 		! Type14h:Average value of function ->Weekday input-1
+14,2 		! Type14h-2:Average value of function ->Weekday input-2
+14,3 		! Type14h-3:Average value of function ->Weekend input-1
+14,4 		! Type14h-4:Average value of function ->Weekend input-2
+*** INITIAL INPUT VALUES
+0 0 0 0 
+*******************************************************************************
 *
 * Model "Building" (Type 56)
 * 
@@ -1414,8 +1429,8 @@ VolFlow_1			! Ventilation Flow to Main Zone ()   23- FLOW_MAIN  (INPUT)
 Tsupp_SI		! Supply Air Temperature to zones    19- TAS  (INPUT)
 RHsupp_SI		! Supply RH to zones    20- RHS  (INPUT)
 ACH			! Infiltration			24- ACH (INPUT)
-LIGHTS
-EQP
+SENS
+LAT
 TSLAB_SI		! Temperature of Basement Floor 22- TSLAB  (INPUT)
 VolFlow_2		! Ventilation Flow to Secondary Zone (ACH)   21- FLOW_BSMT  (INPUT)
 MIC
@@ -1503,16 +1518,16 @@ Md  Tdi  Wdi  Tdo  Wdo  Qsd  Qld  RTFd  DGAS  DKW
 UNIT 69 TYPE 24 integrator - Building Loads
 PARAMETERS 2
 ISTEP  0
-INPUTS 10
-PEOPLE  LIGHTS EQP INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
-0         0      0    0    0    0    0      0     0     0
+INPUTS 8
+PEOPLE  INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
+0         0    0    0    0      0     0     0
 ******************************************************************************
 UNIT 49 TYPE 25 summary printer - Building Loads
 PARAMETERS 10
 ISTEP ISTEP 8760 71 0 0 0 0 0 1
-INPUTS 10
-69,1    69,2    69,3 69,4 69,5  69,6  69,7 69,8  69,9 69,10
-PEOPLE  LIGHTS EQP INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
+INPUTS 8
+69,1    69,4 69,5  69,6  69,7 69,8  69,9 69,10
+PEOPLE  INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
 ******************************************************************************
 UNIT 70 TYPE 24 integrator - Air Flows
 PARAMETERS 2
@@ -1556,21 +1571,20 @@ INPUTS 14
 72,1    72,2  72,3   72,4  72,5  72,6  72,7   72,8  72,9  72,10  72,11 72,12 72,13 72,14 
 RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Tacoh  Tacoc  Tho_ss  c_i1  c_i2 VW_SI  TAI_tl   TSupp_tl   Mv
 *******************************************************************************
-EQUATIONS 7
+EQUATIONS 6
 RTFe_plt = RTFe*.8 + 14 
 RTFRH_plt = RTFRH*.8 + 5
 RTFH_plt = RTFH*.8 + 4 
 rtfc_plt = RTFC*.8 + 3
 rtfd_plt = RTFD*.8 + 2
-OCC_plt  = OCC*.8 + 1
 HVAC_plt = HVAC*.8
 *******************************************************************************
 UNIT 55 TYPE 65 On-line plotter
 PARAMETERS 12
 3 7 0 100 0 15 52 7 0 -1 0 0
-INPUTS 10
-T_CTL TAO RH_CTL  RTFe_plt RTFRH_PLT RTFH_plt RTFC_plt RTFd_plt OCC_plt HVAC_plt
-TAI TAO RHI  RTFe     RTFRH     RTFH     RTFC     RTFD     OCC     HVAC
+INPUTS 9
+T_CTL TAO RH_CTL  RTFe_plt RTFRH_PLT RTFH_plt RTFC_plt RTFd_plt HVAC_plt
+TAI TAO RHI  RTFe     RTFRH     RTFH     RTFC     RTFD     HVAC
 *******************************************************************************
 *UNIT  TYPE 65 On-line plotter  Radiation Check
 *PARAMETERS 12
