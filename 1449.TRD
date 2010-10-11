@@ -14,7 +14,7 @@ assign for_71.dat 71
 assign for_81.dat 81
 assign for_91.dat 91
 assign for_99.dat 99
-assign type9_sched 14
+assign res_dh_sched.dat 14
 *
 EQUATIONS 4
   TSTART = 0
