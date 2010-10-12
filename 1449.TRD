@@ -672,6 +672,13 @@ EQUATIONS 19
 *
 *
 *
+*|[GAINS | Internal Gains
+EQUATIONS 2
+  SENS_DAILY = 72900
+*| Daily Sensible Gain (SENS_DAILY)  | BTU (0--500000) | BTU (0-500000)|0|1|0|500000|9999
+  LAT_DAILY = 16.9
+*| Daily Latent Gain (LAT_DAILY) |lbs (0-100)|lbs (0-100)|0|1|0|100|9999
+*|]
 ********************************************************************************
 * Building Model
 *|(ZONE | Number of Zones
@@ -970,8 +977,8 @@ AI_SS = [12,52]
 *  OCC is used for people, lights, equipment
 *  HVAC is used for set points, fan control, and ventilation
 EQUATIONS 7
-  SENS   = 
-  LAT    = 
+  SENS   = SENS_DAILY/14.2*1.055*[15,1] ! convert to peak rate, kJ/hr
+  LAT    = LAT_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
   HVAC   = [5,6]
   TMIN   = HVAC * (THhi-THlo) + THlo
   TMAX   = TChi - HVAC * (TChi-TClo)
