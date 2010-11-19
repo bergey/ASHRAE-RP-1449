@@ -1,9 +1,9 @@
 VERSION 16
 *TRNSED
 * HEADER SECTION
-* TRNSYS Model of Residential / Commercial Dehumidification Systems
-* TRN-RESDH4 SHORT TIMESTEP VERSION Developed by CDH Energy
-* October 2008
+* TRNSYS Model of Residential Dehumidification Systems
+* TRN-RESDH5 SHORT TIMESTEP VERSION Developed by CDH Energy
+* October 2010
 *
 assign ashrae.cof 8
 assign for_21.dat 21
@@ -33,13 +33,13 @@ WIDTH  132
 *|<SIZE1> 20 
 *|<ALIGN1> CENTER 
 *|<STYLE1> ITALIC BOLD
-*|* TRN-RESDH4
+*|* TRN-RESDH5
 *|<SIZE1> 12 
 *|<STYLE1> BOLD
 *|<COLOR1> BLACK
 *|* A  SHORT TIMESTEP Simulation Tool for Evaluating Cooling, Dehumidification and Ventilation Technologies
 *|* in Residential and Commercial Applications.
-*|* October 2008
+*|* October 2010
 *|]
 *
 *|<SIZE1> 12 
@@ -76,24 +76,20 @@ ASSIGN Miami-FL.tm2               20
 *|<SIZE1> 12
 *|<STYLE1> BOLD
 *
-*|<img src="Resdh_Layout.bmp" align = "center" usemap="Resdh_layout.txt" >
+*|<img src="Resdh_Layout_v5.bmp" align = "center" usemap="Resdh_layout_v5.txt" >
 *|]
 *********************************** DEHUMID UNIT & CONFIG **********************************************
-*|<TabWindow name="Dehumid/Vent Unit">
+*|<TabWindow name="Dehumid Unit">
 *|<COLOR1> FUCHSIA
 *|<SIZE1> 20 
 *|<ALIGN1> CENTER 
 *|<STYLE1> ITALIC BOLD
-*|* Dehumid/Vent Unit
+*|* Dehumid Unit
 *|<SIZE1> 12 
 *|* Can be configured as: Dehumidifier, 100% Makeup Unit, or Ventilation HX Unit  
 *|<STYLE1> BOLD
 *
-*|(DESUNITS| Choose Dehumid/Vent Equipment Type
-*|Residential Dehumidifiers          |DESRES|_DESCOM|_DESNONE//checked
-*|Commercial Dehumid/Vent Units      |_DESRES|DESCOM|_DESNONE
-*|Ventilation/No Equipment           |_DESRES|_DESCOM|DESNONE
-*|)
+*
 *
 *|[DESRES| Residential Dehumidifier Type and Configuration
 *
@@ -107,15 +103,15 @@ ASSIGN Miami-FL.tm2               20
 *|<style1> BOLD
 *
 EQUATIONS 19
-  Res_DNO = 3
+  Res_DNO = 16
 *|<Residential Dehumidifier Unit |Res_DH_units.txt|2|1|2
-  DTYPE = 11
+  DTYPE = 16
 *|<   |Res_DH_units.txt|0|3|2
-  DPAR3a = 220.
+  DPAR3a = 2
 *|<   |Res_DH_units.txt|0|4|2
-  DPAR4 = 0.0
+  DPAR4 = 0.6
 *|<   |Res_DH_units.txt|0|5|2
-  DPAR5 = 0.0 
+  DPAR5 = 1
 *|<   |Res_DH_units.txt|0|6|2
   DPAR6 = 0
 *|<   |Res_DH_units.txt|0|7|2
@@ -125,13 +121,13 @@ EQUATIONS 19
 *|<   |Res_DH_units.txt|0|9|2
   DPAR9 = 0
 *|<   |Res_DH_units.txt|0|10|2
-  DPAR10 = 2
+  DPAR10 = 0
 *|<   |Res_DH_units.txt|0|11|2
   DPAR11 = 0
 *|<   |Res_DH_units.txt|0|12|2
   DPAR12 = 0
 *|<   |Res_DH_units.txt|0|13|2
-  DPAR13 = 1.93
+  DPAR13 = 3.74
 *|<   |Res_DH_units.txt|0|14|2
   DPAR14 = 0
 *|<   |Res_DH_units.txt|0|15|2
@@ -146,144 +142,38 @@ EQUATIONS 19
  DNO = Res_DNO
 *|*
 *
-EQUATIONS 9
-  DS_TYPE = 1
+EQUATIONS 10
+  DS_TYPE = 0
 *|<     Dehumidifier Nominal Sizing            |pulldown_3.txt|4|2|27
-  DSET  = 2.2000000000000E+02
+  DSET  = 4.0000000000000E+02
 *|     New Dehumidifier Size (DSET)                   |use units above (0-5000)|use units above (0-5000)|0|1|0|50000|27
 *|*
 *
-  DCFM  = 2.2000000000000E+02
+  DCFM  = 4.0000000000000E+02
 *|     Dehumidifier Unit Process/Vent Air Flow (DCFM)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
 *
 * CONFIGURATION - REGEN:  OA Regen=1, RA Regen=0       REHEAT:   no=0, yes=1
-*                 DSIN:   OA=0, RA=1                   DSOUT:    to AC = 0, around AC=1
+*                 DSIN:   OA=0, RA=1                   DSOUT:    space=0, supply duct=1
 *
-  REGEN = 0
+  REGEN = 1
 *|<     Source of Regeneration Air (REGEN)             |pulldown_2.txt|3|2|4
-  DSIN_OPT = 1
-*|<     Source of Process Air/Unit Config (DSIM_OPT)      |pulldown_3.txt|5|2|5
+  DSIN_OPT = 3
+*|<     Source of Process Air/Unit Config (DSIN_OPT)      |pulldown_4.txt|4|2|5
   DSIN_VAL = 1.0000000000000E+00
 *|     Return/Space Air Fraction (DSIN_VAL)		  |(0-1)|(0-1)|0|1|0|1.00|3
-  DSIN = DSIN_OPT * lt(DSIN_OPT,2) + eql(DSIN_OPT,2) * DSIN_VAL
-  DSOUT = 1
-*|<     Process Air Supplied to (DSOUT)               |pulldown_2.txt|5|2|6
-  RSCHD = 1
+*
+  DSIN = DSIN_OPT*lt(DSIN_OPT,2)  +  eql(DSIN_OPT,2)*DSIN_VAL + eql(DSIN_OPT,3)
+*
+  DSOUT = 0
+*|<     DH Supply Air Sent to (DSOUT)                  |pulldown_2.txt|5|2|6
+*
+  RSCHD = 0
 *|<     Recirc Mode When Unoccupied (RSCHD)            |pulldown_2.txt|6|2|7
 *|]
+*    Use DES Unit in Supply air Stream (then DSIN=1)
+*  
+  DSPLY = eql(DSIN_OPT,3)
 *
-*|#*|[DESCOM| Commercial Unit Type and Configuration
-*|#*
-*|#*|<color1> black
-*|#*|<size1> 11
-*|#*|<style1> none
-*|#*|<align1> left
-*|*     Choose Commercial Unit
-*|#*|<color1> FUCHSIA
-*|#*|<size1> 12
-*|#*|<style1> BOLD
-*|#*
-*|#EQUATIONS 19
-*|#  Com_DNO = 27
-*|#*|<   |Com_Des_units.txt|2|1|2
-*|#  DTYPE = 13
-*|#*|<   |Com_Des_units.txt|0|3|2
-*|#  DPAR3a = 14
-*|#*|<   |Com_Des_units.txt|0|4|2
-*|#  DPAR4 = 0.65
-*|#*|<   |Com_Des_units.txt|0|5|2
-*|#  DPAR5 = 0.3
-*|#*|<   |Com_Des_units.txt|0|6|2
-*|#  DPAR6 = 1
-*|#*|<   |Com_Des_units.txt|0|7|2
-*|#  DPAR7 = 0.83 
-*|#*|<   |Com_Des_units.txt|0|8|2
-*|#  DPAR8 = -60.
-*|#*|<   |Com_Des_units.txt|0|9|2
-*|#  DPAR9 = 210.
-*|#*|<   |Com_Des_units.txt|0|10|2
-*|#  DPAR10 = 2
-*|#*|<   |Com_Des_units.txt|0|11|2
-*|#  DPAR11 = -10.5
-*|#*|<   |Com_Des_units.txt|0|12|2
-*|#  DPAR12 = -0.77
-*|#*|<   |Com_Des_units.txt|0|13|2
-*|#  DPAR13 = 0.008
-*|#*|<   |Com_Des_units.txt|0|14|2
-*|#  DPAR14 = 0.020
-*|#*|<   |Com_Des_units.txt|0|15|2
-*|#  DPAR15 = 15
-*|#*|<   |Com_Des_units.txt|0|16|2
-*|#  DPAR16 = 40
-*|#*|<   |Com_Des_units.txt|0|17|2
-*|#  DPAR17 = 80
-*|#*|<   |Com_Des_units.txt|0|18|2
-*|#  DPAR18 = 1
-*|#*|<   |Com_Des_units.txt|0|19|2
-*|#  DNO = Com_DNO
-*|*
-*|#*
-*|#EQUATIONS 9
-*|#  DS_TYPE = 0
-*|#*|<     Dehumidifier Nominal Sizing            |pulldown_3.txt|4|2|27
-*|#  DSET  = 0.0000000000000E+00
-*|#*|     New Dehumidifier Size (DSET)                   |use units above (0-5000)|use units above (0-5000)|0|1|0|50000|27
-*|*
-*|#*
-*|#  DCFM  = 5.5000000000000E+03
-*|#*|     Desiccant Unit Process/Vent Air Flow (DCFM)    |scfm (0-50000)|scfm (0-50000)|0|1|0|50000|3
-*|#*
-*|#* CONFIGURATION - REGEN:  OA Regen=1, RA Regen=0       REHEAT:   no=0, yes=1
-*|#*                 DSIN:   OA=0, RA=1                   DSOUT:    to AC = 0, around AC=1
-*|#*
-*|#  REGEN = 1
-*|#*|<     Source of Regeneration Air             |pulldown_2.txt|3|2|4
-*|#  DSIN_OPT = 2
-*|#*|<     Source of Process Air/Unit Config      |pulldown_3.txt|5|2|5
-*|#  DSIN_VAL = 5.5000000000000E-01
-*|#*|      Return/Space Air Fraction    	       |(0-1)|(0-1)|0|1|0|1.00|3
-*|#  DSIN = DSIN_OPT * lt(DSIN_OPT,2) + eql(DSIN_OPT,2) * DSIN_VAL
-*|#  DSOUT = 1
-*|#*|<     Process Air Supplied to                |pulldown_2.txt|5|2|6
-*|#  RSCHD = 0
-*|#*|<     Recirc Mode When Unoccupied            |pulldown_2.txt|6|2|7
-*|#*|]
-*
-*|#*|[DESNONE| Ventilation Only
-*|#EQUATIONS 18
-*|#  DNO = 0
-*|#  DTYPE = 0
-*|#  DPAR3a = 0
-*|#  DPAR4 = 0
-*|#  DPAR5 = 0
-*|#  DPAR6 = 0
-*|#  DPAR7 = 0
-*|#  DPAR8 = 0 
-*|#  DPAR9 = 0
-*|#  DPAR10 = 0
-*|#  DPAR11 = 0
-*|#  DPAR12 = 0
-*|#  DPAR13 = 1
-*|#  DPAR14 = 0
-*|#  DPAR15 = 0 
-*|#  DPAR16 = 0
-*|#  DPAR17 = 0
-*|#  DPAR18 = 0
-*|#*
-*|#*
-*|#EQUATIONS 7
-*|#  DS_TYPE = 0
-*|#  DSET  = 0.0000000000000E+00
-*|#  DCFM  = 1.0000000000000E-02
-*|#*|     Ventilation Air Flow    |scfm (0-50000)|scfm (0-50000)|0|1|0|50000.00|3
-*|*
-*|#  REGEN = 1
-*|#  DSIN = 0
-*|#  DSOUT = 1
-*|#*|<     Process Air Supplied to                |pulldown_2.txt|5|2|6
-*|#  RSCHD = 0
-*|#*|<     Recirc Mode When Unoccupied            |pulldown_2.txt|6|2|7
-*|#*|]
 *
 *|[ HRV | Heat Recovery Ventilator
 *|<color1> black
@@ -295,13 +185,17 @@ EQUATIONS 9
 *|<size1> 12
 *|<style1> BOLD
 *
-EQUATIONS 4
+EQUATIONS 6
+  HRV_ec = 0.
+*   HRV leakage or "crossover"
   HRV_eS = 6.7000000000000E-01
 *| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
   HRV_eL = 0.0000000000000E+00
 *| Latent Recovery Efficiency (HRV_eL) |(0-1)|(0-1)|0|1|0|1.00|9999
   HRV_CFM = 5.5000000000000E+01
 *| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
+  HRV_loc = 0
+*|< HRV Supply Air Sent to           |pulldown_3.txt|7|2|27
   HRV_W = 2.5000000000000E+01
 *| Fan Power (total, both directions) (HRV_W) |W|W|0|1|0|500|9999
 *|]
@@ -477,7 +371,7 @@ EQUATIONS 5
 *
 *|]
 *
-EQUATIONS 5
+EQUATIONS 6
 * Convert to lb/h
   Macmx0  = (EQL(RTFh,1)*HCFM + (1-EQL(RTFh,1))*ACCFM) * 60 * 0.075 * fspd_on
   Mdmx   = DCFM  * 60 * 0.075
@@ -485,6 +379,7 @@ EQUATIONS 5
 *
   Qh      = HT_QIN
   Qh_gas  = Qh /Ht_eff * HtType  
+  KWHT    = Qh/3412.*eql(HtType,0)
 *
 *|<COLOR1> BLACK
 *|<SIZE1> 10
@@ -512,11 +407,11 @@ EQUATIONS 5
 *
 EQUATIONS 35
 *|[ STPT | AHU Fan (Device=5)
-  fctyp5 = 4
+  fctyp5 = 3
 *|<      Fan Control Type (fctyp5)              |pulldown_7.txt|3|2|18
-  ftim_ON5  = 1.7000000000000E-01
+  ftim_ON5  = 2.0000000000000E-01
 *|     Fan ON Time (ftim_ON5)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ftim_OFF5  = 3.3000000000000E-01
+  ftim_OFF5  = 3.0000000000000E-01
 *|     Fan OFF Time (ftim_OFF5)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ilck51  = 1.0000000000000E+00
 *|     1st Interlock Device (ilck51)  |(-4 to +4)|(-4 to +4)|0|1|-4|4|12
@@ -544,11 +439,11 @@ EQUATIONS 35
 *|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
 *|]
 *|[ STPT | Vent Damper/Fan (Device=7)
-  fctyp7 = 4
+  fctyp7 = 5
 *|<      Fan Control Type (fctyp7)              |pulldown_7.txt|3|2|18
-  ftim_ON7  = 1.7000000000000E-01
+  ftim_ON7  = 2.0000000000000E-01
 *|     Fan ON Time (ftim_ON7)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ftim_OFF7  = 3.3000000000000E-01
+  ftim_OFF7  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF7)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ilck71  = 5.0000000000000E+00
 *|     1st Interlock Device (ilck71)  |(-6 to +6)|(-6 to +6)|0|1|-6|6|12
@@ -583,11 +478,11 @@ EQUATIONS 35
   ftim_OFF9  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF9)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ilck91  = -7.0000000000000E+00
-*|     1st Interlock Device (ilck91)  |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+*|     1st Interlock Device (ilck91)  |(-8 to +8)|(-8 to +8)|0|1|-8|8|12
   ilck92  = 0.0000000000000E+00
-*|     2nd Interlock Device (ilck92) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+*|     2nd Interlock Device (ilck92) |(-8 to +8)|(-8 to +8)|0|1|-8|8|12
   ilck93  = 0.0000000000000E+00
-*|     3rd Interlock Device (ilck93)    (Specify negative device # for "Anti" interlock) |(-7 to +7)|(-7 to +7)|0|1|-7|7|12
+*|     3rd Interlock Device (ilck93)    (Specify negative device # for "Anti" interlock) |(-8 to +8)|(-8 to +8)|0|1|-8|8|12
   fsched9  = 0.0000000000000E+00
 *|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
 *|]
@@ -710,7 +605,7 @@ EQUATIONS 9
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|11|25
 ASSIGN bsc1.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
-* 
+*
 *
 EQUATIONS 3
   SUP_PER = 0
@@ -1089,20 +984,14 @@ T_CTL  TMIN  TMAX  HUM_CTL   HMAX 0,0  0,0
 60   60    76    Humlo  Humlo 0 100
 * trace 2482 2628
 **********************************************************************
-EQUATIONS 16
-*    Enthalpy wheel controller (for DTYPE=5)
-  f1     = AND(LT(TAO,45), LT(RHI,45))
-  f2     = LT(RHI,35) + (1-LT(RHI,35)) * (45-RHI)*0.1
-  f3     = GT(TAO,45)
-  f5     = AND(GT(TAO,50),GT(HAO_SI,HAI_SI))
-  f6     = AND(LT(TAO,50),LT(HAO_SI,HAI_SI))
+EQUATIONS 11
 *
 *     Equipment Runtimes
   RTFh	= [3,1]
   RTFc 	= [3,2]
 *
-*                       Normal Case                     Enthalpy Wheel                   Disable "RTFd" if HUM_CNTL_type =4,5,6..
-  RTFd0   = ( [3,3]*(1-REHEAT)*(1-EQL(DTYPE,5)) + (f1*f2+f3)*(f5+f6)*EQL(DTYPE,5)*HVAC )*(1- GT(HUM_CNTL_type,3))
+*                       Disable "RTFd" if HUM_CNTL_type =4,5,6..
+  RTFd0   = [3,3]*(1-REHEAT) * (1- GT(HUM_CNTL_type,3))
   RTFrh   = [3,3]*REHEAT
 *
   RTFv   = [3,4]
@@ -1110,7 +999,7 @@ EQUATIONS 16
   RTFdf	 = [3,20]
   RTFvf  = [3,21]
   RTFxf  = [3,22] 
-  RTFhrv = [3,23]
+  RTFhf = [3,23]
   RTFacf_time = RTFacf
 *
 **********************************************************************
@@ -1143,8 +1032,15 @@ EQUATIONS 5
   fspd_off_ac = fspd_off*GT(fspd_off_CNTL,0) + (1-GT(fspd_off_CNTL,0))
   fspd_off_v  = fspd_off*GT(fspd_off_CNTL,1) + (1-GT(fspd_off_CNTL,1))
 *
+*   Determine HRV/ERV Flows (HRV_loc=0 >> into return; HRV_loc=1 >> into supply; HRV_loc=2 >> directly to space )
 *
-EQUATIONS 14
+EQUATIONS 4
+Mhrv = HRV_CFM * RTFhf * 60. * 0.075 ! lb/h
+Mhrv_r = Mhrv*eql(HRV_loc,0)
+Mhrv_s = Mhrv*eql(HRV_loc,1)
+Mhrv_sp= Mhrv*eql(HRV_loc,2)
+*
+EQUATIONS 10
 *
 *  "Macmx0" is the nominal input (cooling mode airflow) to Type 140
 *   "Macmx" is the max flow used in all the other calcs 
@@ -1152,49 +1048,28 @@ EQUATIONS 14
 *
    Macmx = max([4,3],1e-6)
 *
-   Mac    = Macmx
+  Mac    = Macmx
   Md     = Mdmx  * RTFdf
   Mv     = Mvmx * RTFvf
 *  
   C_o    = 350e-6
 *
-  Md_r = Md*(1-DSOUT)
-  Md_s = Md*DSOUT
-  Mret   = max(Mac - Md_r - Mv,0)
+*     Md is ONLY an ADDITIONAL flow in the supply duct if DSPLY=0 
+*     Md is to supply duct if DSOUT=1; to space if DSOUT=0
+   
+  Md_s  = Md*eql(DSOUT,1)*eql(DSPLY,0)   
+  Md_sp = Md*eql(DSOUT,0)*eql(DSPLY,0)    
+*
+  Mret   = max(Mac - Mv - Mhrv_r,0)
   DSIN1 = (1-RSCHD)* DSIN + RSCHD*(1-HVAC)
-  
-  Tdi    = TAO*(1-DSIN1) + TAI*DSIN1
-  Wdi    = WAO*(1-DSIN1) + WAI*DSIN1
-  Cdi    = C_o*(1-DSIN1) + C_i*DSIN1 
-  Tregen = TAO * REGEN + TAI * (1-REGEN)
-  Wregen = WAO * REGEN + WAI * (1-REGEN)
 *
-*********************************************************************
-UNIT 9 TYPE 141  Desiccant Unit
-PARAMETERS 18
-*     ipflag
-DTYPE  0 DPAR3 DPAR4 DPAR5 DPAR6 DPAR7 DPAR8 DPAR9 DPAR10 DPAR11
-DPAR12 DPAR13 DPAR14 DPAR15 DPAR16 DPAR17 DPAR18
+* If the desiccant unit pulls air through the DH unit (DSPLY=1) then set the off-cycle flow fraction for INDUCED flow
 *
-INPUTS 6
-Tdi   Wdi    0,0    TREGEN  WREGEN RTFd
-49.1  0.005  Mdmx   49.1    0.005  1
-* trace 0 4300
-***********************************************************************
+  fspd_off2_d = max(fspd_off2, eql(DSPLY,1)*Md/Macmx0)
 *
 *
-EQUATIONS 7
-  Fhtd  = [9,6]*3413/0.24/Mdmx
-  Tdon  = [9,1] - Fhtd
 *
-  aa    = max(RTFdf,RTFd)
-  mxd   = eql(aa,0) + aa
-*   mxd(0) = 1, mxd(1) =1 mxd(aa) = aa
 *
-  Tdo   = Tdi*(RTFdf-RTFd)/mxd + Tdon*(RTFd/mxd) + Fhtd*RTFdf + EQL(rtfdf,0)*Tdi
-  Wdo   = wdi*(RTFdf-RTFd)/mxd + [9,2]*(RTFd/mxd) + EQL(rtfdf,0)*wdi
-*
-  Cdo   = Cdi
 *********************************************************************
 *  Economizer calculations using differential enthalpy
 *  Takes return air from in or out based on econ RTF
@@ -1216,24 +1091,28 @@ Tret = (TAI_tloss*(1.-leakr) 	+ TAI_2*leakr)*(1-RTFe) + TAO*RTFe
 Wret = (WAI*(1.-leakr) 		+ WAI_2*leakr)*(1-RTFe) + WAO*RTFe
 Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
 *
+*
+*  HRV/ERV Calculations
+*
 EQUATIONS 4
-Mhrv = HRV_CFM * RTFhrv * 60 * 0.075 ! lbs/hr
-KWhrv = HRV_W * RTFhrv/1000 ! kWh per hr
-Thrv = TAO + HRV_eS * (TAI_1-TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
-Whrv = WAO + HRV_eL * (WAI_1-WAO) 
+KWHF = HRV_W * RTFhf/1000 ! kW
+Thrv = TAO + HRV_eS * (TAI_1 - TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
+Whrv = WAO + HRV_eL * (WAI_1 - WAO) 
+Chrv = C_o + HRV_eC * (C_i - C_o) 
+*
+*
 *
 *********************************************************************
-*  Mix three air streams (return + des outlet(if DSOUT=0) + addl vent) 
+*  Mix 3 air streams (return + addl vent + HRV_r) 
 EQUATIONS 3
-Taci = (Tdo*Md_r + Tret*Mret + TAO*Mv )/(Md_r+Mret+Mv)
-waci = (Wdo*Md_r + Wret*Mret + WAO*Mv )/(Md_r+Mret+Mv)
-Caci = (Cdo*Md_r + Cret*Mret + C_o*Mv )/(Md_r+Mret+Mv)
+Taci = (Tret*Mret + TAO*Mv + Thrv*Mhrv_r)/(Mret+Mv+Mhrv_r)
+waci = (Wret*Mret + WAO*Mv + Whrv*Mhrv_r)/(Mret+Mv+Mhrv_r)
+Caci = (Cret*Mret + C_o*Mv + Chrv*Mhrv_r)/(Mret+Mv+Mhrv_r)
 *********************************************************************
 *                    Cooling ON/OFF times
-EQUATIONS 3
+EQUATIONS 2
 T_ON_c = [3,11]
 T_OFF_c = [3,12]
-RTF_shr = RTFacf
 *
 *********************************************************************
 UNIT 4 TYPE 140  AC -  TYPE7SUP Standard Electric AC
@@ -1243,51 +1122,112 @@ PARAMETERS 31
 *  mtref  evapefc  hz   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
     .90    0.0     60.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
 *  twet  gamma  Nmax  tcl NTUo_nom fspd_off2 none none   wcfm    chrg_ratio exp_type AC_COEF  
-   TWET  GAMMA  NMAX  45. NTUo_nom fspd_off2   0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
-INPUTS 12
-* Tin  win   Tout  wout   macs    bpON  rtfc_shr rtfc  toff_p  	 fspd_off	T_ON_c	T_OFF_c
-  Taci waci   TAO  WAO    0,0     bpON  rtf_shr  rtfc  0,0      fspd_off_ac     T_ON_c  T_Off_c
-  95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0
+   TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
+INPUTS 13
+* Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off	T_ON_c	T_OFF_c  fspd_off2_d
+  Taci waci   TAO  WAO    0,0     bpON  rtfacf  rtfc  0,0      fspd_off_ac     T_ON_c  T_Off_c   fspd_off2_d
+  95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0        0
 * trace 0 3450
 ************************************************************************
-EQUATIONS 7
+EQUATIONS 5
   Fhtac  = [4,7]*3413/Macmx/0.24
-*
-*   Cooling  (apply cooling output regardless of mode)
-*
-  Tacoc = taci - [4,5]/Macmx/0.24
-  Wacoc = waci - [4,6]/Macmx/1060.
 *
 *    Heating
   Th_rise =  Qh/Macmx/0.24
 *
-*  Find the outlet condition (cool, heating, fan)
 *
-  Taco   = Tacoc + Th_rise*gt(RTFh,0.) + Fhtac*RTFacf
-  Waco   = wacoc
-  Caco   = Caci
-*********************************************************************
-*Flow Mixer - Desiccant outlet (if DSOUT=1) and building supply 
-EQUATIONS 3
-  Ts   = (Tdo*Md_s + Taco*Mac)/(Md_s+Mac)
-  ws   = (Wdo*Md_s + waco*Mac)/(Md_s+Mac)
-  Cs   = (Cdo*Md_s + Caco*Mac)/(Md_s+Mac)
+*   Cooling  (apply cooling output regardless of mode  ---ALSO---  add in heating)
+*
+  Tacoc = taci - [4,5]/Macmx/0.24 + Fhtac*RTFacf    +    Th_rise*rtfh
+  Wacoc = waci - [4,6]/Macmx/1060.
+  cacoc = caci
+*
 *************************************************************************
-* CONFIGURE OUTPUT FROM EQUIPMENT
-* All air passes through the AC unit for delivery to space
+EQUATIONS 5
+*
+*   If DSPLY=1 then DH inlet sees AC output ---AND--- DH flow is subset of AC flow
+  
+  Tdi    = (TAO*(1-DSIN1) + TAI*DSIN1)*(1-DSPLY)  +  Tacoc*DSPLY
+  Wdi    = (WAO*(1-DSIN1) + WAI*DSIN1)*(1-DSPLY)  +  wacoc*DSPLY
+  Cdi    = (C_o*(1-DSIN1) + C_i*DSIN1)*(1-DSPLY)  +  cacoc*DSPLY 
+*
+  Tregen = TAO * REGEN + TAI * (1-REGEN)
+  Wregen = WAO * REGEN + WAI * (1-REGEN)
+*
+*********************************************************************
+UNIT 9 TYPE 141  Desiccant Unit
+PARAMETERS 18
+*     ipflag
+DTYPE  0 DPAR3 DPAR4 DPAR5 DPAR6 DPAR7 DPAR8 DPAR9 DPAR10 DPAR11
+DPAR12 DPAR13 DPAR14 DPAR15 DPAR16 DPAR17 DPAR18
+*
+INPUTS 6
+Tdi   Wdi    0,0    TREGEN  WREGEN RTFd
+49.1  0.005  Mdmx   49.1    0.005  1
+* trace 0 4300
+***********************************************************************
+*
+*
+EQUATIONS 5
+  Fhtd  = [9,6]*3413/0.24/Mdmx
+  Tdon  = [9,1] - Fhtd
+*
+*
+  Tdo =  Tdi + (Tdon-Tdi)*RTFd + Fhtd*RTFdf 
+  Wdo =  Wdi + ([9,2] - Wdi)*RTFd
+*
+*
+  Cdo   = Cdi
+*
+*****************************************************************************
+EQUATIONS 5
+*
+*
+* If DES is in AC Supply air stream (DSPLY=1) then mix in treated air (AC fan must be interlocked)
+*
+  Tacod = (Tacoc*(Mac-Md) + Tdo*Md)/Mac
+  wacod = (wacoc*(Mac-Md) + wdo*Md)/Mac
+*
+*
+*  Find the final outlet condition (after cool, fan, heat, & in-line-des, HRV)
+*
+  Taco   = (Tacoc*(1-DSPLY) + Tacod*DSPLY)
+  Waco   = (wacoc*(1-DSPLY) + wacod*DSPLY)
+*
+  Caco   = Cacoc
+*********************************************************************
+EQUATIONS 7
+*
 * HG reheat assumed to be 75% of NOMINAL capacity
 *
-EQUATIONS 7
    Qrh   = ACTON *.75*12000.
- * Qrh = Qh*1.0
-  Mducted = Mac + Md_s
-  Tsupp = Ts + Qrh*RTFrh/max(Mducted,1)/0.24
-  Wsupp = (max(Ws,0.001)*Mducted + Whrv*Mhrv) / (Mducted + Mhrv)
-  
-* Add duct loss and HRV; HRV is independently ducted, not part of duct losses
-  Tsupp_tloss = ((TAI_2 + (Tsupp-TAI_2)*EXP(-sduct_area/(Mducted*0.241*duct_Rval + 1e-10)))*Mducted + Thrv*Mhrv) / (Mducted + Mhrv)
-  Msupp = Mducted + Mhrv
-  qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss) ! Fairly meaningless
+*
+  Msupp = Mac + Mhrv_s + Md_s
+  Tsupp = (Taco*Mac + Thrv*Mhrv_s + Tdo*Md_s)/Msupp + Qrh*RTFrh/max(Msupp,1)/0.24
+  Wsupp = (waco*Mac + whrv*Mhrv_s + wdo*Md_s)/Msupp
+  Csupp = (caco*Mac + Chrv*Mhrv_s + Cdo*Md_s)/Msupp
+*
+*  Duct thermal supply losses
+*
+  Tsupp_tloss = TAI_2 + (Tsupp-TAI_2)*EXP(-sduct_area/(Msupp*0.241*duct_Rval + 1e-10))
+*
+  qs_tloss = Msupp*0.241*(Tsupp-Tsupp_tloss)
+*
+*
+*************************************************************************
+EQUATIONS 5
+*
+* Avg in HRV airflow AND DH airflow; to the space (after duct losses)
+*
+  Msupp2 = Msupp + Md_sp + Mhrv_sp
+*
+  Tsupp2 = (Tsupp_tloss*Msupp + Tdo*Md_sp + Thrv*Mhrv_sp) /Msupp2
+  Wsuppa = (Wsupp*Msupp       + Wdo*Md_sp + Whrv*Mhrv_sp) /Msupp2
+  Cs2    = (Csupp*Msupp       + Cdo*Md_sp + Chrv*Mhrv_sp) /Msupp2
+*
+  Wsupp2 = max(Wsuppa,0.001)
+*
+*
 *
 ******************************************************************
 EQUATIONS 12
@@ -1300,8 +1240,8 @@ EQUATIONS 12
   PEOPLE  = NPEOP * peop_Q
 *
 *
-  cfm_in = VCFM*rtfvf + DCFM*eql(DSIN,0)*rtfdf
-  cfm_out = exh_cfm*rtfxf + DCFM*eql(REGEN,0)*rtfdf 
+  cfm_in = VCFM*rtfvf + DCFM*eql(DSIN1,0)*rtfdf + HRV_cfm*RTFhf
+  cfm_out = exh_cfm*rtfxf + DCFM*eql(REGEN,0)*rtfdf + HRV_cfm*RTFhf 
 *
   bal_cfm = min( cfm_in,cfm_out )
   unbal_cfm = max( cfm_in,cfm_out ) - bal_cfm
@@ -1314,22 +1254,24 @@ EQUATIONS 12
 *
 *
 * Convert to metric units (C, kg/h)
-  Tsupp_SI = (Tsupp_tloss-32.)/1.8
-  msupp_SI = msupp/2.2
+  Tsupp_SI = (Tsupp2-32.)/1.8
+  msupp_SI = msupp2/2.2
 *
 EQUATIONS 10
   ZN_FRAC_S = ZN_FRAC + leaks
-  Supp_cfm = msupp/(0.075*60.)
+  Supp_cfm = msupp2/(0.075*60.)
+*
 * Assume 0.3 lit/min at 1.2 met or 600 Btu/h
   Q_co2 = NPEOP*(0.3*Peop_Q/600)/28.317/NO_ZONE
+*
   rcfm  = Mret/(0.075*60.)*(1 - ZN_FRAC_S)
-  Q_co2_2 = leaks*Supp_cfm*Cs - leakr*rcfm*Cret
+  Q_co2_2 = leaks*Supp_cfm*Cs2 - leakr*rcfm*Cret
   scfm1 = (1 - ZN_FRAC_S) * Supp_cfm
   scfm2 = ZN_FRAC_S * Supp_cfm
 *
 *  
 * THE supp_CFM caused a numerical instability.  Now it has been "re"-eliminated.  The
-* amount of CO2 in the supply stream (Cs) is used to calculate the equiv amount of airflow
+* amount of CO2 in the supply stream (Cs2) is used to calculate the equiv amount of airflow
 * at outdoor conditions.  This is added into the infiltration airflow
 * This eliminates the supply flow term in CO2 balance, so these inputs are set to zero below
 * Implemented  Mar-3-05 and again on May 26, 2006
@@ -1337,15 +1279,15 @@ EQUATIONS 10
 *
    VOL2 = VOL/3
 *
-  icfm1 = icfm 			    + scfm1*min(max((Cs-C_i1)/(C_o-C_i1+1e-16),0.),1.)
-  icfm2 = max(ACH,2.)*10.*VOL2/60   + scfm2*min(max((Cs-C_i2)/(C_o-C_i2+1e-16),0.),1.)
+  icfm1 = icfm 			    + scfm1*min(max((Cs2-C_i1)/(C_o-C_i1+1e-16),0.),1.)
+  icfm2 = max(ACH,2.)*10.*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.)
 *
 ********************************************************************************
 UNIT 6 TYPE 151 CO2 Balance
 PARAMETERS 2
 VOL VOL2
 INPUTS 9
-icfm1    0,0  icfm2   0,0   iccfm  Q_co2  Q_co2_2  C_o     Cs
+icfm1    0,0  icfm2   0,0   iccfm  Q_co2  Q_co2_2  C_o     Cs2
  0       0        0    0       0    0       0   350e-6  350e-6
 * trace 0 1000
 ********************************************************************************
@@ -1353,7 +1295,7 @@ UNIT 35 TYPE 33 PSYCH - Get Supply Conditions (SI UNITS)
 PARAMETERS 3
 4  0  1
 INPUTS 3
-Tsupp_SI  Wsupp  PATM
+Tsupp_SI  Wsupp2  PATM
 23.0      0.005     1.0
 *
 *
@@ -1458,7 +1400,7 @@ EQUATIONS 4
 * convert from kJ/hr to Btu/h
   INFQ = [5,12]*.947187
 * convert from kJ/hr to kg/hr and subtract ventilation gains
-  SCHWg = [5,13]/2460.26 - msupp_si*(Wsupp-WAI)
+  SCHWg = [5,13]/2460.26 - msupp_si*(Wsupp2-WAI)
   SCHQs = [5,12]
 *
 *
@@ -1470,15 +1412,15 @@ UNIT 65 TYPE 24 integrator - Space
 PARAMETERS 2
 ISTEP  0
 INPUTS 10
-TAO  WAO  TAI  WAI   RHI  OCC  Msupp  Tsupp  Wsupp ACH
+TAO  WAO  TAI  WAI   RHI  OCC  Msupp2  Tsupp2  Wsupp2 ACH
 0      0    0    0     0     0     0      0      0    0
 ***************************************************************************
 UNIT 45 TYPE 25 summary printer - Space
 PARAMETERS 10
 ISTEP ISTEP 8760 21 0 0 0 0 0 1
 INPUTS 10
-65,1  65,2  65,3 65,4 65,5  65,6 65,7   65,8   65,9  65,10
-To    Wo    Ti   Wi   RHi   OCC  Msuup  Tsupp  Wsupp ACH
+65,1  65,2  65,3 65,4 65,5  65,6  65,7   65,8    65,9  65,10
+To    Wo    Ti   Wi   RHi   OCC  Msupp2  Tsupp2  Wsupp2 ACH
 *************************************************************************** 
 UNIT 66 TYPE 24 integrator - AC
 PARAMETERS 2
@@ -1525,58 +1467,58 @@ Md  Tdi  Wdi  Tdo  Wdo  Qsd  Qld  RTFd  DGAS  DKW
 UNIT 69 TYPE 24 integrator - Building Loads
 PARAMETERS 2
 ISTEP  0
-INPUTS 8
-PEOPLE  INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
-0         0    0    0    0      0     0     0
+INPUTS 10
+PEOPLE  LIGHTS EQP   INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
+0         0      0    0    0    0    0      0     0     0
 ******************************************************************************
 UNIT 49 TYPE 25 summary printer - Building Loads
 PARAMETERS 10
 ISTEP ISTEP 8760 71 0 0 0 0 0 1
-INPUTS 8
-69,1    69,4 69,5  69,6  69,7 69,8  69,9 69,10
-PEOPLE  INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
+INPUTS 10
+69,1    69,2    69,3 69,4 69,5  69,6  69,7 69,8  69,9 69,10
+PEOPLE  LIGHTS   EQP INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
 ******************************************************************************
 UNIT 70 TYPE 24 integrator - Air Flows
 PARAMETERS 2
 ISTEP  0
 INPUTS 9
- MAC MACMX MRET  MD  MD_R  MDMX    5,15  5,16  67,10
-  0    0    0    0    0    0        0      0     0
+ MAC MACMX MRET  MHRV  MD_sp  MDMX    5,15  5,16  67,10
+  0    0    0    0     0      0        0      0     0
 ******************************************************************************
 UNIT 51 TYPE 25 summary printer - Air Flows
 PARAMETERS 10
 ISTEP ISTEP 8760 81 0 0 0 0 0 1
 INPUTS 9
-70,1    70,2    70,3 70,4 70,5   70,6  70,7    70,8   70,9
- MAC   MACMX    MRET  MD   MD_R  MDMX  Qflrc   Qflrr  TSLAB_SI
+70,1    70,2    70,3 70,4    70,5   70,6  70,7    70,8   70,9
+ MAC   MACMX    MRET  MHRV   MD_sp  MDMX  Qflrc   Qflrr  TSLAB_SI
 ******************************************************************************
 UNIT 71 TYPE 24 integrator - Other Data
 PARAMETERS 2
 ISTEP  0
-INPUTS 12
- RTF_shr  C_i   Cs   rtfvf   rtfxf   KWVF    KWXF   KWhrv ANO  DNO btype   0,0
-  0       0     0    0       0       0       0      0     0    0   0     0.0
+INPUTS 13
+ RTFv  C_i   Cs2   rtfvf   rtfxf   KWVF  KWXF   ANO  DNO  btype   KWHT   rtfhf  KWHF
+  0       0     0    0       0       0     0      0     0    0      0     0.0    0
 ******************************************************************************
 UNIT 52 TYPE 25 summary printer - Other data
 PARAMETERS 10
 ISTEP ISTEP 8760 91 0 0 0 0 0 1 
-INPUTS 12
-71,1    71,2    71,3 71,4   71,5   71,6  71,7   71,8  71,9  71,10   71,11 71,12
-rtf_shr C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   KWhrv ANO   DNO     btype KWHT
+INPUTS 13
+71,1    71,2    71,3 71,4   71,5   71,6  71,7   71,8  71,9  71,10   71,11 71,12  71,13
+rtfv    C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   ANO   DNO   btype   KWHT  rtfhf  KWHF
 ******************************************************************************
 UNIT 72 TYPE 24 integrator - Testing Data
 PARAMETERS 2
 ISTEP  0
 INPUTS 14
-RHI_1   RHI_2 TAI_1 TAI_2 Q2_EQ_KJHR Th_rise Tacoc  0,0  c_i1  c_i2 VW_SI TAI_tloss Tsupp_tloss Mv
-  0       0     0   0       0           0     0        0      0    0     0    0           0          0
+RHI_1   RHI_2 TAI_1 TAI_2 Q2_EQ_KJHR Th_rise Tacoc  Thrv  whrv  c_i2 VW_SI TAI_tloss Tsupp_tloss     Mv
+  0       0     0   0       0           0     0       0      0    0     0    0           0          0
 ******************************************************************************
 UNIT 53 TYPE 25 summary printer - Testing data
 PARAMETERS 10
 ISTEP ISTEP 8760 99 0 0 0 0 0 1
 INPUTS 14
-72,1    72,2  72,3   72,4  72,5  72,6  72,7   72,8  72,9  72,10  72,11 72,12 72,13 72,14 
-RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Tacoh  Tacoc  Tho_ss  c_i1  c_i2 VW_SI  TAI_tl   TSupp_tl   Mv
+72,1    72,2  72,3   72,4  72,5  72,6     72,7   72,8   72,9  72,10  72,11  72,12    72,13      72,14 
+RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Th_rise  Tacoc  Thrv   whrv  c_i2   VW_SI  TAI_tl   TSupp_tl   Mv
 *******************************************************************************
 EQUATIONS 6
 RTFe_plt = RTFe*.8 + 14 
