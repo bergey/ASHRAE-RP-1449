@@ -873,7 +873,7 @@ AI_SS = [12,52]
 *  HVAC is used for set points, fan control, and ventilation
 EQUATIONS 7
   SENS   = SENS_DAILY/14.2*1.055*[15,1] ! convert to peak rate, kJ/hr
-  LAT    = LAT_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
+  LATG   = LAT_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
   HVAC   = [5,6]
   TMIN   = HVAC * (THhi-THlo) + THlo
   TMAX   = TChi - HVAC * (TChi-TClo)
@@ -1379,7 +1379,7 @@ Tsupp_SI		! Supply Air Temperature to zones    19- TAS  (INPUT)
 RHsupp_SI		! Supply RH to zones    20- RHS  (INPUT)
 ACH			! Infiltration			24- ACH (INPUT)
 SENS
-LAT
+LATG
 TSLAB_SI		! Temperature of Basement Floor 22- TSLAB  (INPUT)
 VolFlow_2		! Ventilation Flow to Secondary Zone (ACH)   21- FLOW_BSMT  (INPUT)
 MIC
