@@ -103,15 +103,15 @@ ASSIGN Miami-FL.tm2               20
 *|<style1> BOLD
 *
 EQUATIONS 19
-  Res_DNO = 16
+  Res_DNO = 1
 *|<Residential Dehumidifier Unit |Res_DH_units.txt|2|1|2
-  DTYPE = 16
+  DTYPE = 11
 *|<   |Res_DH_units.txt|0|3|2
-  DPAR3a = 2
+  DPAR3a = 220.
 *|<   |Res_DH_units.txt|0|4|2
-  DPAR4 = 0.6
+  DPAR4 = 0.0
 *|<   |Res_DH_units.txt|0|5|2
-  DPAR5 = 1
+  DPAR5 = 0.0 
 *|<   |Res_DH_units.txt|0|6|2
   DPAR6 = 0
 *|<   |Res_DH_units.txt|0|7|2
@@ -121,13 +121,13 @@ EQUATIONS 19
 *|<   |Res_DH_units.txt|0|9|2
   DPAR9 = 0
 *|<   |Res_DH_units.txt|0|10|2
-  DPAR10 = 0
+  DPAR10 = 5
 *|<   |Res_DH_units.txt|0|11|2
   DPAR11 = 0
 *|<   |Res_DH_units.txt|0|12|2
   DPAR12 = 0
 *|<   |Res_DH_units.txt|0|13|2
-  DPAR13 = 3.74
+  DPAR13 = 1.46
 *|<   |Res_DH_units.txt|0|14|2
   DPAR14 = 0
 *|<   |Res_DH_units.txt|0|15|2
@@ -157,7 +157,7 @@ EQUATIONS 10
 *
   REGEN = 1
 *|<     Source of Regeneration Air (REGEN)             |pulldown_2.txt|3|2|4
-  DSIN_OPT = 3
+  DSIN_OPT = 0
 *|<     Source of Process Air/Unit Config (DSIN_OPT)      |pulldown_4.txt|4|2|5
   DSIN_VAL = 1.0000000000000E+00
 *|     Return/Space Air Fraction (DSIN_VAL)		  |(0-1)|(0-1)|0|1|0|1.00|3
@@ -335,9 +335,9 @@ EQUATIONS 5
 *|<color1> red
 *|<size1> 12
 *|<style1> BOLD
-sduct_area = 5.4410000000000E+02
+sduct_area = 0.0000000000000E+00
 *|       Supply Duct Surface Area (sduct_area)      | (ft^2)| (ft^2)|0|1|0.00000|10000.00000|12
-rduct_area = 1.0080000000000E+02
+rduct_area = 0.0000000000000E+00
 *|       Return Duct Surface Area (rduct_area)      | (ft^2)| (ft^2)|0|1|0.00000|10000.00000|12
 leaks = 0.0000000000000E+00
 *|       Supply Duct Leakage Fraction (0=no leak) (leaks)  | (-)| (-)|0|1|0.00|1.00|12
@@ -512,13 +512,13 @@ EQUATIONS 19
 *|<STYLE1> BOLD
 *
 *|[ STPT | Set Points
-  THhi    = 7.2000000000000E+01
+  THhi    = 6.8000000000000E+01
 *|        Heating Set Point - Day/Occupied (THhi)      |deg F (50-99)|deg F (50-99)|0|1|50|99|16
-  THlo    = 7.2000000000000E+01
+  THlo    = 6.8000000000000E+01
 *|                            - Night/Unoccupied (THlo) |deg F (50-99)|deg F (50-99)|0|1|50|99|16
-  TClo    = 7.5000000000000E+01
+  TClo    = 7.8000000000000E+01
 *|        Cooling Set Point - Day/Occupied (TChi)     |deg F (50-99)|deg F (50-99)|0|1|50|99|17
-  TChi    = 7.5000000000000E+01
+  TChi    = 7.8000000000000E+01
 *|                            - Night/Unoccupied (TClo) |deg F (50-99)|deg F (50-99)|0|1|50|99|17
 *|* 
 *
@@ -569,9 +569,9 @@ EQUATIONS 19
 *
 *|[GAINS | Internal Gains
 EQUATIONS 2
-  SENS_DAILY = 72900
+  SENS_DAILY = 5.1030000000000E+04
 *| Daily Sensible Gain (SENS_DAILY)  | BTU (0--500000) | BTU (0-500000)|0|1|0|500000|9999
-  LAT_DAILY = 16.9
+  LAT_DAILY = 1.7000000000000E+01
 *| Daily Latent Gain (LAT_DAILY) |lbs (0-100)|lbs (0-100)|0|1|0|100|9999
 *|]
 ********************************************************************************
@@ -585,7 +585,7 @@ EQUATIONS 2
 *|[BLD1| Single-Zone Building
 *
 EQUATIONS 9
-  SinZone_bno   = 23
+  SinZone_bno   = 32
 *|< Building Use Type (SinZone_bno)                   |Single_Zone_Buildings.txt|2|1|25
   btype = 8
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|3|25
@@ -599,11 +599,11 @@ EQUATIONS 9
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|8|25
   WALLH  = 10
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|9|25
-  Peop   = 3
+  Peop   = 3.420
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|10|25
-  peop_Q = 420
+  peop_Q = 0.3
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|11|25
-ASSIGN bsc1.bui 32
+ASSIGN z1h50.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
 *
 *
@@ -657,7 +657,7 @@ EQUATIONS 3
 *|<COLOR1> BLUE
 *|[Inf|Infiltration Type
 EQUATIONS 13
-ACH_TYPE = 15
+ACH_TYPE = 13
 *|< Infiltration type (ACH_TYPE)                  |Infiltration.txt|2|1|25
 K1 = 0
 *|< Infiltration type                  |Infiltration.txt|0|3|25
@@ -675,13 +675,13 @@ WW_Cs = 0.054
 *|< Infiltration type                  |Infiltration.txt|0|9|25
 WW_Cw = 0.156
 *|< Infiltration type                  |Infiltration.txt|0|10|25
-WW_s = 0.30
+WW_s = 0.70
 *|< Infiltration type                  |Infiltration.txt|0|11|25
 WW_G = 0.48
 *|< Infiltration type                  |Infiltration.txt|0|12|25
 ACH_SET = 0.0000000000000E+00
 *|    New Infiltration:(Custom Infiltration) (ACH_SET)   |(0-3 ACH)|(0-3 ACH )|0|1|0.0000|3.0000|29
-ELA = 5.2570000000000E+01
+ELA = 5.5000000000000E+01
 *|    Effective Leakage Area (Sherman-Grimsrud) (ELA) |Sq.in|Sq.in|0|1|0.00|1000.00|29
 *|]
 *
