@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   D:\bsc_cfi\BSC_house_details\bsc5.bui
+*   FOR BUILDING:   D:\BSC\TRN-Resdh4\z1h50.bui
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -81,11 +81,11 @@ LAYER SOIL
 LAYER FIC_INS0
  RESISTANCE=    0.265
 LAYER FIC_INS1
- RESISTANCE=    0.51
+ RESISTANCE=     0.51
 LAYER FIC_INS2
  RESISTANCE=    0.605
 LAYER FIC_INS3
- RESISTANCE=    0.85
+ RESISTANCE=     0.85
 LAYER STUCCO
  CONDUCTIVITY=  2.596 : CAPACITY=  0.837 : DENSITY= 2664.7
 LAYER PW04
@@ -95,23 +95,23 @@ LAYER SHINS
 LAYER BP01
  RESISTANCE=  0.00098
 LAYER WINS_11
- CONDUCTIVITY=0.2466  : CAPACITY= 1.438 : DENSITY=  166.5
+ CONDUCTIVITY= 0.2466 : CAPACITY=  1.438 : DENSITY=  166.5
 LAYER WINS_13
- CONDUCTIVITY=0.2270  : CAPACITY= 1.438 : DENSITY=  176.5
+ CONDUCTIVITY=  0.227 : CAPACITY=  1.438 : DENSITY=  176.5
 LAYER WINS_19
- CONDUCTIVITY=0.2351  : CAPACITY= 1.438 : DENSITY=  176.5
+ CONDUCTIVITY= 0.2351 : CAPACITY=  1.438 : DENSITY=  176.5
 LAYER WINS_19_ADV
- CONDUCTIVITY=0.2130  : CAPACITY= 1.423 : DENSITY=  143.5
+ CONDUCTIVITY=  0.213 : CAPACITY=  1.423 : DENSITY=  143.5
 LAYER POLYISO
- CONDUCTIVITY=0.022  : CAPACITY= 1.47 : DENSITY=  30
+ CONDUCTIVITY=  0.022 : CAPACITY=   1.47 : DENSITY=     30
 LAYER DRYWALL
  CONDUCTIVITY=  0.576 : CAPACITY=  1.088 : DENSITY=  802.6
 LAYER PW04_SHINS
  CONDUCTIVITY= 0.3862 : CAPACITY=1.21336 : DENSITY=573.516
 LAYER CINS_FRAMING
- CONDUCTIVITY=  0.148 : CAPACITY=  1.380 : DENSITY=    37.0
+ CONDUCTIVITY=  0.148 : CAPACITY=   1.38 : DENSITY=     37
 LAYER CINS
- CONDUCTIVITY=  0.185 : CAPACITY=  1.405 : DENSITY=    93.3
+ CONDUCTIVITY=  0.185 : CAPACITY=  1.405 : DENSITY=   93.3
 LAYER AS_SHG_1
  CONDUCTIVITY=  0.295 : CAPACITY=  1.255 : DENSITY= 1123.6
 LAYER RFINS_1
@@ -143,7 +143,7 @@ SCHEDULE RES_SETPT
 SCHEDULE SETPT_WEEK
  DAYS=1 2 3 4 5 6 7
  HOURLY=RES_SETPT RES_SETPT RES_SETPT RES_SETPT RES_SETPT RES_SETPT RES_SETPT
-
+*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  W a l l s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WALL FLOOR
@@ -152,33 +152,33 @@ WALL FLOOR
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 0.0001
 WALL WALL_11
- LAYERS   = DRYWALL WINS_11  BP01  PW04  STUCCO 
- THICKNESS= 0.013   0.140 0     0.013 0.025  
+ LAYERS   = DRYWALL WINS_11 BP01  PW04  STUCCO 
+ THICKNESS= 0.013   0.14    0     0.013 0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL WALL_13
- LAYERS   = DRYWALL WINS_13  BP01  PW04  STUCCO 
- THICKNESS= 0.013   0.140 0     0.013 0.025  
+ LAYERS   = DRYWALL WINS_13 BP01  PW04  STUCCO 
+ THICKNESS= 0.013   0.14    0     0.013 0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL WALL_19
- LAYERS   = DRYWALL WINS_19  BP01  PW04  STUCCO 
- THICKNESS= 0.013   0.140 0     0.013 0.025  
+ LAYERS   = DRYWALL WINS_19 BP01  PW04  STUCCO 
+ THICKNESS= 0.013   0.14    0     0.013 0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL WALL_23
- LAYERS   = DRYWALL WINS_19  BP01  POLYISO  STUCCO 
- THICKNESS= 0.013   0.140 0     0.016 0.025  
+ LAYERS   = DRYWALL WINS_19 BP01  POLYISO STUCCO 
+ THICKNESS= 0.013   0.14    0     0.016   0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL WALL_23_ADV
- LAYERS   = DRYWALL WINS_19_ADV  BP01  POLYISO  STUCCO 
- THICKNESS= 0.013   0.140 0     0.016 0.025  
+ LAYERS   = DRYWALL WINS_19_ADV BP01  POLYISO STUCCO 
+ THICKNESS= 0.013   0.14        0     0.016   0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL WALL_30_ADV
- LAYERS   = DRYWALL WINS_19_ADV  BP01  POLYISO  STUCCO 
- THICKNESS= 0.013   0.140 0     0.043 0.025  
+ LAYERS   = DRYWALL WINS_19_ADV BP01  POLYISO STUCCO 
+ THICKNESS= 0.013   0.14        0     0.043   0.025  
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 64
 WALL DOOR
@@ -188,32 +188,32 @@ WALL DOOR
  HFRONT   = 11 : HBACK= 64
 WALL CEILING_20
  LAYERS   = DRYWALL CINS_FRAMING 
- THICKNESS= 0.013   0.145 
+ THICKNESS= 0.013   0.145        
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL CEILING_30
- LAYERS   = DRYWALL CINS_FRAMING CINS
- THICKNESS= 0.013   0.140 0.078
+ LAYERS   = DRYWALL CINS_FRAMING CINS  
+ THICKNESS= 0.013   0.14         0.078 
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL CEILING_38
- LAYERS   = DRYWALL CINS_FRAMING CINS
- THICKNESS= 0.013   0.140 0.136
+ LAYERS   = DRYWALL CINS_FRAMING CINS  
+ THICKNESS= 0.013   0.14         0.136 
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL CEILING_48
- LAYERS   = DRYWALL CINS_FRAMING CINS
- THICKNESS= 0.013   0.140 0.209
+ LAYERS   = DRYWALL CINS_FRAMING CINS  
+ THICKNESS= 0.013   0.14         0.209 
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL CEILING_54
- LAYERS   = DRYWALL CINS_FRAMING CINS
- THICKNESS= 0.013   0.140 0.252
+ LAYERS   = DRYWALL CINS_FRAMING CINS  
+ THICKNESS= 0.013   0.14         0.252 
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL CEILING_60
- LAYERS   = DRYWALL CINS_FRAMING CINS
- THICKNESS= 0.013   0.140 0.296
+ LAYERS   = DRYWALL CINS_FRAMING CINS  
+ THICKNESS= 0.013   0.14         0.296 
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 11
 WALL FRONT_RF_1
@@ -235,20 +235,19 @@ WALL INT_WALL
 *  W i n d o w s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WINDOW EP0.30_0.30
- WINID=5001 : HINSIDE=11 : HOUTSIDE=64 : SLOPE=90 : SPACEID=0 : WWID=0 : WHEIGH =0 : FFRAM=0 : UFRAME=8.17 : ABSFRAME=0.6 : RISHADE = 0 : RESHADE=0 : REFLISHADE=0.5 : REFLOSHADE=0.5 : CCISHADE=0.5
+ WINID=5001 : HINSIDE=11 : HOUTSIDE=64 : SLOPE=90 : SPACID=0 : WWID=0.77 : WHEIG=1.08 : FFRAME=0.15 : UFRAME=8.17 : ABSFRAME=0.6 : RISHADE=0 : RESHADE=0 : REFLISHADE=0.5 : REFLOSHADE=0.5 : ;
+ CCISHADE=0.5
 WINDOW EP0.35_0.30
  WINID=5012 : HINSIDE=25 : HOUTSIDE=105 : SLOPE=90 : SPACID=0 : WWID=0 : WHEIG=0 : FFRAME=0 : UFRAME=8.17 : ABSFRAME=0.6 : RISHADE=0 : RESHADE=0 : REFLISHADE=0.5 : REFLOSHADE=0.1 : CCISHADE=0.5
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  D e f a u l t  G a i n s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-GAIN PERS_ISO02
- CONVECTIVE=156 : RADIATIVE=78 : HUMIDITY=0.081
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  O t h e r  G a i n s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 GAIN LATENT
  CONVECTIVE=0 : RADIATIVE=0 : HUMIDITY=INPUT 1*LATENT_IN
-GAIN SENSIBLE 
+GAIN SENSIBLE
  CONVECTIVE=INPUT 1*SENSIBLE_IN : RADIATIVE=0 : HUMIDITY=0
 GAIN EQUIP2
  CONVECTIVE=INPUT 1*EQUIP2_IN : RADIATIVE=0 : HUMIDITY=0
@@ -303,19 +302,19 @@ BUILDING
 ZONE ROOM
 AIRNODE ROOM
 WALL  =CEILING_48 : SURF=  2 : AREA=     187.3 : ADJACENT=ATTIC : FRONT
-WALL  =WALL_23_ADV    : SURF=  3 : AREA=     41.62 : EXTERNAL : ORI=NORTH : FSKY=0.5
-WINDOW=EP0.35_0.30  : SURF=  7 : AREA=     10.18 : EXTERNAL : ORI=NORTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_23_ADV    : SURF=  4 : AREA=     26.76 : EXTERNAL : ORI=EAST : FSKY=0.5
-WINDOW=EP0.35_0.30  : SURF=  8 : AREA=      6.54 : EXTERNAL : ORI=EAST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_23_ADV    : SURF=  5 : AREA=     41.62 : EXTERNAL : ORI=SOUTH : FSKY=0.5
-WINDOW=EP0.35_0.30  : SURF=  9 : AREA=     10.18 : EXTERNAL : ORI=SOUTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_23_ADV    : SURF=  6 : AREA=     26.76 : EXTERNAL : ORI=WEST : FSKY=0.5
-WINDOW=EP0.35_0.30  : SURF= 10 : AREA=      6.54 : EXTERNAL : ORI=WEST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
+WALL  =WALL_23_ADV : SURF=  3 : AREA=     41.62 : EXTERNAL : ORI=NORTH : FSKY=0.5
+WINDOW=EP0.35_0.30 : SURF=  7 : AREA=     10.18 : EXTERNAL : ORI=NORTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
+WALL  =WALL_23_ADV : SURF=  4 : AREA=     26.76 : EXTERNAL : ORI=EAST : FSKY=0.5
+WINDOW=EP0.35_0.30 : SURF=  8 : AREA=      6.54 : EXTERNAL : ORI=EAST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
+WALL  =WALL_23_ADV : SURF=  5 : AREA=     41.62 : EXTERNAL : ORI=SOUTH : FSKY=0.5
+WINDOW=EP0.35_0.30 : SURF=  9 : AREA=     10.18 : EXTERNAL : ORI=SOUTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
+WALL  =WALL_23_ADV : SURF=  6 : AREA=     26.76 : EXTERNAL : ORI=WEST : FSKY=0.5
+WINDOW=EP0.35_0.30 : SURF= 10 : AREA=      6.54 : EXTERNAL : ORI=WEST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
 WALL  =DOOR       : SURF= 11 : AREA=    3.7161 : EXTERNAL : ORI=NORTH : FSKY=0.5
 WALL  =INT_WALL   : SURF= 19 : AREA=     371.6 : INTERNAL
 WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  REGIME
- GAIN        = SENSIBLE : SCALE= 1
+ GAIN        = SENSIBLE   : SCALE= 1
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
@@ -349,7 +348,6 @@ OUTPUTS
  AIRNODES = ATTIC 
  NTYPES =   1 : TAIR - air temperature of zone
         =  29 : ABSHUM - absolute humidity of zone air
- AIRNODES = ROOM 
  AIRNODES = ROOM 
  NTYPES =  35 : SQINF - sum of sensible infiltration energy gains for group of zones
         =  41 : SQLATG - sum of latent energy gains for group of zones (including ventilation, infiltration, couplings and latent internal gains
@@ -612,6 +610,106 @@ Solar      WdSpd  hcout hrout  hin
 0        6.71  25.47  3.21  7.62  1.55 1.55  1.26 1.26  1.30 1.30  1.43 1.43
 783        0.00  12.25  3.71  6.92  1.32 1.32  1.40 1.40  1.55 1.55  1.70 1.70
 783        6.71  25.47  3.47  6.63  1.46 1.46  1.35 1.35  1.45 1.45  1.64 1.64
+WINDOW 4.1  DOE-2 Data File : Multi Band Calculation
+Unit System : SI
+Name        : TRNSYS 15 WINDOW LIB
+Desc        : E+ 0.3 0.3
+Window ID   : 5001
+Tilt        : 90.0
+Glazings    : 1
+Frame       : 11 No frame              5.680
+Spacer      :  1 Class1                2.330  -0.010   0.138
+Total Height: 1500.0 mm
+Total Width : 1200.0 mm
+Glass Height: 1500.0 mm
+Glass Width : 1200.0 mm
+Mullion     : None
+Gap        Thick    Cond  dCond    Vis   dVis   Dens   dDens     Pr     dPr
+1              0       0      0      0      0      0       0      0       0
+2              0       0      0      0      0      0       0      0       0
+3              0       0      0      0      0      0       0      0       0
+4              0       0      0      0      0      0       0      0       0
+5              0       0      0      0      0      0       0      0       0
+Angle     0    10    20    30    40    50    60    70    80    90 Hemis
+Tsol  0.190 0.190 0.190 0.192 0.196 0.208 0.234 0.283 0.334 0.000 0.218
+Abs1  0.256 0.256 0.256 0.256 0.256 0.254 0.251 0.242 0.220 0.000 0.249
+Abs2      0     0     0     0     0     0     0     0     0     0     0
+Abs3      0     0     0     0     0     0     0     0     0     0     0
+Abs4      0     0     0     0     0     0     0     0     0     0     0
+Abs5      0     0     0     0     0     0     0     0     0     0     0
+Abs6      0     0     0     0     0     0     0     0     0     0     0
+Rfsol 0.554 0.554 0.553 0.552 0.547 0.537 0.515 0.475 0.446 1.000 0.523
+Rbsol 0.554 0.554 0.553 0.552 0.547 0.537 0.515 0.475 0.446 1.000 0.523
+Tvis  0.499 0.499 0.497 0.492 0.485 0.472 0.447 0.389 0.245 0.000 0.450
+Rfvis 0.160 0.160 0.160 0.160 0.164 0.173 0.200 0.271 0.467 1.000 0.198
+Rbvis 0.160 0.160 0.160 0.160 0.164 0.173 0.200 0.271 0.467 1.000 0.198
+SHGC  0.300 0.300 0.301 0.302 0.307 0.318 0.342 0.387 0.429 0.000 0.325
+SC: 0.35
+Layer ID#        13021        0        0        0        0        0
+Tir              0.000        0        0        0        0        0
+Emis F           0.840        0        0        0        0        0
+Emis B           0.840        0        0        0        0        0
+Thickness(mm)     41.7        0        0        0        0        0
+Cond(W/m2-K     )  2.4        0        0        0        0        0
+Spectral File         None         None         None         None         None         None
+Overall and Center of Glass Ig U-values (W/m2-K)
+Outdoor Temperature                 -17.8 C      15.6 C      26.7 C      37.8 C
+Solar      WdSpd  hcout hrout  hin
+(W/m2)     (m/s)     (W/m2-K)
+0        0.00   4.00  3.32  6.87  1.45 1.45  1.46 1.46  1.47 1.47  1.51 1.51
+0        6.71  30.84  3.21  6.93  1.71 1.71  1.67 1.67  1.67 1.67  1.72 1.72
+783        0.00   4.00  3.58  7.05  1.45 1.45  1.46 1.46  1.47 1.47  1.51 1.51
+783        6.71  30.84  3.28  6.48  1.71 1.71  1.67 1.67  1.67 1.67  1.72 1.72
+Window 5.2a  v5.2.17a  DOE-2 Data File : Multi Band Calculation
+Unit System : SI
+Name        : TRNSYS 15 WINDOW LIB
+Desc        : E+ 0.35 0.30
+Window ID   : 5012
+Tilt        : 90.0
+Glazings    : 1
+Frame       : 11 No frame              5.680
+Spacer      :  1 Class1                2.330  -0.010   0.138
+Total Height: 1500.0 mm
+Total Width : 1200.0 mm
+Glass Height: 1500.0 mm
+Glass Width : 1200.0 mm
+Mullion     : None
+Gap        Thick    Cond  dCond    Vis   dVis   Dens   dDens     Pr     dPr
+1              0       0      0      0      0      0       0      0       0
+2              0       0      0      0      0      0       0      0       0
+3              0       0      0      0      0      0       0      0       0
+4              0       0      0      0      0      0       0      0       0
+5              0       0      0      0      0      0       0      0       0
+Angle     0    10    20    30    40    50    60    70    80    90 Hemis
+Tsol  0.212 0.212 0.212 0.214 0.219 0.231 0.257 0.308 0.356 0.000 0.241
+Abs1  0.234 0.234 0.234 0.234 0.234 0.232 0.229 0.220 0.198 0.000 0.227
+Abs2      0     0     0     0     0     0     0     0     0     0     0
+Abs3      0     0     0     0     0     0     0     0     0     0     0
+Abs4      0     0     0     0     0     0     0     0     0     0     0
+Abs5      0     0     0     0     0     0     0     0     0     0     0
+Abs6      0     0     0     0     0     0     0     0     0     0     0
+Rfsol 0.554 0.554 0.553 0.552 0.547 0.536 0.514 0.472 0.445 1.000 0.522
+Rbsol 0.554 0.554 0.553 0.552 0.547 0.536 0.514 0.472 0.445 1.000 0.522
+Tvis  0.499 0.499 0.497 0.492 0.485 0.472 0.447 0.389 0.245 0.000 0.450
+Rfvis 0.160 0.160 0.160 0.160 0.164 0.173 0.200 0.271 0.467 1.000 0.198
+Rbvis 0.160 0.160 0.160 0.160 0.164 0.173 0.200 0.271 0.467 1.000 0.198
+SHGC  0.310 0.310 0.310 0.312 0.317 0.328 0.353 0.400 0.439 0.000 0.336
+SC: 0.36
+Layer ID#        13032        0        0        0        0        0
+Tir              0.000        0        0        0        0        0
+Emis F           0.840        0        0        0        0        0
+Emis B           0.840        0        0        0        0        0
+Thickness(mm)     37.3        0        0        0        0        0
+Cond(W/m2-K     )  3.1        0        0        0        0        0
+Spectral File         None         None         None         None         None         None
+Overall and Center of Glass Ig U-values (W/m2-K)
+Outdoor Temperature                 -17.8 C      15.6 C      26.7 C      37.8 C
+Solar      WdSpd  hcout hrout  hin
+(W/m2)     (m/s)     (W/m2-K)
+0        0.00   4.00  3.34  6.92  1.65 1.65  1.66 1.66  1.67 1.67  1.74 1.74
+0        6.71  30.84  3.22  6.98  2.00 2.00  1.95 1.95  1.95 1.95  2.01 2.01
+783        0.00   4.00  3.58  6.76  1.65 1.65  1.66 1.66  1.67 1.67  1.74 1.74
+783        6.71  30.84  3.28  6.17  2.00 2.00  1.95 1.95  1.95 1.95  2.01 2.01
 *** END OF LIBRARY ***
 ***************************************************************************************************
 *WinID   Description                              Design         U-Value g-value T-sol Rf-sol T-vis
@@ -621,6 +719,8 @@ Solar      WdSpd  hcout hrout  hin
   7061   ASH_A-17.6a                              5.7/6.4/5.7      2.99  0.7  0.607  0.114  0.786
   3001   LowSHGC,Ar, gray 1.3 50/40               6/16/6           1.26  0.397  0.316  0.172  0.504
   3002   LowSHGC,Ar, silber1.3 38/30              4/16/6           1.3  0.298  0.226  0.209  0.383
+  5001   E+ 0.3 0.3                               41.7             1.67  0.3  0.19  0.554  0.499
+  5012   E+ 0.35 0.30                             37.3             1.95  0.31  0.212  0.554  0.499
 _EXTENSION_WINPOOL_END_
 
 

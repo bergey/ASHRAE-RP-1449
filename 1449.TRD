@@ -571,8 +571,8 @@ EQUATIONS 19
 EQUATIONS 2
   SENS_DAILY = 5.1030000000000E+04
 *| Daily Sensible Gain (SENS_DAILY)  | BTU (0--500000) | BTU (0-500000)|0|1|0|500000|9999
-  LAT_DAILY = 1.7000000000000E+01
-*| Daily Latent Gain (LAT_DAILY) |lbs (0-100)|lbs (0-100)|0|1|0|100|9999
+  LATG_DAILY = 1.7000000000000E+01
+*| Daily Latent Gain (LATG_DAILY) |lbs (0-100)|lbs (0-100)|0|1|0|100|9999
 *|]
 ********************************************************************************
 * Building Model
@@ -869,19 +869,20 @@ IB_SS = [12,49]
 AI_SS = [12,52]
 *
 ************************************************************************
-*  OCC is used for people, lights, equipment
+*  OCC is used only for CO2
 *  HVAC is used for set points, fan control, and ventilation
 EQUATIONS 7
   SENS   = SENS_DAILY/14.2*1.055*[15,1] ! convert to peak rate, kJ/hr
-  LATG   = LAT_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
-  HVAC   = [5,6]
+  LATG   = LATG_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
+  OCC    = [15,3]
+  HVAC   = [5,4]
   TMIN   = HVAC * (THhi-THlo) + THlo
   TMAX   = TChi - HVAC * (TChi-TClo)
   HMAX   = Humhi - HVAC * (Humhi-Humlo)
 ***************************************************************************
 EQUATIONS 23
 TAI_SI1 = [5,1]
-TAI_SI2 = [5,7]
+TAI_SI2 = [5,5]
 TAI_1 = TAI_SI1*1.8 + 32
 TAI_2 = TAI_SI2*1.8 + 32
 WAI_1 = [33,1]
@@ -927,7 +928,7 @@ UNIT 36 TYPE 33 PSYCH - Get Space Conditions for Zone 2(SI UNITS)
 PARAMETERS 3
 4  0  1
 INPUTS 3
-5,7    5,8    PATM
+5,5    5,6    PATM
 23.0   0.005   1.0
 *
 EQUATIONS 4
@@ -1312,7 +1313,7 @@ PARAMETERS 22
 *******************************************************************************
 UNIT 15 TYPE 41 Weekly Schedules
 PARAMETERS 8
-2		! 1 Number of profiles for each day
+3		! 1 Number of profiles for each day
 1		! 2 Input set for day 1
 1		! 3 Input set for day 2
 1		! 4 Input set for day 3
@@ -1320,13 +1321,15 @@ PARAMETERS 8
 1		! 6 Input set for day 5
 2		! 7 Input set for day 6
 2		! 8 Input set for day 7
-INPUTS 4
-14,1 		! Type14h:Average value of function ->Weekday input-1
+INPUTS 6
+14,1 		! Type14h-1:Average value of function ->Weekday input-1
 14,2 		! Type14h-2:Average value of function ->Weekday input-2
-14,3 		! Type14h-3:Average value of function ->Weekend input-1
-14,4 		! Type14h-4:Average value of function ->Weekend input-2
+14,3 		! Type14h-3:Average value of function ->Weekday input-3
+14,4 		! Type14h-4:Average value of function ->Weekend input-1
+14,5 		! Type14h-5:Average value of function ->Weekend input-2
+14,6 		! Type14h-6:Average value of function ->Weekend input-3
 *** INITIAL INPUT VALUES
-0 0 0 0 
+0 0 0 0 0 0
 *******************************************************************************
 *
 * Model "Building" (Type 56)
@@ -1396,12 +1399,12 @@ Q2_EQ_KJHR
 *ASSIGN "T56_std-q.prn" 35
 *
 EQUATIONS 4
-  QCONV = [5,14]
+  QCONV = SENS
 * convert from kJ/hr to Btu/h
-  INFQ = [5,12]*.947187
+  INFQ = [5,5]*.947187
 * convert from kJ/hr to kg/hr and subtract ventilation gains
-  SCHWg = [5,13]/2460.26 - msupp_si*(Wsupp2-WAI)
-  SCHQs = [5,12]
+  SCHWg = [5,6]/2460.26 - msupp_si*(Wsupp2-WAI)
+  SCHQs = [5,5]
 *
 *
 * Sum of all latent loads minus AC (Zone transfers balance out)   
@@ -1468,7 +1471,7 @@ UNIT 69 TYPE 24 integrator - Building Loads
 PARAMETERS 2
 ISTEP  0
 INPUTS 10
-PEOPLE  LIGHTS EQP   INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
+PEOPLE  SENS LATG   INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
 0         0      0    0    0    0    0      0     0     0
 ******************************************************************************
 UNIT 49 TYPE 25 summary printer - Building Loads
@@ -1476,13 +1479,13 @@ PARAMETERS 10
 ISTEP ISTEP 8760 71 0 0 0 0 0 1
 INPUTS 10
 69,1    69,2    69,3 69,4 69,5  69,6  69,7 69,8  69,9 69,10
-PEOPLE  LIGHTS   EQP INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
+PEOPLE  SENS   LATG INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
 ******************************************************************************
 UNIT 70 TYPE 24 integrator - Air Flows
 PARAMETERS 2
 ISTEP  0
 INPUTS 9
- MAC MACMX MRET  MHRV  MD_sp  MDMX    5,15  5,16  67,10
+ MAC MACMX MRET  MHRV  MD_sp  MDMX    5,10  5,11  67,10
   0    0    0    0     0      0        0      0     0
 ******************************************************************************
 UNIT 51 TYPE 25 summary printer - Air Flows
@@ -1530,7 +1533,7 @@ HVAC_plt = HVAC*.8
 *******************************************************************************
 UNIT 55 TYPE 65 On-line plotter
 PARAMETERS 12
-3 7 0 100 0 15 52 7 0 -1 0 0
+3 6 0 100 0 15 52 7 0 -1 0 0
 INPUTS 9
 T_CTL TAO RH_CTL  RTFe_plt RTFRH_PLT RTFH_plt RTFC_plt RTFd_plt HVAC_plt
 TAI TAO RHI  RTFe     RTFRH     RTFH     RTFC     RTFD     HVAC
