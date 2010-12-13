@@ -1,7 +1,7 @@
 import csv
 from math import sqrt
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'DCFM', 'Humlo_0', 'Humhi_0', 'WCFM_AC', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'DCFM', 'Humlo_0', 'Humhi_0', 'WCFM_AC', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
 
 
@@ -78,6 +78,7 @@ def sim_line(z,h,s,rh,v):
     rduct_area = 0
     leaks = 0
     leakr = 0
+    duct_Rval = 1
 
 # parameters depending on zone, or zone and HERS
   if z==1:
