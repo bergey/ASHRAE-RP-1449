@@ -147,7 +147,7 @@ SCHEDULE SETPT_WEEK
 *  W a l l s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WALL FLOOR
- LAYERS   = MIXFL_SL CONCRETE SOIL  FIC_INS2 
+ LAYERS   = MIXFL_SL CONCRETE SOIL  FIC_INS0 
  THICKNESS= 0.025    0.102    0.305 0        
  ABS-FRONT= 0.6   : ABS-BACK= 0.6  
  HFRONT   = 11 : HBACK= 0.0001
