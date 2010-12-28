@@ -1,14 +1,14 @@
 import csv
 from math import sqrt
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'DCFM', 'Humlo_0', 'Humhi_0', 'WCFM_AC', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'DCFM', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
 
 
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
 # TODO adjust vent for different house sizes in parametric
-SENS_BASE = 72700 # TODO BA Benchmark baseline BTU/day
-LATG_BASE = 16.9 # lbs/day TODO units
+SENS_BASE = 72700 # 
+LATG_BASE = 16.9 # lbs/day 
 
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]
@@ -58,6 +58,12 @@ def ach_to_ela(ach):
 #   moisture generation
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v):
+# exclude unimplemented scenarios
+  if s != 1:
+    return None
+  if h <= 70:
+    return None
+
   Run = 1 # update in enclosing code
   BaseFile = '1449.TRD'
   Desc = 'z{0}h{1}s{2}rh{3}v{4}'.format(z,h,s,rh,v) # TODO add more parameters
@@ -71,27 +77,82 @@ def sim_line(z,h,s,rh,v):
     # TODO SEER
     # TODO EER
     # HSPF in post-processing
-    WCFM_AC = 0.3
-    WCFM_H = 0.3
+    WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.7
     sduct_area = 0
     rduct_area = 0
     leaks = 0
     leakr = 0
     duct_Rval = 1
+  elif h==70:
+# TODO punt for now
+    pass
+  elif h==85:
+    ELA = ach_to_ela(5)
+    WCFM_H = 0.35
+    SENS_DAILY = SENS_BASE*0.9
+    sduct_area = 544
+    rduct_area = 100
+    leaks = 0.05
+    leakr = 0 # TODO is this what Armin wants?
+    duct_Rval = 8
+  elif h==100:
+    ELA = ach_to_ela(7)
+    WCFM_H = 0.5
+    SENS_DAILY = SENS_BASE
+    sduct_area = 544
+    rduct_area = 100
+    leaks = 0.10
+    leakr = 0
+    duct_Rval = 6
+  elif h==130:
+    ELA = ach_to_ela(10)
+    WCFM_H = 0.5
+    SENS_DAILY = SENS_BASE
+    sduct_area = 544
+    rduct_area = 100
+    leaks = 0.20
+    leakr = 0
+    duct_Rval = 6
+  else:
+    print("Shouldn't get here: HERS {0}".format(h))
+    return None
+
+  ACTON = 2#TODO
 
 # parameters depending on zone, or zone and HERS
   if z==1:
     WeatherFile = 'Miami-FL'
     HRV_eS = 0.7
     HRV_eL = 0.6
-    if h==50:
-# Slab insulation TODO
-      ACTON = 2#TODO
+  elif z==2:
+    WeatherFile = 'Houston-TX'
+    HRV_eS = 0.7
+    HRV_eL = 0.6 
+  elif z==3:
+    WeatherFile = 'Atlanta-GA'
+    HRV_eS = 0.7 # TODO also run with HRV
+    HRV_eL = 0.6
+  elif z==4:
+    WeatherFile = 'Nashville-TN'
+    HRV_eS = 0.75
+    HRV_eL = 0
+  elif z==5:
+    WeatherFile = 'Indianapolis-IN'
+    HRV_eS = 0.75
+    HRV_eL = 0
 
 # parameters depending only on DH system
   if s==1:
-    ANO = 1# TODO
+    if h < 85:
+      return None
+    elif h==85: # XXX Can this move to HERS section above?
+      ANO = 18
+    elif h==100:
+      ANO = 17
+    elif h==130:
+      ANO = 16
+    ACTON = 2 # TODO fix this somehow
     ACCFM = ACTON*375
     HUM_CNTL_type = 0  # No enhanced DH
     # turn off standalone dehumidifier
@@ -109,7 +170,7 @@ def sim_line(z,h,s,rh,v):
 
   
 # Ventilation systems
-  if v ==0:
+  if v ==0: # No ventilation
     if h != 130 and s != 7:
       return None
     VCFM = 0
@@ -125,7 +186,7 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 0
     fctyp8 = 0
     fctyp9 = 0
-  elif v==1:
+  elif v==1: # Exhaust only
     if h == 130:
       return None
     VCFM = 0
@@ -141,7 +202,7 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 0
     fctyp8 = 1
     fctyp9 = 0
-  elif v==2:
+  elif v==2: # CFIS
     if h == 130:
       return None
     VCFM = vent0
@@ -157,22 +218,22 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 5
     fctyp8 = 0
     fctyp9 = 0
-  elif v==3:
+  elif v==3: # HRV
     if h == 130 or s in [5,6,7,9]:
       return None
     VCFM = 0
     exh_cfm = 0
     HRV_CFM = 2*vent0 # twice 62.2 for 50% of hour
     HRV_W = 0.5*HRV_CFM # 0.5 W/CFM per Task 4 report
-    fctyp5 = 0
-    ftim_ON5 = 0
-    ftim_OFF5 = 0
+    fctyp5 = 3
+    ftim_ON5 = 0.5
+    ftim_OFF5 = 0.5
     fctyp7 = 0
     ftim_ON7 = 0
-    ftim_OFF5 = 0
+    ftim_OFF7 = 0
     ilck71 = 0
     fctyp8 = 0
-    fctyp9 = 3
+    fctyp9 = 5
 
   return order_line(locals())
 
@@ -220,7 +281,7 @@ def by_system(systems):
     for z in range(1,6):
       for h in [50, 70, 85, 100, 130]:
         for rh in [50, 60]:
-          for v in [1, 2, 3]:
+          for v in [0, 1, 2, 3]:
             lcount += 1
             row = sim_line(z,h,s,rh,v)
             if row:
@@ -238,4 +299,4 @@ def just_one(z, h, s, rh, v):
   else:
     print "No run planned for {0}".format(filename)
 
-just_one(z=1, h=50, s=1, v=1, rh=50)
+by_system([1])
