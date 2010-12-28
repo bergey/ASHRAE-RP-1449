@@ -27,7 +27,7 @@ def get_bno(z,h):
 def ach_to_ela(ach):
   v = 2016*10 # volume
   n = 0.67
-  cfm4 = v*ach*(4./50)**n
+  cfm4 = v*ach/60*(4./50)**n
   cmps = cfm4/35.3147/60 # cubic meters per second at 4 Pa
   # leakage area, sq meters, assume discharge coefficient is 1
   sm = cmps * sqrt(1.2/2/4)/1 
@@ -152,7 +152,7 @@ def sim_line(z,h,s,rh,v):
       ANO = 17
     elif h==130:
       ANO = 16
-    ACTON = 2 # TODO fix this somehow
+    #ACTON = 2 
     ACCFM = ACTON*375
     HUM_CNTL_type = 0  # No enhanced DH
     # turn off standalone dehumidifier
