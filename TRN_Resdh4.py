@@ -41,6 +41,9 @@ def run_line(parametrics):
 		mydata.cmd = [executable, mydata.dest, '/n']
 		#print cmd
 		call(mydata.cmd, stdout=log, stderr=log)
+		# these two lines add 60 MB storage per run
+		os.rename("fort123.dat", os.path.join(mydata.run_dir, "fort123.dat"))
+		os.rename("fort55.dat", os.path.join(mydata.run_dir, "fort55.dat"))
 
 def eia_e_rate(dt,kw,util_id,cat,state,Dir):
 
@@ -569,6 +572,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 #				if LineArray[0].upper() == 'ASSIGN' and LineArray[2] == '20' and warray != False:				
 				if 'ASSIGN' in LineArray and '20' in LineArray and warray != False:
 					TempLine = TempLine.replace(LineArray[1], Var.upper() + '.tm2')
+					print TempLine
 					do_break = True
 					print LineArray, TempLine, Var
 				elif "CITYNO" == LineArray[0].upper() and warray != False:
@@ -660,8 +664,10 @@ try:
 
 	elif sys.argv[1] == '-runsim':
 		TRNSYSPath = '.'
-		print '""%s\%s" "%s"  %s' % (TRNSYSPath, "Exe\TRNExe.exe", sys.argv[2], "/n")
-		system('""%s\%s" /n "%s"' % (TRNSYSPath, "Exe\TRNExe.exe", sys.argv[2]))
+		cmd = '%s "%s"  %s' % (os.path.join(os.getcwd(), "TRNExe.exe"), sys.argv[2], "/n")
+		print cmd
+		system(cmd)
+		#system('%s\%s "%s" %s' % (os.getcwd(), "TRNExe.exe", sys.argv[2], "/n"))
 
 	elif sys.argv[1] == '-edit':
 		TRNSYSPath = '.'
@@ -676,12 +682,19 @@ try:
 		print DestTRD
 		MakeCaseFile(Run, TRDFile, DestFolder, DestTRD)
 	elif sys.argv[1] == '-batch':
+# read input from 1+ CSVs, run a simulation for each row, save results
 		# setup filepaths
 		executable = os.path.join(os.getcwd(), 'TRNExe.exe')
-		log = open('dmb-batch-log', 'w')
 
 		# per argument
 		for csvname in sys.argv[2:]:
+			if log in dir():
+				log.close()
+		  # TODO remove or rename before distributing
+			if os.path.exists('dmb-batch-log'):
+				os.rename('dmb-batch-log', 'dmb-batch-log.0')
+			log = open('dmb-batch-log', 'w')
+			# store the results of each csv in a separate directory
 			dirname = csvname.replace(' ','-').replace('.csv','')
 	
 			# initialize 
@@ -701,7 +714,7 @@ try:
 			parametrics = DictReader(open(csvname)).__iter__()
 	
 			# loop over sims in this file
-			for i in xrange(NCORES):
+			for i in xrange(NCORES): # TODO multicore doesn't work; remove it
 				print "Starting thread %s" % i
 				threading.Thread(args=(parametrics,), group=None, target=run_line, name=None).start()
 	else:
