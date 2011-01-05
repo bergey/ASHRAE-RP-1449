@@ -65,9 +65,9 @@ def eia_e_rate(dt,kw,util_id,cat,state,Dir):
     f = open(Dir + "eia_rate.txt",'w+')
     f.write("EIA UTILITY RATE DATA "+'\n\n')
     f.write("Utility Name: "+str(util_name)+'\n')
-    f.write("          ID: "+str(util_id)+'\n')
-    f.write("       State: "+state+'\n')
-    f.write("    Category: "+ cat+'\n')
+    f.write("         ID: "+str(util_id)+'\n')
+    f.write("      State: "+state+'\n')
+    f.write("   Category: "+ cat+'\n')
     f.write("   Rate Year: 2004"+'\n') #Change utility rate year as per file
     f.write('\n')
     f.write('_'*24+'\n')
@@ -81,22 +81,21 @@ def eia_e_rate(dt,kw,util_id,cat,state,Dir):
     for i in range(12):
         cst[i] = ckwh[i] * sum([kw[j] for j,t in enumerate(dt) if t.month == i+1])
     f.write('_'*24+'\n')
-    f.write('    Total kWh %11.2f\n'%sum(kw))
-    f.write('     Total Cost %8.2f\n'%sum(cst))
+    f.write('   Total kWh %11.2f\n'%sum(kw))
+    f.write('    Total Cost %8.2f\n'%sum(cst))
     return cst
 
 
 def process_outputs(path,run):
     from datetime import datetime, timedelta
-    from numarray import asarray, where, reshape, compress
     from dt_dict import dt_dict
-    from matplotlib.pylab import figure, close, plot, title, xlabel, ylabel, savefig, subplot, legend
-    from hist_plot import hist_plot
 
-    s = system("dir "+path)
-    if s != 0: system('mkdir '+path)
-    system("copy for_*.dat "+path)
-    system("copy SimRuns.csv "+path)
+    from numarray import asarray, where, reshape, compress
+
+    s = system("dir " + path)
+    if s != 0: system('mkdir ' + path)
+    system("copy for_*.dat " + path)
+    system("copy SimRuns.csv " + path)
     chdir(path)
     
     ##### Output Into data.out#####
@@ -128,21 +127,25 @@ def process_outputs(path,run):
         t = t.split('\t')
         for x in range(len(tags)):
             if tags[x] != '':
-                exec tags[x]+" = asarray([float(temp) for temp in t[x::len(tags)]])"
+                exec(tags[x] + " = asarray([float(temp) for temp in t[x::len(tags)]])")
 
     dt = []
     
     for x in range(len(TIME)):
-        dt.append(datetime(2005,1,1)+timedelta(hours=1)*x)
+        dt.append(datetime(2005, 1, 1) + timedelta(hours=1) * x)
     dt = dt_dict(dt)
     
     
-    e_rate_file,eia_util_id,eia_category,eia_state,util_rate = None,None,None,None,None
-    GasRate = None    
+    e_rate_file = None
+    eia_util_id = None
+    eia_category = None
+    eia_state = None
+    util_rate = None
+    GasRate = None
     GasCost = 0
     print CaseTags
     print CaseVars
-    for z,Tags in enumerate(CaseTags):
+    for z, Tags in enumerate(CaseTags):
         Tags = Tags.strip().upper()
         if CaseVars[z] == '-':
             continue
@@ -157,34 +160,44 @@ def process_outputs(path,run):
         if Tags =='GASRATE':
             print CaseVars[z]
             GasRate = float(CaseVars[z])
-            
-    NetKW = (LIGHTS + EQP)/3600 + RTFc*ACKW + RTFacf*FANKW + RTFdf*DFANKW + RTFd*DKW
-            
-    if e_rate_file != None:
-        rate= e_rate(rate = '..\\util_rates\\' + e_rate_file,dt= dt,kw = NetKW,power_factor = 0.9, verbose = 1, verbose_file = 'utility.out')
+
+    if not locals().has_key('Qh_gas'):
+        Qh_gas = asarray([0.])
+    NetKW = ((LIGHTS + EQP)/3600 +
+             RTFc * ACKW +
+             KWHT * RTFh * (1 - (Qh_gas.sum() > 0)) / 3412 +
+             RTFacf * FANKW +
+             RTFdf * DFANKW +
+             RTFd * DKW +
+             rtfvf * KWVF +
+             rtfxf * KWXF +
+             rtfhf * KWHF)
+
+    if not (e_rate_file is None):
+        rate = e_rate(rate='..\\util_rates\\' + e_rate_file, dt=dt, kw=NetKW, power_factor=0.9, verbose=1, verbose_file='utility.out')
         EnergyCost = [sum(c) for c in  rate['cost']]
-    elif eia_util_id != None:
+    elif not (eia_util_id is None):
         if float(eia_util_id) < 1:
             EnergyCost = [float(eia_util_id) * kw for kw in NetKW]
         elif eia_category != None and eia_state != None:
-            dtp=[]
+            dtp = []
             eia_util_id = str(int(float(eia_util_id)))
             for x in range(len(TIME)):
-                dtp.append(datetime(2005,1,1)+timedelta(hours=1)*x)
-            rate = eia_e_rate(dtp,NetKW,eia_util_id,eia_category,eia_state,'')
+                dtp.append(datetime(2005, 1, 1) + timedelta(hours=1) * x)
+            rate = eia_e_rate(dtp, NetKW, eia_util_id, eia_category, eia_state, '')
             EnergyCost = rate
         else:
-            rate = e_rate(rate = '..\\util_rates\\CONED_SC2-1_NYC_PVYR',dt= dt,kw= NetKW,power_factor = 0.9, verbose = 1, verbose_file = 'utility.out')
+            rate = e_rate(rate='..\\util_rates\\CONED_SC2-1_NYC_PVYR', dt=dt, kw=NetKW, power_factor=0.9, verbose=1, verbose_file='utility.out')
             EnergyCost = [sum(c) for c in  rate['cost']]
     else:
-        rate= e_rate(rate = '..\\util_rates\\CONED_SC2-1_NYC_PVYR',dt= dt,kw= NetKW,power_factor = 0.9, verbose = 1, verbose_file = 'utility.out')
+        rate = e_rate(rate='..\\util_rates\\CONED_SC2-1_NYC_PVYR', dt=dt, kw=NetKW, power_factor=0.9, verbose=1, verbose_file='utility.out')
         EnergyCost = [sum(c) for c in  rate['cost']]
             
 
-    if GasRate != None:        
-        GasCost = float(GasRate) * (RTFd * DGAS /100 + Qh_gas*RTFh/100000)
+    if GasRate != None:     
+        GasCost = float(GasRate) * ((RTFd * DGAS / 100) + (Qh_gas * RTFh / 100000))
     else:
-        GasCost = 0.9 * (RTFd * DGAS /100 + Qh_gas*RTFh/100000)
+        GasCost = 0.9 * ((RTFd * DGAS / 100) + (Qh_gas * RTFh / 100000))
     GasCost = asarray(GasCost)
     EnergyCost = asarray(EnergyCost)
     
@@ -197,41 +210,72 @@ def process_outputs(path,run):
     f.write('%.2f,%i,%.2f,' % (RHi.mean(), i.sum(), RHi.max()))
     
     # Occupied RH Data
-    f.write('%.2f,%i,%.2f,' % ((OCC*RHi).sum()/OCC.sum(), (OCC*i).sum(), (OCC*RHi).max()))
+    f.write('%.2f,%i,%.2f,' % ((OCC * RHi).sum() / OCC.sum(), (OCC * i).sum(), (OCC * RHi).max()))
     
     # CO2
-    try: f.write('%.2f,' % ((OCC*C_i).sum()/OCC.sum()*1e6))
-    except:    f.write('0,')
-    f.write('%.2f,' % (C_i.max()*1e6))
+    try: f.write('%.2f,' % ((OCC * C_i).sum() * 1e6 / OCC.sum()))
+    except: f.write('0,')
+    f.write('%.2f,' % (C_i.max() * 1e6))
     
     # AC SHR and EER
-#    try: f.write('%.2f,' % ((Qsac*RTFc).sum()/((Qsac*RTFc).sum()+(Qlac*RTFc).sum())))
-    try: f.write('%.2f,' % ((Qsac).sum()/((Qsac).sum()+(Qlac).sum())))
-    except:    f.write('0,')
-#    try: f.write('%.2f,' % (((Qsac+Qlac)*RTFc).sum()/(ACKW*RTFc).sum()/1.e3))
-    try: f.write('%.2f,' % (((Qsac+Qlac)).sum()/(ACKW*RTFc).sum()/1.e3))
+    try: f.write('%.2f,' % ((Qsac).sum() / ((Qsac).sum() + (Qlac).sum())))
+    except: f.write('0,')
+
+    try: f.write('%.2f,' % (((Qsac + Qlac)).sum() / (ACKW * RTFc).sum() / 1e3))
     except: f.write('0,')
     
     # Various Runtimes
-    vars = ['RTFc', 'RTFe', 'RTFh', 'RTFrh', 'RTFacf', 'RTFd', 'RTFdf', 'rtfvf', 'rtfxf']
-    for each in vars: 
-        if locals().has_key(each) == False:
-            exec each + ' = asarray([0.])'    
-    f.write('%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,' % (RTFc.sum(), RTFe.sum(), RTFh.sum(),
-        RTFrh.sum(), RTFacf.sum(), RTFd.sum(), RTFdf.sum(), rtfvf.sum(), rtfxf.sum()))
-    
-    # Power and Gas Use
-    vars = ['ACKW', 'RTFc', 'KWHT', 'RTFh', 'Qh_gas', 'Qrh', 'RTFrh', 'RTFacf', 'FANKW', 
-        'RTFd', 'DGAS', 'DKW', 'DFANKW', 'rtfvf', 'KWVF', 'rtfxf', 'KWXF', 'LIGHTS', 
-        'EQP', 'NetKW', 'EnergyCost', 'GasCost']
+    vars = ['RTFc', 'RTFe', 'RTFh', 'RTFrh', 'RTFacf', 'RTFd', 'RTFdf', 'rtfvf',
+            'rtfxf', 'rtfhf']
     for each in vars: 
         if locals().has_key(each) == False:
             exec each + ' = asarray([0.])'
-    f.write('%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f\n' % ((ACKW*RTFc).sum(),
-        (KWHT*RTFh).sum()*(1-(Qh_gas.sum()>0))/3412,(Qh_gas*RTFh).sum()/100000,(Qrh*RTFrh).sum()/1000,
-        (RTFacf*FANKW).sum(),(RTFd*DGAS).sum()/100.,(RTFd*DKW).sum(), (RTFdf*DFANKW).sum(),
-        (rtfvf*KWVF).sum(), (rtfxf*KWXF).sum(),
-        (LIGHTS+EQP).sum()/3600,NetKW.sum(),EnergyCost.sum(),GasCost.sum()))
+    l = [
+        RTFc.sum(),     # AC Runtime
+        RTFe.sum(),     # Econ Runtime
+        RTFh.sum(),     # Heating Runtime
+        RTFrh.sum(),    # ReHeat Runtime
+        RTFacf.sum(),   # Supply Fan Runtime
+        RTFd.sum(),     # Dehumid Runtime
+        RTFdf.sum(),    # Des Fan Runtime
+        rtfvf.sum(),    # Vent Damper / Fan Runtime
+        rtfxf.sum(),    # Exhaust Fan Runtime
+        rtfhf.sum(),    # HRV Runtime
+        ]
+    fmt_str = ','.join(['%.1f' for each in l]) + ','
+    f.write(fmt_str % tuple(l))
+
+    for i in range(len(vars)):
+        print vars[i], '\t', l[i]
+    
+    # Power and Gas Use
+    vars = ['ACKW', 'RTFc', 'KWHT', 'RTFh', 'Qh_gas', 'Qrh', 'RTFrh', 'RTFacf',
+            'FANKW', 'RTFd', 'DGAS', 'DKW', 'DFANKW', 'rtfvf', 'KWVF', 'rtfxf',
+            'KWXF', 'KWHF', 'LIGHTS', 'EQP', 'NetKW', 'EnergyCost', 'GasCost']
+    for each in vars: 
+        if locals().has_key(each) == False:
+            exec each + ' = asarray([0.])'
+    l = [
+        (ACKW * RTFc).sum(),                 # AC Electric Use (kWh)
+        (KWHT * RTFh).sum() *
+           (1 - (Qh_gas.sum() > 0)) / 3412,  # Heater Electric Use (kWh)
+        (Qh_gas * RTFh).sum() / 100000,      # Heater Gas Input (Therms)
+        (Qrh * RTFrh).sum() / 1000,          # Reheat (MBTU)
+        (RTFacf * FANKW).sum(),              # Supply Fan Electric Use (kWh)
+        (RTFd * DGAS).sum() / 100.,          # Des Unit Gas Use (therms)
+        (RTFd * DKW).sum(),                  # Des Unit Electric Use (kWh)
+        (RTFdf * DFANKW).sum(),              # Des FAN Electric Use (kWh)
+        (rtfvf * KWVF).sum(),                # Vent Damp/Fan Electric Use (kWh)
+        (rtfxf * KWXF).sum(),                # Exhaust Fan Electric Use (kWh)
+        (rtfhf * KWHF).sum(),                # HRV Electric Use (kWh)
+
+        (LIGHTS + EQP).sum() / 3600,         # Lights & Equipment (kWh)
+        NetKW.sum(),                         # Total Electric Use (kWh)
+        EnergyCost.sum(),                    # Total Electricity Cost ($)
+        GasCost.sum(),                       # Total Gas Cost ($)
+        ]
+    fmt_str = ','.join(['%.1f' for each in l]) + '\n'
+    f.write(fmt_str % tuple(l))
     
     # Monthly Table
     for x in range(1, 13):
@@ -247,19 +291,19 @@ def process_outputs(path,run):
         # Various Runtimes
         f.write('%.0f,%.0f,%.0f,%.0f,' % ((RTFc*j).sum(), (RTFacf*j).sum(), (RTFd*j).sum(), (RTFdf*j).sum()))
         
-        # Power and Gas Use    
+        # Power and Gas Use 
         f.write('%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f\n' % ((ACKW*RTFc*j).sum(),(Qh*RTFh*j).sum()*(1-(Qh_gas.sum()>0))/3412,(Qh_gas*RTFh*j).sum()/100000,(Qrh*RTFrh*j).sum()/1000,(RTFacf*FANKW*j).sum(),
                 (RTFd*DGAS*j).sum()/100.,(RTFd*DKW*j).sum(), (RTFdf*DFANKW*j).sum(),((LIGHTS+EQP)*j).sum()/3600,(NetKW*j).sum(),EnergyCost[x-1],(GasCost*j).sum()))
             
     
 #    for x in range(1, 366):
 #        j = where(dt["dayofyear"] == x, 1, 0)
-#        
+#       
 #        # Indoor-Outdoor Humidity Data
 #        f.write('%.2f,%.2f,' % ((Wi*j).sum()/j.sum()*7000., (Wo*j).sum()/j.sum()*7000.))
 #        try: f.write('%.2f,%.2f,' % ((Wi*j*OCC).sum()/(j*OCC).sum()*7000., (Wo*j*OCC).sum()/(j*OCC).sum()*7000.))
 #        except: f.write('0,0,')
-#        
+#       
 #        # TAO, Cooling and Heating Load
 #        f.write('%.2f,%.2f,%.2f\n' % ((To*j).sum()/j.sum(), ((Qsac+Qlac)*j*RTFc).sum()/1e6, (RTFh*Qh*j).sum()/1e6))
         
@@ -285,120 +329,122 @@ def process_outputs(path,run):
     
     f.close()
     
-    ##### Plots Section #####
-    # Indoor-Outdoor Humidity Plot
-    close()
-    figure(1)
-    ax = subplot(111)
-    res_Wo = reshape(Wo, 365, 24)*7000.
-    res_Wi = reshape(Wi, 365, 24)*7000.
-    i = where(OCC == 1, 1, 0)
-    i = reshape(i, 365, 24)
-    
-    d_Wo = []
-    d_Wi = []
-    for x in range(len(res_Wo)):
-        try:
-            d_Wo.append((compress(i[x], res_Wo[x])).mean())
-            d_Wi.append((compress(i[x], res_Wi[x])).mean())
-        except:
-            d_Wo.append(-99.)
-            d_Wi.append(-99.)
-        
-    d_Wo = asarray(d_Wo)
-    d_Wi = asarray(d_Wi)
-    
-    i = where(d_Wo != -99, 1, 0) * where(d_Wi != -99, 1, 0)
-    plot(compress(i, d_Wo), compress(i, d_Wi), "rx")
-    
-    d_Wo = asarray([each.mean() for each in res_Wo])
-    d_Wi = asarray([each.mean() for each in res_Wi])
-    plot(d_Wo, d_Wi, "g+")
-    
-    title("Indoor-Outdoor Humidity Comparison")
-    ax.set_ylim([0,150])
-    ax.set_xlim([0,150])
-    ax.set_yticks(asarray(range(6))*30)
-    ax.set_xticks(asarray(range(6))*30)
-    ylabel("Daily Indoor Humidity (gr/lb)")
-    xlabel("Daily Outdoor Humidity (gr/lb)")
-    legend(["Occupied", "All Hours"], 'best')
-    
-    plot([0,150],[0,150], 'k')
-    a = savefig('Humidity Trend Plot.png')
-    close()
-    
-    # Load Lines
-    figure(1)
-    d_Qcool = asarray([each.sum() for each in reshape((Qsac+Qlac)*RTFc, 365, 24)/1.e6])
-    d_Qheat = asarray([each.sum() for each in reshape(Qh*RTFh, 365, 24)/1.e6])
-    d_tao = asarray([each.mean() for each in reshape(To, 365, 24)])
-    
-    i = where(d_Qcool > 0, 1, 0)
-    j = where(d_Qheat > 0, 1, 0)
-    labels = []
-    if i.sum():
-        plot(compress(i, d_tao), compress(i, d_Qcool), "bx")
-        labels.append("Daily Cooling Load")
-    if j.sum():
-        plot(compress(j, d_tao), compress(j, d_Qheat), "ro")
-        labels.append("Daily Heating Load")
-    if i.sum() or j.sum(): legend(labels, 'upper center')
-    title("Daily Cooling and Heating Loads")
-    ylabel("Daily Load (MMBtu/day)")
-    xlabel("Daily Outdoor Temperature (F)")
-    a = savefig('Daily Load Lines.png')
-    close()
-    
-    # Ambient Humidity Histogram
-    hist_plot(Wo*7000., 5, var_range = [0, 150], color = 'r', filename = "Ambient Humidity Histogram.png",
-        y_label = "Number of Hours", x_label = "Ambient Humidity", units = "gr/lb",
-        h_title = "Ambient Humidity Histogram", dpi=100)
-    
-    # Space Relative Humidity Histogram
-    hist_plot(RHi, 1, var2 = compress(OCC, RHi), color = 'g', color2 = 'r',
-        y_label = "Number of Hours", x_label = "Space Relative Humidity", units = "%", 
-        h_title = "Space Relative Humidity Histogram", dpi=100)
-        
-    ax = subplot(111)
-    x_range = ax.get_xlim()
-    y_range = ax.get_ylim()
-    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'gs')
-    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'rs')
-    legend(["Unoccupied", "Occupied"])
-    
-    a = savefig(filename = "Space Relative Humidity Histogram.png")
-    close()
-    
-    # Space Temperature Histogram
-    hist_plot(Ti, 0.2, var2 = compress(OCC, Ti), color = 'b', color2 = 'y',
-        y_label = "Number of Hours", x_label = "Space Temperature", units = "F",
-        h_title = "Space Temperature Histogram", dpi=100)
-        
-        
-    ax = subplot(111)
-    x_range = ax.get_xlim()
-    y_range = ax.get_ylim()
-    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'bs')
-    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'ys')
-    legend(["Unoccupied", "Occupied"])
-    
-    a = savefig(filename = "Space Temperature Histogram.png")
-    close()
-    
-    # Cooling Runtime Histogram
-    i = where(RTFc > 0, 1, 0)
-    if i.sum():
-        hist_plot(compress(i, RTFc), .025, var_range = [0, 1], filename = "Cooling Runtime Histogram.png", 
-            color = 'b', y_label = "Number of Hours", x_label = "Cooling Runtime Fraction",  
-            units = "-", h_title = "Cooling Runtime Histogram", dpi=100)
-            
-    sys.stdout.write("Completed Successfully\n")    
+##    ##### Plots Section #####
+##    # Indoor-Outdoor Humidity Plot
+##    close()
+##    figure(1)
+##    ax = subplot(111)
+##    res_Wo = reshape(Wo, 365, 24)*7000.
+##    res_Wi = reshape(Wi, 365, 24)*7000.
+##    i = where(OCC == 1, 1, 0)
+##    i = reshape(i, 365, 24)
+##    
+##    d_Wo = []
+##    d_Wi = []
+##    for x in range(len(res_Wo)):
+##        try:
+##            d_Wo.append((compress(i[x], res_Wo[x])).mean())
+##            d_Wi.append((compress(i[x], res_Wi[x])).mean())
+##        except:
+##            d_Wo.append(-99.)
+##            d_Wi.append(-99.)
+##        
+##    d_Wo = asarray(d_Wo)
+##    d_Wi = asarray(d_Wi)
+##    
+##    i = where(d_Wo != -99, 1, 0) * where(d_Wi != -99, 1, 0)
+##    plot(compress(i, d_Wo), compress(i, d_Wi), "rx")
+##    
+##    d_Wo = asarray([each.mean() for each in res_Wo])
+##    d_Wi = asarray([each.mean() for each in res_Wi])
+##    plot(d_Wo, d_Wi, "g+")
+##    
+##    title("Indoor-Outdoor Humidity Comparison")
+##    ax.set_ylim([0,150])
+##    ax.set_xlim([0,150])
+##    ax.set_yticks(asarray(range(6))*30)
+##    ax.set_xticks(asarray(range(6))*30)
+##    ylabel("Daily Indoor Humidity (gr/lb)")
+##    xlabel("Daily Outdoor Humidity (gr/lb)")
+##    legend(["Occupied", "All Hours"], 'best')
+##    
+##    plot([0,150],[0,150], 'k')
+##    a = savefig('Humidity Trend Plot.png')
+##    close()
+##    
+##    # Load Lines
+##    figure(1)
+##    d_Qcool = asarray([each.sum() for each in reshape((Qsac+Qlac)*RTFc, 365, 24)/1.e6])
+##    d_Qheat = asarray([each.sum() for each in reshape(Qh*RTFh, 365, 24)/1.e6])
+##    d_tao = asarray([each.mean() for each in reshape(To, 365, 24)])
+##    
+##    i = where(d_Qcool > 0, 1, 0)
+##    j = where(d_Qheat > 0, 1, 0)
+##    labels = []
+##    if i.sum():
+##        plot(compress(i, d_tao), compress(i, d_Qcool), "bx")
+##        labels.append("Daily Cooling Load")
+##    if j.sum():
+##        plot(compress(j, d_tao), compress(j, d_Qheat), "ro")
+##        labels.append("Daily Heating Load")
+##    if i.sum() or j.sum(): legend(labels, 'upper center')
+##    title("Daily Cooling and Heating Loads")
+##    ylabel("Daily Load (MMBtu/day)")
+##    xlabel("Daily Outdoor Temperature (F)")
+##    a = savefig('Daily Load Lines.png')
+##    close()
+##    
+##    # Ambient Humidity Histogram
+##    hist_plot(Wo*7000., 5, var_range = [0, 150], color = 'r', filename = "Ambient Humidity Histogram.png",
+##        y_label = "Number of Hours", x_label = "Ambient Humidity", units = "gr/lb",
+##        h_title = "Ambient Humidity Histogram", dpi=100)
+##    
+##    # Space Relative Humidity Histogram
+##    hist_plot(RHi, 1, var2 = compress(OCC, RHi), color = 'g', color2 = 'r',
+##        y_label = "Number of Hours", x_label = "Space Relative Humidity", units = "%", 
+##        h_title = "Space Relative Humidity Histogram", dpi=100)
+##        
+##    ax = subplot(111)
+##    x_range = ax.get_xlim()
+##    y_range = ax.get_ylim()
+##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'gs')
+##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'rs')
+##    legend(["Unoccupied", "Occupied"])
+##    
+##    a = savefig(filename = "Space Relative Humidity Histogram.png")
+##    close()
+##    
+##    # Space Temperature Histogram
+##    hist_plot(Ti, 0.2, var2 = compress(OCC, Ti), color = 'b', color2 = 'y',
+##        y_label = "Number of Hours", x_label = "Space Temperature", units = "F",
+##        h_title = "Space Temperature Histogram", dpi=100)
+##        
+##        
+##    ax = subplot(111)
+##    x_range = ax.get_xlim()
+##    y_range = ax.get_ylim()
+##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'bs')
+##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'ys')
+##    legend(["Unoccupied", "Occupied"])
+##    
+##    a = savefig(filename = "Space Temperature Histogram.png")
+##    close()
+##    
+##    # Cooling Runtime Histogram
+##    i = where(RTFc > 0, 1, 0)
+##    if i.sum():
+##        hist_plot(compress(i, RTFc), .025, var_range = [0, 1], filename = "Cooling Runtime Histogram.png", 
+##            color = 'b', y_label = "Number of Hours", x_label = "Cooling Runtime Fraction",  
+##            units = "-", h_title = "Cooling Runtime Histogram", dpi=100)
+
+    s = "Completed Successfully\n"
+    sys.stdout.write(s)
+    sys.stderr.write(s)
     return
-    
-def GetMnuOption(col,Opt,OptFile):
-    from csv import reader,writer,DictWriter
-    f = open(OptFile,"r+")
+
+def GetMnuOption(col, Opt, OptFile):
+    from csv import reader, writer, DictWriter
+    f = open(OptFile, "r+")
     ReadOpt = reader(f)
     for row in ReadOpt:
         if len(row) > 1:
@@ -423,13 +469,12 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     CaseVars = CaseLines[Run].replace('\n', '').split(',')
     CaseTags = CaseLines.pop(0).replace('\n', '').split(',')
     
-    #fcurrCase = open('casefile','w')
-    #fcurrCase.write(CaseLines[0])
-    #fcurrCase.write(CaseLines[Run-1])
+    fcurrCase = open('casefile','w')
+    fcurrCase.write(CaseLines[0])
+    fcurrCase.write(CaseLines[Run-1])
 
     
-    #fcurrCase.close()
-    print "closed casefile"
+    fcurrCase.close()
     f1 = open(TRDFile, 'r')
     TRDLines = f1.readlines()
     f1.close()
@@ -461,12 +506,12 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Single_Zone_Buildings.txt')
             if opt == None: continue            
             CaseTags.extend(['btype','ZAR','NO_ZONE','Xdep','ACH_file','WALLH','Peop','peop_Q','Lt_WPerFt','Eq_WPerFt','BUIFILE'])
-            CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],  opt[7], opt[8],opt[9], opt[10], opt[11],    opt[12],   opt[3].split('.')[0]])
+            CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],  opt[7], opt[8],opt[9], opt[10], opt[11], opt[12],   opt[3].split('.')[0]])
         elif case.upper() == 'TWOZONE_BNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Two_Zone_Buildings.txt')
             if opt == None: continue
             CaseTags.extend(['btype','ZAR','NO_ZONE','Xdep','ACH_file','WALLH','Peop','peop_Q','Lt_WPerFt','Eq_WPerFt','BUIFILE'])
-            CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],    opt[7], opt[8],opt[9], opt[10], opt[11],    opt[12],    opt[3].split('.')[0]])
+            CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],   opt[7], opt[8],opt[9], opt[10], opt[11],    opt[12],    opt[3].split('.')[0]])
         elif case.upper() == 'ACH_TYPE':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Infiltration.txt')
             if opt == None: continue
@@ -484,7 +529,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
         Var = CaseVars[z]
         # Replacement Conditioning Section
         if Var == "-":
-            var_changed[z] = 1        
+            var_changed[z] = 1      
             continue
             
         
@@ -516,7 +561,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 
             t = open(tess_path + trdpt_file.strip()).readlines()    
 
-            # Block 1            
+            # Block 1           
             sid_part_file = t.index('''*                           TESS Block 1\n''')
             sid_trd_file = TRDLines.index('''*                           TESS Block 1\n''')
             eid_part_file = t.index('''*                           TESS Block 1  ----END-----\n''')
@@ -532,7 +577,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 
             # Change Schedules
             schedules = ['BMFridge.sld', 'BMGarLgt.sld', 'BMLALgt.sld', 'BMMiscPlug.sld', 'BMOccSched.sld',
-                    'BMPlugLgt.sld', 'BMProcess.sld', 'BMVTemp.slm', 'BMVent.slm', 'BMWndShade.slm']
+                         'BMPlugLgt.sld', 'BMProcess.sld', 'BMVTemp.slm', 'BMVent.slm', 'BMWndShade.slm']
 
             for x,sch in enumerate(schedules):
                 for y,line in enumerate(TRDLines):
@@ -554,7 +599,6 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                         TRDLines[x] = '\\'.join(line_array)
                     break
 
-        #print "beginning last loop"
         do_break = False
         for TRDLine in TRDLines:
             TempLine = TRDLine
@@ -569,10 +613,9 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 var_changed[z] = 1
 
             elif Tag.upper() == 'WEATHERFILE':
-#                if LineArray[0].upper() == 'ASSIGN' and LineArray[2] == '20' and warray != False:                
+#               if LineArray[0].upper() == 'ASSIGN' and LineArray[2] == '20' and warray != False:               
                 if 'ASSIGN' in LineArray and '20' in LineArray and warray != False:
                     TempLine = TempLine.replace(LineArray[1], Var.upper() + '.tm2')
-                    print TempLine
                     do_break = True
                     print LineArray, TempLine, Var
                 elif "CITYNO" == LineArray[0].upper() and warray != False:
@@ -584,8 +627,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 elif "TGS" == LineArray[0].upper() and warray != False:
                     TempLine = TempLine.replace(LineArray[2], warray[5])
                 elif "DMIN" == LineArray[0].upper() and warray != False:
-                    print "changing DMIN to %s" % warray[6]
-                    TempLine = TempLine.replace(LineArray[2], warray[6].strip())
+                    TempLine = TempLine.replace(LineArray[2], warray[6])
                     
             elif Tag.upper() == LineArray[0].upper() and LineArray[1] == '=':
                 ##TempLine = TempLine.replace(LineArray[2], Var) ## This caused an error for "DPAR2a = 2" as the 2 in the DPAR2a is also replaced ##
@@ -615,46 +657,46 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     fout.writelines(TRDLines)
     fout.close()
     if logf: logf.write(str([t for t,v in zip(CaseTags,var_changed) if v == 0]))
-    return 0
+    return
 
 if __name__ == "__main__":
     from time import sleep
-    
-try:
+    from datetime import datetime
+
     if len(sys.argv) > 2: path = sys.argv[2]
     logf = open('log.txt','a')
     sys.stderr = logf
 
-     if sys.argv[1] == '-load':
+    if sys.argv[1] == '-load':
         s = system("del Current\\*.* /q")
         if s == 1: system("mkdir Current")
         logf = open('log.txt','a')    
-         if sys.argv[2] == '0':
+        if sys.argv[2] == '0':
             process_outputs("Current\\",int(sys.argv[3]))
             system("del *.dat")
-         else:
+        else:
             system('copy %s\\* Current\\' % path)
                     
-     elif sys.argv[1] == '-archive':
+    elif sys.argv[1] == '-archive':
         s = system('del "%s\\*.*" /q' % path)
-         if s == 1: system('mkdir %s' % path)
+        if s == 1: system('mkdir %s' % path)
         system('copy Current\\* %s' % path)    
     
-     elif sys.argv[1] == '-copy':
+    elif sys.argv[1] == '-copy':
         s = system('copy "%s" Current' % path)
         if s == 1:
             f = open('dir.out', 'w')
-             f.write('-1')
+            f.write('-1')
             f.close()
         
-     elif sys.argv[1] == '-listdir':
+    elif sys.argv[1] == '-listdir':
         s = system('dir "%s" /b /o-d > dir.out' % sys.argv[2])
         if s == 1:
             f = open('dir.out', 'w')
-             f.write('-1')
+            f.write('-1')
             f.close()
 
-     elif sys.argv[1] == '-rmdir':
+    elif sys.argv[1] == '-rmdir':
         system('del "%s\\*.*" /q' % path)
         system('rmdir /s /q %s' % path)
         sleep(2)
@@ -719,8 +761,6 @@ try:
                 threading.Thread(args=(parametrics,), group=None, target=run_line, name=None).start()
     else:
         raise
-except:
-    raise
 #        print """
 #"""
 #Operates on TRNSYS results to generate data summaries and figures
