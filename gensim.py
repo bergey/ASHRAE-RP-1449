@@ -274,20 +274,20 @@ def full_parametric():
 
 def by_system(systems):
   for s in systems:
-    filename = "system{0}.csv".format(s)
-    file = csv.writer(open(filename, 'w'))
-    file.writerow(head)
-    lcount = 0
-    for z in range(1,6):
-      for h in [50, 70, 85, 100, 130]:
+    for h in [50, 70, 85, 100, 130]:
+      lcount = 0
+      filename = "s{0}h{1}.csv".format(s,h)
+      file = csv.writer(open(filename, 'w'))
+      file.writerow(head)
+      for z in range(1,6):
         for rh in [50, 60]:
           for v in [0, 1, 2, 3]:
-            lcount += 1
             row = sim_line(z,h,s,rh,v)
             if row:
+              lcount += 1
               row[head.index('Run')] = lcount + 1
               file.writerow(row)
-    print "%s lines in %s" % (lcount, filename)
+      print "%s lines in %s" % (lcount, filename)
 
 def just_one(z, h, s, rh, v):
   filename = 'z{0}h{1}s{2}v{3}rh{4}.csv'.format(z,h,s,v,rh) 
