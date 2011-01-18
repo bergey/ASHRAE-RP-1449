@@ -730,12 +730,15 @@ if __name__ == "__main__":
 
         # per argument
         for csvname in sys.argv[2:]:
-            if log in dir():
+            print "beginning file: %s" % csvname
+            if 'log' in dir():
                 log.close()
-          # TODO remove or rename before distributing
-            if os.path.exists('dmb-batch-log'):
-                os.rename('dmb-batch-log', 'dmb-batch-log.0')
-            log = open('dmb-batch-log', 'w')
+            try:
+              if os.path.exists('batch-log'):
+                  os.rename('batch-log', 'batch-log.0')
+              log = open('batch-log', 'w')
+            except:
+                print "failed to open log"
             # store the results of each csv in a separate directory
             dirname = csvname.replace(' ','-').replace('.csv','')
     
