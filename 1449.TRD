@@ -1097,7 +1097,7 @@ Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
 *
 EQUATIONS 4
 KWHF = HRV_W * RTFhf/1000 ! kW
-Thrv = TAO + HRV_eS * (TAI_1 - TAO) + HRV_W*3.412*1.08/HRV_CFM/2 ! Draws air only from Zone 1 and outside
+Thrv = TAO + HRV_eS * (TAI_1 - TAO) + HRV_W*3.412*1.08/(HRV_CFM+0.001)/2 ! Draws air only from Zone 1 and outside
 Whrv = WAO + HRV_eL * (WAI_1 - WAO) 
 Chrv = C_o + HRV_eC * (C_i - C_o) 
 *
