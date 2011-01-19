@@ -602,41 +602,40 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 if __name__ == "__main__":
     from time import sleep
     
-#    try:
     if len(sys.argv) > 2: path = sys.argv[2]
     logf = open('log.txt','a')
     sys.stderr = logf
 
-     if sys.argv[1] == '-load':
+    if sys.argv[1] == '-load':
         s = system("del Current\\*.* /q")
         if s == 1: system("mkdir Current")
         logf = open('log.txt','a')    
-         if sys.argv[2] == '0':
+        if sys.argv[2] == '0':
             process_outputs("Current\\",int(sys.argv[3]))
             system("del *.dat")
-         else:
+        else:
             system('copy %s\\* Current\\' % path)
                     
-     elif sys.argv[1] == '-archive':
+    elif sys.argv[1] == '-archive':
         s = system('del "%s\\*.*" /q' % path)
-         if s == 1: system('mkdir %s' % path)
+        if s == 1: system('mkdir %s' % path)
         system('copy Current\\* %s' % path)    
     
-     elif sys.argv[1] == '-copy':
+    elif sys.argv[1] == '-copy':
         s = system('copy "%s" Current' % path)
         if s == 1:
             f = open('dir.out', 'w')
-             f.write('-1')
+            f.write('-1')
             f.close()
         
-     elif sys.argv[1] == '-listdir':
+    elif sys.argv[1] == '-listdir':
         s = system('dir "%s" /b /o-d > dir.out' % sys.argv[2])
         if s == 1:
             f = open('dir.out', 'w')
-             f.write('-1')
+            f.write('-1')
             f.close()
 
-     elif sys.argv[1] == '-rmdir':
+    elif sys.argv[1] == '-rmdir':
         system('del "%s\\*.*" /q' % path)
         system('rmdir /s /q %s' % path)
         sleep(2)
@@ -670,7 +669,7 @@ if __name__ == "__main__":
 
         # per argument
         for csvname in sys.argv[2:]:
-            if log in dir():
+            if 'log' in dir():
                 log.close()
           # TODO remove or rename before distributing
             if os.path.exists('dmb-batch-log'):
@@ -694,33 +693,51 @@ if __name__ == "__main__":
                 simruns.writerow(line[2:])
             del simruns # this is important, before we open the file again
             print "finished writing simruns"
-            parametrics = DictReader(open(csvname)).__iter__()
-    
+            parametrics = DictReader(open(csvname))
+        
             # loop over sims in this file
-            for i in xrange(NCORES): # TODO multicore doesn't work; remove it
-                print "Starting thread %s" % i
-                threading.Thread(args=(parametrics,), group=None, target=run_line, name=None).start()
+            for line in parametrics:
+                print line
+                i = int(float(line['Run']))
+                print "Run: %s" % i
+                run_dir = os.path.join(dirname, 'Run%s' % i)
+                if exists(run_dir):
+                    print "%s exists" % run_dir
+                else:
+                    os.mkdir(run_dir)
+                    print "created %s" % run_dir
+                # Create the TRD
+                trd = 'CaseRun%s.trd' % i
+                MakeCaseFile(i, line['BaseFile'], dirname, trd)
+                # Try to change the file output location
+                # Run the simulation
+                cmd = [executable, trd, '/n']
+                #print cmd
+                call(cmd, stdout=log, stderr=log)
+                # move output TODO this prevents parallelism
+                for file in glob('for*'):
+                    shutil.move(file, os.path.join(run_dir,file))
+                shutil.move(trd, os.path.join(run_dir, trd))
     else:
-        raise
-except:
-    raise
-#        print """
-#"""
-#Operates on TRNSYS results to generate data summaries and figures
-#
-#TRN_Resdh2 -option
-#Options:
-#  -load run    If run is 0, data summaries and figure are generated.
-#        Otherwise data summaries and figures are reloaded into the
-#        "Current" directory from the corresponding "Archived_Run"
-#        directory.
-#  -archive run    Archives data summaries and figures in the "Current" directory
-#        into the appropriate "Archived_Run" directory.
-#  -copy file    Copies file into "Current" Directory.
-#  -listdir str     Outputs results for search criteria into the file "dir.out".
-#        "str" is a search string and can contain wildcard entries.
-#  -rmdir run    Removes "Archived_Run" directory for the desired run.
-#  -runsim file  Launches TRNExe and executes specified file for simulation.
-#  -edit file    Launches TRNEdit and loads specified file.
-#  -case        Conditions Parametric Case File
-#"""
+          #raise
+#except:
+          print """
+      Operates on TRNSYS results to generate data summaries and figures
+
+      TRN_Resdh2 -option
+      Options:
+        -load run	If run is 0, data summaries and figure are generated.
+          Otherwise data summaries and figures are reloaded into the
+          "Current" directory from the corresponding "Archived_Run"
+          directory.
+        -archive run	Archives data summaries and figures in the "Current" directory
+          into the appropriate "Archived_Run" directory.
+        -copy file	Copies file into "Current" Directory.
+        -listdir str 	Outputs results for search criteria into the file "dir.out".
+          "str" is a search string and can contain wildcard entries.
+        -rmdir run	Removes "Archived_Run" directory for the desired run.
+        -runsim file  Launches TRNExe and executes specified file for simulation.
+        -edit file	Launches TRNEdit and loads specified file.
+        -case		Conditions Parametric Case File
+        -batch  Run simulations as specified in a csv file, one per row
+      """
