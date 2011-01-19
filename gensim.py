@@ -118,7 +118,17 @@ def sim_line(z,h,s,rh,v):
     print("Shouldn't get here: HERS {0}".format(h))
     return None
 
-  ACTON = 2#TODO
+  hp_tonnage = [[3,3,2.5,2,2],
+                [3,3,2.5,2,2],
+                [2.5,2.5,2,2,2],
+                [2.5,2.5,2,2,2],
+                [2.5,2.5,2,2,2]]
+  hp_tonnage = {130: [3,3,2.5,2.5,2.5],
+                100: [3,3,2.5,2.5,2.5],
+                 85: [2.5,2.5,2,2,2],
+                 70: [2,2,2,2,2],
+                 50: [2,2,2,2,2]}
+  ACTON = hp_tonnage[h][z-1] # 0-indexed array
 
 # parameters depending on zone, or zone and HERS
   if z==1:
