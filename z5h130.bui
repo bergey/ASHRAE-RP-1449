@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   D:\BSC\TRN-Resdh4\z1h50.bui
+*   FOR BUILDING:   D:\BSC\TRN-Resdh4\ashrae_dh\z5h130.bui
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -323,13 +323,13 @@ BUILDING
 ZONE ROOM
 AIRNODE ROOM
 WALL  =CEILING_38 : SURF=  2 : AREA=     187.3 : ADJACENT=ATTIC : FRONT
-WALL  =WALL_19 : SURF=  3 : AREA=     41.62 : EXTERNAL : ORI=NORTH : FSKY=0.5
+WALL  =WALL_19    : SURF=  3 : AREA=     41.62 : EXTERNAL : ORI=NORTH : FSKY=0.5
 WINDOW=EP0.40_0.50 : SURF=  7 : AREA=     10.18 : EXTERNAL : ORI=NORTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_19 : SURF=  4 : AREA=     26.76 : EXTERNAL : ORI=EAST : FSKY=0.5
+WALL  =WALL_19    : SURF=  4 : AREA=     26.76 : EXTERNAL : ORI=EAST : FSKY=0.5
 WINDOW=EP0.40_0.50 : SURF=  8 : AREA=      6.54 : EXTERNAL : ORI=EAST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_19 : SURF=  5 : AREA=     41.62 : EXTERNAL : ORI=SOUTH : FSKY=0.5
+WALL  =WALL_19    : SURF=  5 : AREA=     41.62 : EXTERNAL : ORI=SOUTH : FSKY=0.5
 WINDOW=EP0.40_0.50 : SURF=  9 : AREA=     10.18 : EXTERNAL : ORI=SOUTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
-WALL  =WALL_19 : SURF=  6 : AREA=     26.76 : EXTERNAL : ORI=WEST : FSKY=0.5
+WALL  =WALL_19    : SURF=  6 : AREA=     26.76 : EXTERNAL : ORI=WEST : FSKY=0.5
 WINDOW=EP0.40_0.50 : SURF= 10 : AREA=      6.54 : EXTERNAL : ORI=WEST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3 : ESHADE=0.7
 WALL  =DOOR       : SURF= 11 : AREA=    3.7161 : EXTERNAL : ORI=NORTH : FSKY=0.5
 WALL  =INT_WALL   : SURF= 19 : AREA=     371.6 : INTERNAL
