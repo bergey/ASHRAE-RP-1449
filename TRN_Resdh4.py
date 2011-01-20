@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import shutil
 from os import chdir, system, sys
 from os.path import exists
 from glob import glob
@@ -9,41 +10,11 @@ from subprocess import check_call, call
 #from post_install import _get_key_val, _winreg
 from csv import reader,writer,DictWriter, DictReader
 from e_rate import e_rate
-import threading
 #use('Agg')
 logf = 0
 
-NCORES = 2
-        
-def run_line(parametrics):
-    mydata = threading.local()
-    while True:
-        try:
-            mydata.line = parametrics.next() # TODO This is not truly thread safe
-            # But it works now, and queue isn't in cygwin
-        except:
-            break
-        mydata.i = int(float(mydata.line['Run']))
-        print "Run: %s" % mydata.i
-        mydata.run_dir = os.path.join(dirname, 'Run%s' % mydata.i)
-        if exists(mydata.run_dir):
-            print "%s exists" % mydata.run_dir
-        else:
-            os.mkdir(mydata.run_dir)
-            #print "created %s" % mydata.run_dir
-        # Create the TRD
-        MakeCaseFile(i, mydata.line['BaseFile'], dirname, 'CaseRun%s.trd' % i)
-        # Try to change the file output location
-        mydata.dest = os.path.join(mydata.run_dir, 'CaseRun%s.trd' % i)
-        os.rename('CaseRun%s.trd' % i, mydata.dest)
-        print "moved CaseRun%s.trd to %s" % (mydata.i, mydata.dest)
-        # Run the simulation
-        mydata.cmd = [executable, mydata.dest, '/n']
-        #print cmd
-        call(mydata.cmd, stdout=log, stderr=log)
-        # these two lines add 60 MB storage per run
-        os.rename("fort123.dat", os.path.join(mydata.run_dir, "fort123.dat"))
-        os.rename("fort55.dat", os.path.join(mydata.run_dir, "fort55.dat"))
+# path to external harddrive dir
+external = '/cygdrive/d/'
 
 def eia_e_rate(dt,kw,util_id,cat,state,Dir):
 
@@ -143,9 +114,9 @@ def process_outputs(path,run):
     util_rate = None
     GasRate = None
     GasCost = 0
-    print CaseTags
-    print CaseVars
-    for z, Tags in enumerate(CaseTags):
+    #print CaseTags
+    #print CaseVars
+    for z,Tags in enumerate(CaseTags):
         Tags = Tags.strip().upper()
         if CaseVars[z] == '-':
             continue
@@ -452,32 +423,50 @@ def GetMnuOption(col, Opt, OptFile):
                 break
             else:
                 row = None                     
+    #print "MnuOption is %s" % row
     return row
 
 
 def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     print DestFolder
     fcase = open("%s/SimRuns.csv" % DestFolder)
+    #print fcase
     print "Opened SimRuns.csv"
     CaseLines = fcase.readlines()
     fcase.close()
-    print "Closed SimRuns.csv"
+    #print "Closed SimRuns.csv"
 
-    print Run
-    print len(CaseLines)
+    #print Run
+    #print len(CaseLines)
 
-    CaseVars = CaseLines[Run].replace('\n', '').split(',')
-    CaseTags = CaseLines.pop(0).replace('\n', '').split(',')
+    CaseTags = CaseLines.pop(0).replace('\n', '').split(',') # remove 0 line
+    try:
+        RunColumn = CaseTags.index('Run')
+        #print "Run is in column %s" % RunColumn
+        for line in CaseLines:
+            line = line.replace('\n','').split(',')
+            #print "line is %s long" % len(line)
+            id = int(float(line[RunColumn]))
+            #print "scanning Run Number %s" % id
+            if id == Run: # breaks if Run is not a number
+                CaseVars = line
+                break
+    except:
+        print "Couldn't use Run Column; Assuming in order from 1"
+        CaseVars = CaseLines[Run-1] # removed 0 line, above
     
-    fcurrCase = open('casefile','w')
-    fcurrCase.write(CaseLines[0])
-    fcurrCase.write(CaseLines[Run-1])
+    #fcurrCase = open('casefile','w')
+    #fcurrCase.write(CaseLines[0])
+    #fcurrCase.write(CaseLines[Run-1])
 
     
-    fcurrCase.close()
+    #fcurrCase.close()
+    #print "closed casefile"
     f1 = open(TRDFile, 'r')
     TRDLines = f1.readlines()
     f1.close()
+    #print "read %s" % TRDFile;
+    #print CaseTags
     
     for i,case in enumerate(CaseTags[:]):
         if CaseVars[i] == "-":
@@ -523,6 +512,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
             CaseTags.extend(['TDBND','Ta_o','Taua','taue','HDBND','CDBND'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7]])        
     var_changed = [0]*len(CaseTags)
+    #print "extended CaseTags"
     
     for z in range(1, len(CaseTags)):
         Tag = CaseTags[z]
@@ -543,6 +533,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                     warray = wline.replace('\n', '').split(',')
                     break
             f.close()
+            #print "rewrote weather location"
 
         if Tag.upper() == 'TESSMODEL':
             tess_path = '../../rice_dh/'
@@ -597,7 +588,9 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                         id = line_array[-1].index('"')
                         line_array[-1] = buifile + line_array[-1][id:]
                         TRDLines[x] = '\\'.join(line_array)
+                    #print "rewrote building assignment"
                     break
+            
 
         do_break = False
         for TRDLine in TRDLines:
@@ -617,7 +610,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 if 'ASSIGN' in LineArray and '20' in LineArray and warray != False:
                     TempLine = TempLine.replace(LineArray[1], Var.upper() + '.tm2')
                     do_break = True
-                    print LineArray, TempLine, Var
+                    #print LineArray, TempLine, Var
                 elif "CITYNO" == LineArray[0].upper() and warray != False:
                     TempLine = TempLine.replace(LineArray[2], warray[0])
                 elif "LAT" == LineArray[0].upper() and warray != False:
@@ -627,7 +620,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 elif "TGS" == LineArray[0].upper() and warray != False:
                     TempLine = TempLine.replace(LineArray[2], warray[5])
                 elif "DMIN" == LineArray[0].upper() and warray != False:
-                    TempLine = TempLine.replace(LineArray[2], warray[6])
+                    TempLine = TempLine.replace(LineArray[2], warray[6].strip())
                     
             elif Tag.upper() == LineArray[0].upper() and LineArray[1] == '=':
                 ##TempLine = TempLine.replace(LineArray[2], Var) ## This caused an error for "DPAR2a = 2" as the 2 in the DPAR2a is also replaced ##
@@ -643,17 +636,8 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 var_changed[z] = 1
                 if do_break: break
     
-    # Change output location
-    print "searching for output filenames"
-    for x, line in enumerate(TRDLines):
-        if 'assign' in line and '.dat' in line:
-            fid = line.strip().split(' ')[-1]
-            print fid
-            TRDLines[x] = ''.join(['assign ', DestFolder, '/Run', str(Run), '/for_', fid, '.dat ',fid, '\n'])
-            print TRDLines[x]
-
-    print "opening %s" % DestTRD
-    fout = open(DestTRD, 'w')
+    #print "opening %s" % DestTRD
+    fout = open(DestTRD, 'wb')
     fout.writelines(TRDLines)
     fout.close()
     if logf: logf.write(str([t for t,v in zip(CaseTags,var_changed) if v == 0]))
@@ -661,8 +645,6 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 
 if __name__ == "__main__":
     from time import sleep
-    from datetime import datetime
-
     if len(sys.argv) > 2: path = sys.argv[2]
     logf = open('log.txt','a')
     sys.stderr = logf
@@ -741,6 +723,7 @@ if __name__ == "__main__":
                 print "failed to open log"
             # store the results of each csv in a separate directory
             dirname = csvname.replace(' ','-').replace('.csv','')
+            dirname = os.path.join(external, dirname)
     
             # initialize 
             if exists(dirname):
@@ -756,31 +739,51 @@ if __name__ == "__main__":
                 simruns.writerow(line[2:])
             del simruns # this is important, before we open the file again
             print "finished writing simruns"
-            parametrics = DictReader(open(csvname)).__iter__()
-    
+            parametrics = DictReader(open(csvname))
+        
             # loop over sims in this file
-            for i in xrange(NCORES): # TODO multicore doesn't work; remove it
-                print "Starting thread %s" % i
-                threading.Thread(args=(parametrics,), group=None, target=run_line, name=None).start()
+            for line in parametrics:
+                print line
+                i = int(float(line['Run']))
+                print "Run: %s" % i
+                run_dir = os.path.join(dirname, 'Run%s' % i)
+                if exists(run_dir):
+                    print "%s exists" % run_dir
+                else:
+                    os.mkdir(run_dir)
+                    print "created %s" % run_dir
+                # Create the TRD
+                trd = 'CaseRun%s.trd' % i
+                MakeCaseFile(i, line['BaseFile'], dirname, trd)
+                # Try to change the file output location
+                # Run the simulation
+                cmd = [executable, trd, '/n']
+                print cmd
+                call(cmd, stdout=log, stderr=log)
+                # move output TODO this prevents parallelism
+                for file in glob('for*'):
+                    shutil.move(file, os.path.join(run_dir,file))
+                shutil.move(trd, os.path.join(run_dir, trd))
     else:
-        raise
-#        print """
-#"""
-#Operates on TRNSYS results to generate data summaries and figures
-#
-#TRN_Resdh2 -option
-#Options:
-#  -load run    If run is 0, data summaries and figure are generated.
-#        Otherwise data summaries and figures are reloaded into the
-#        "Current" directory from the corresponding "Archived_Run"
-#        directory.
-#  -archive run    Archives data summaries and figures in the "Current" directory
-#        into the appropriate "Archived_Run" directory.
-#  -copy file    Copies file into "Current" Directory.
-#  -listdir str     Outputs results for search criteria into the file "dir.out".
-#        "str" is a search string and can contain wildcard entries.
-#  -rmdir run    Removes "Archived_Run" directory for the desired run.
-#  -runsim file  Launches TRNExe and executes specified file for simulation.
-#  -edit file    Launches TRNEdit and loads specified file.
-#  -case        Conditions Parametric Case File
-#"""
+          #raise
+#except:
+          print """
+      Operates on TRNSYS results to generate data summaries and figures
+
+      TRN_Resdh2 -option
+      Options:
+        -load run	If run is 0, data summaries and figure are generated.
+          Otherwise data summaries and figures are reloaded into the
+          "Current" directory from the corresponding "Archived_Run"
+          directory.
+        -archive run	Archives data summaries and figures in the "Current" directory
+          into the appropriate "Archived_Run" directory.
+        -copy file	Copies file into "Current" Directory.
+        -listdir str 	Outputs results for search criteria into the file "dir.out".
+          "str" is a search string and can contain wildcard entries.
+        -rmdir run	Removes "Archived_Run" directory for the desired run.
+        -runsim file  Launches TRNExe and executes specified file for simulation.
+        -edit file	Launches TRNEdit and loads specified file.
+        -case		Conditions Parametric Case File
+        -batch  Run simulations as specified in a csv file, one per row
+      """
