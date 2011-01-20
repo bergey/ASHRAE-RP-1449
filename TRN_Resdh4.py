@@ -14,7 +14,7 @@ from e_rate import e_rate
 logf = 0
 
 # path to external harddrive dir
-external = '/cygdrive/e/'
+external = '/cygdrive/d/'
 
 def eia_e_rate(dt,kw,util_id,cat,state,Dir):
 
@@ -593,7 +593,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 if do_break: break
     
     #print "opening %s" % DestTRD
-    fout = open(DestTRD, 'w')
+    fout = open(DestTRD, 'wb')
     fout.writelines(TRDLines)
     fout.close()
     if logf: logf.write(str([t for t,v in zip(CaseTags,var_changed) if v == 0]))
@@ -712,7 +712,7 @@ if __name__ == "__main__":
                 # Try to change the file output location
                 # Run the simulation
                 cmd = [executable, trd, '/n']
-                #print cmd
+                print cmd
                 call(cmd, stdout=log, stderr=log)
                 # move output TODO this prevents parallelism
                 for file in glob('for*'):
