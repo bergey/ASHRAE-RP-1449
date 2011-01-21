@@ -358,9 +358,9 @@ duct_Rval = 4.2000000000000E+00
 *|<style1> BOLD
 *
 EQUATIONS 5
-  HtType = 1
+  HtType = 0
 *|<Heater Type (Hr_eff) |Htr.txt|1|2|2
-  Ht_eff = 0.8
+  Ht_eff = 1.0
 *
   HCFM  = 8.0000000000000E+02
 *|     Heating Supply Air Flow (HCFM)                 |scfm (1-50000)|scfm (1-50000)|0|1|1|50000|11
