@@ -52,9 +52,12 @@ def summarize_csv(spec_path, data_path, out_csv):
   spec = csv.DictReader(spec_file)
   head = None
   for scenario in spec:
+    desc = scenario['Desc']
     scenario_path = join(data_path, "Run{0}".format(scenario['Run']))
+    print "loading {0}".format(desc)
     hourly = hourly_data(scenario_path)
-    h, vals = summarize_run(scenario['Desc'], **hourly)
+    print "summarizing {0}".format(desc)
+    h, vals = summarize_run(desc, **hourly)
     if not head:
       head = h # save head from first scenario
       out_csv.writerow(head)
