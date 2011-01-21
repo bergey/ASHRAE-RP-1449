@@ -6,6 +6,9 @@ import csv
 from os.path import exists, join, basename
 import numpy as np
 from glob import glob
+import re
+
+descre = re.compile(r'z(\d)h(\d+)s(\d+)rh(\d+)v(\d)')
 
 #from numarray import asarray, where, reshape, compress
 
@@ -47,6 +50,16 @@ def hourly_data(path):
     ret.update(fordat(handle))
   return ret
 
+def name(scenario):
+  """split name into component parts"""
+  if not scenario:
+    return ['Description', 'Climate Zone', 'HERS Level', 'System', 'RH Setpoint', 'Ventilation System']
+  desc = scenario['Desc']
+  match = descre.search(desc)
+  if match:
+    return [desc] + list(match.groups())
+
+
 def summarize_csv(spec_path, data_path, out_csv):
   spec_file = open(spec_path)
   spec = csv.DictReader(spec_file)
@@ -59,9 +72,9 @@ def summarize_csv(spec_path, data_path, out_csv):
     print "summarizing {0}".format(desc)
     h, vals = summarize_run(desc, **hourly)
     if not head:
-      head = h # save head from first scenario
+      head = name(None) + h # save head from first scenario
       out_csv.writerow(head)
-    out_csv.writerow(vals)
+    out_csv.writerow(name(scenario) + vals)
 
 
 def contiguous_regions(condition):
@@ -177,6 +190,10 @@ def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh
       'Vent Damper / Fan Runtime',
       'Exhaust Fan Runtime',
       'HRV Runtime' ]
+
+
+    #heads.append('kWh')
+    #vals.append(
 
     #fmt_str = ','.join(['%.1f' for each in l]) + ','
     #f.write(fmt_str % tuple(l))
