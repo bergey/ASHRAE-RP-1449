@@ -1,0 +1,5 @@
+4
+1,No Dynamics              Deadbands: 2.0F/3%/5ppm ,2.0, 0.0, 0.0,  0.0,  3.0,  5.0
+2,No Dynamics              Deadbands: 1.5F/3%/5ppm ,1.5, 0.0, 0.0,  0.0,  3.0,  5.0
+3,Tstat w/ Antic: Nmax~2.5 Deadbands: 1.5F/3%/5ppm ,1.5, 2.5, 90., 300.,  3.0,  5.0
+4,Tstat w/ Antic: Nmax~2   Deadbands: 2.0F/3%/5ppm ,2.0, 2.5, 90., 300.,  3.0,  5.0

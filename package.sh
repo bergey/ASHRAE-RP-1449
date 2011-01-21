@@ -1,2 +1,5 @@
+#!/usr/bin/sh
+cp 1449.TRD package
+cp ../TRN_Resdh4.py package
 cp buildings/* package
-cp 1449.TRD Infiltration.txt ac_units.txt res_dh_sched.dat res_dh_units.txt package
+cp lookups/* package

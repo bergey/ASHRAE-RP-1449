@@ -1,0 +1,7 @@
+6
+1,1-Old (1): twet=1018 / gam=1.66                                  ,1018,1.66,  0,    0,  0,  0, 1
+2,2-New (2): twet=1018 / - / NTU=2.2                               ,1018,  0 ,2.2,    0,  0,  0, 2
+3,3-New (3): twet=1018 / - / NTU=2.2 / draindown = n (in AC tab)   ,1018,  0 ,2.2,    0,  0,  0, 3
+4,4-New (4): twet=1018 / - / NTU=2.2 / overrun = n (in AC tab)     ,1018,  0 ,2.2,    0,  0,  0, 4
+5,5-Two period (5): twet=1018 / - / NTU=2.2 / 0.004 off-period flw ,1018,  0 ,2.2,0.004,  0,  0, 5
+6,6-No Latent Degradation                                          ,0   ,  0 ,0  ,    0,  0,  0, 0
