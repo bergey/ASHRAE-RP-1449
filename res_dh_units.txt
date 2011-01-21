@@ -1,0 +1,21 @@
+20
+1,1-Conventional DH EF=1.3 (0.0 W/cfm Process Fan Power)                 ,11,220., 0.0,0.0 ,  0,   0,   0,   0, 1,   0,   0, 1.46,0,0,0,0,0
+2,2-Heatcraft Desiccant DH (0.0 W/cfm PFan Pwr; 2.05 W/cfm Unit)         ,12,220., 0.0,2.05,  0,   0,   0,   0, 1,   0,   0, 3.08,0,0,0,0,0
+3,3-Thermastor Vapor Compression DH (0.0 W/cfm Process Fan Power)        ,11,220., 0.0,0.0 ,  0,   0,   0,   0, 2,   0,   0, 1.93,0,0,0,0,0
+4,4-Desiccant DH w/Balanced HX (0.0 W/cfm ProcFan; 2.35 W/cfm Unit)      ,12,220., 0.0,2.35,  0,   0,   0,   0, 2,   0,   0, 3.11,0,0,0,0,0
+5,5-Desiccant DH w/UNBalanced HX(0.0 W/cfm ProcFan; 2.25 W/cfm Unit)     ,12,220., 0.0,2.25,  0,   0,   0,   0, 3,   0,   0, 3.11,0,0,0,0,0
+6,6-Conventional DH (0.3 W/cfm Process Fan Power)                        ,11,220., 0.3,0.0 ,  0,   0,   0,   0, 1,   0,   0, 1.46,0,0,0,0,0
+7,7-Rudd ACDM 958 cfm / Q=11.5 MBtuh (operates w/ AC is off; 0.35 W/cfm) ,11,958., 0.35,0.0 ,  0,   0,   0,   1, 3,   0,   0, 1.46,0,0,0,0,0
+8,8-Rudd ACDM 958 cfm / Q=23   MBtuh (operates w/ AC is off; 0.35 W/cfm) ,11,958., 0.35,0.0 ,  0,   0,   0,   1, 4,   0,   0, 1.46,0,0,0,0,0
+9,9-MAU-RHT(0.2-ton/10.5-EER/0.77;TCL_min=42;98% RHT;1-stg;0.7 W/CFM)    ,14,  0.2, 0.70,0  ,  0, 0.0,0.98,  42., 1,10.5, 0.77, 45.,  3.,   0,0,0,0
+10,10-MAU-RHT (same as 7;with New Latent tw=1018/tp=544/NTU=2.2;0.7 W/CFM),14,  0.2, 0.70,2,1018,544 ,0.98, 42., 1,10.5,  0.77, 45.,   3.,2.2,0,0,0
+11,11-MAU-RHT(0.3-ton/10.5-EER/0.77;TCL_min=42;98% RHT;1-stg;0.7 W/CFM)   ,14,  0.3, 0.70,0  ,  0, 0.0,0.98,  42., 1,10.5, 0.77, 45.,  3.,   0,0,0,0
+12,12-****DO NOT USE****  Enthalpy Wheel (eff=0.85; each fan=0.3 W/cfm)  , 5,0.85, 0.3,0.3,   0,   0,   0,   0, 0,   0,   0, 0.92,     0,0,0,0,0
+13,13-Munters HCU (HCUb-1004/0.2 Unit/stgs 1 = 50&70F/ 0.35 W/cfm)       , 15,   1, 0.35,0.2,50.,70.,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+14,14-****DO NOT USE**** Poor Enthalpy Wheel (eff=0.75; each fan=0.5 W/  , 5,0.75, 0.5,0.5,   0,   0,   0,   0, 0,   0,   0, 0.92,     0,0,0,0,0
+15,15-NovelAire Electric Unit (300 cfm; 0.7 W/cfm)                       , 16,   1, 0.7, 1,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+16,16-NovelAire Gas-Fired Unit (400 cfm; 0.6 W/cfm)                      , 16,   2, 0.6, 1,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+17,17-Munters HCU (HCUb-3012/1 Unit/stgs 1&2 = 50&70F/ 0.6 W/cfm)        , 15,   4, 0.60, 1.,50.,70.,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+18,18-NovelAire Electric Unit  (8 units;2400 cfm; 0.7 W/cfm)             , 16,   1, 0.7, 8,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+19,19-NovelAire Gas-Fired Unit (6 units;2400 cfm; 0.6 W/cfm)             , 16,   2, 0.6, 6,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+20,20-Munters HCU (HCUb-1004/0.2 Unit/stgs 1 = 50&70F/ 0.70 W/cfm)       , 15,   1, 0.70,0.2,50.,70.,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
