@@ -1,90 +1,231 @@
-def process_outputs(path,run):
-    from datetime import datetime, timedelta
-    from dt_dict import dt_dict
+#!/usr/bin/python
+#from datetime import datetime, timedelta
+#from dt_dict import dt_dict
+import sys
+import csv
+from os.path import exists, join, basename
+import numpy as np
+from glob import glob
 
-    from numarray import asarray, where, reshape, compress
+#from numarray import asarray, where, reshape, compress
 
-    s = system("dir " + path)
-    if s != 0: system('mkdir ' + path)
-    system("copy for_*.dat " + path)
-    system("copy SimRuns.csv " + path)
-    chdir(path)
+# TODO rewrite comments as docstrings
+# TODO rewrite using NumPy?
+
+# the plan:
+# take csv, path on cli
+# fordat to take a file and return a dict of hourly lists
+# dict_of_results to collect all of the output data for a specified run
+# process to take the simulation outputs and return a new dict with summaries
+# one function to save the output
+# alternate function to save output as one line per run
+
+# why does part of the old code use caseVars and caseTags?
+#    Just for EIA pricing?  But I'm not using that at all.
+
+
+# take a file and return a dict of hourly lists
+# handle is a file handle to a tab-separated file 
+# with column names in the first row
+# fordat returns a dictionary with keys from the first row and a numpy array of numbers per key
+def fordat(handle):
+    #head = handle.next().split()
+    head = ['a','b','c','d']
+    arr = np.genfromtxt(handle, names=True)
+    ret = dict()
+    for n in arr.dtype.names:
+        ret[n] = arr[n]
+    return ret
+
+# collect all of the output data for a specified run
+# returns 
+# path should be a directory with several for_*.dat files
+def hourly_data(path):
+  ret = dict()
+  for filename in glob(join(path, "for_*.dat")):
+    handle = open(filename)
+    ret.update(fordat(handle))
+  return ret
+
+def summarize_csv(spec_path, data_path, out_csv):
+  spec_file = open(spec_path)
+  spec = csv.DictReader(spec_file)
+  head = None
+  for scenario in spec:
+    scenario_path = join(data_path, "Run{0}".format(scenario['Run']))
+    hourly = hourly_data(scenario_path)
+    h, vals = summarize_run(scenario['Desc'], **hourly)
+    if not head:
+      head = h # save head from first scenario
+      out_csv.writerow(head)
+    out_csv.writerow(vals)
+
+
+# take the simulation outputs and summarize
+# return a pair: headings in order, value list in matching order
+def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
+    heads = ['scenario name',]
+    vals = [name,]
+
+    # Overall RH Data
+    i = np.where(RHi > 60, 1, 0)
+    heads += ['mean RH', 'hours above 60% RH', 'max RH']
+    vals += (RHi.mean(), i.sum(), RHi.max())
     
+    # Occupied RH Data
+    heads += ['occupancy weighted RH', 'occupied hours above 60% RH', 'max occupied RH']
+    vals += ((OCC * RHi).sum() / OCC.sum(), (OCC * i).sum(), (OCC * RHi).max())
+    
+    # CO2
+    heads += ['Occupancy Weighted CO2 [ppm]']
+    vals.append( (OCC * C_i).sum() * 1e6 / OCC.sum() )
+
+    heads.append('max CO2')
+    vals.append( C_i.max() * 1e6 )
+    
+    # AC SHR and EER
+    heads.append('AC Sensible Fraction')
+    ac_btu_yr = ((Qsac).sum() + (Qlac).sum())
+    if ac_btu_yr == 0:
+      vals.append('No cooling')
+    else:
+      vals.append( (Qsac).sum() /  ac_btu_yr )
+
+    heads.append('Annual Avg EER')
+    ac_kwh_yr = (ACKW * RTFc).sum()
+    if ac_kwh_yr == 0:
+      vals.append('No kWh')
+    else:
+      vals.append( ac_btu_yr / ac_kwh_yr / 1e3 )
+    
+    # Various Runtimes
+    runtimes = ['RTFc', 'RTFe', 'RTFh', 'RTFrh', 'RTFacf', 'RTFd', 'RTFdf', 'rtfvf',
+            'rtfxf', 'rtfhf']
+    for v in runtimes: 
+      if not v in locals():
+            print "Missing {0}".format(v)
+           # exec v + ' = asarray([0.])'
+
+    vals += [
+        RTFc.sum(),     # AC Runtime
+        RTFe.sum(),     # Econ Runtime
+        RTFh.sum(),     # Heating Runtime
+        RTFrh.sum(),    # ReHeat Runtime
+        RTFacf.sum(),   # Supply Fan Runtime
+        RTFd.sum(),     # Dehumid Runtime
+        RTFdf.sum(),    # Des Fan Runtime
+        rtfvf.sum(),    # Vent Damper / Fan Runtime
+        rtfxf.sum(),    # Exhaust Fan Runtime
+        rtfhf.sum(),    # HRV Runtime
+        ]
+
+    heads += [
+      'AC Runtime',
+      'Econ Runtime',
+      'Heating Runtime',
+      'ReHeat Runtime',
+      'Supply Fan Runtime',
+      'Dehumid Runtime',
+      'Des Fan Runtime',
+      'Vent Damper / Fan Runtime',
+      'Exhaust Fan Runtime',
+      'HRV Runtime' ]
+
+    #fmt_str = ','.join(['%.1f' for each in l]) + ','
+    #f.write(fmt_str % tuple(l))
+
+    return (heads, vals)
+
+def output_handle( name, data_path ):
+  if name[-4:] == '.csv':
+    root = name[:-4]
+  else:
+    root = name
+  output_path = join(data_path, name+'-summary.csv')
+  file = open(output_path, 'wb')
+  return csv.writer(file)
+
+if __name__ == '__main__':
+  print sys.argv
+  if len(sys.argv) >= 3 and exists(sys.argv[1]) and exists(sys.argv[2]):
+    spec = sys.argv[1]
+    data_path = sys.argv[2]
+    out_file = output_handle(basename(spec), data_path)
+    summarize_csv( spec, data_path, out_file)
+  else:
+    print """No usage summary yet; read the code"""
+
+
+# *********************** NOTHING BELOW HERE SHOULD RUN **********************
+
+
+#def process_outputs(path,run):
+
     ##### Output Into data.out#####
     
-    f = open('data.out', 'w')
-    ff = glob('for_*.dat')
+    #f = open('data.out', 'w')
+    #ff = glob('for_*.dat')
     
-    fcase = open('SimRuns.csv', 'r')
-    CaseLines = fcase.readlines()
-    fcase.close()    
-    CaseVars = CaseLines[run].replace('\n', '').split(',')
-    CaseTags = CaseLines.pop(0).replace('\n', '').split(',')
-    
-    
-    if len(ff) == 0:
-        f.write('-1')
-        f.close()
-        return
-    
-    for each in ff:
-        fz = open(each)
-        tags = fz.readline()
-        tags = tags.replace("\n", "")
-        tags = [temp.strip() for temp in tags.split('\t')]
-        t = fz.read()
-        fz.close()
-        t = t.replace("\n", '\t')
-        while t[-1] == '\t': t = t[:-1]
-        t = t.split('\t')
-        for x in range(len(tags)):
-            if tags[x] != '':
-                exec(tags[x] + " = asarray([float(temp) for temp in t[x::len(tags)]])")
-
-    dt = []
-    
-    for x in range(len(TIME)):
-        dt.append(datetime(2005, 1, 1) + timedelta(hours=1) * x)
-    dt = dt_dict(dt)
+#    fcase = open('SimRuns.csv', 'r')
+#    CaseLines = fcase.readlines()
+#    fcase.close()    
+#    CaseVars = CaseLines[run].replace('\n', '').split(',')
+#    CaseTags = CaseLines.pop(0).replace('\n', '').split(',')
     
     
-    e_rate_file = None
-    eia_util_id = None
-    eia_category = None
-    eia_state = None
-    util_rate = None
-    GasRate = None
-    GasCost = 0
+#    if len(ff) == 0:
+#        f.write('-1')
+#        f.close()
+#        return
+#    
+#    for each in ff:
+#        fz = open(each)
+#        tags = fz.readline()
+#        tags = tags.replace("\n", "")
+#        tags = [temp.strip() for temp in tags.split('\t')]
+#        t = fz.read()
+#        fz.close()
+#        t = t.replace("\n", '\t')
+#        while t[-1] == '\t': t = t[:-1]
+#        t = t.split('\t')
+#        for x in range(len(tags)):
+#            if tags[x] != '':
+#                exec(tags[x] + " = asarray([float(temp) for temp in t[x::len(tags)]])")
+#
+#    dt = []
+#    
+#    for x in range(len(TIME)):
+#        dt.append(datetime(2005, 1, 1) + timedelta(hours=1) * x)
+#    dt = dt_dict(dt)
+#    
+#    
+#    e_rate_file = None
+#    eia_util_id = None
+#    eia_category = None
+#    eia_state = None
+#    util_rate = None
+#    GasRate = None
+#    GasCost = 0
     #print CaseTags
     #print CaseVars
-    for z,Tags in enumerate(CaseTags):
-        Tags = Tags.strip().upper()
-        if CaseVars[z] == '-':
-            continue
-        if Tags == 'E_RATE_FILE':
-            e_rate_file = CaseVars[z]
-        if Tags == 'EIA_UTIL_ID':
-            eia_util_id = CaseVars[z]
-        if Tags == 'EIA_CATEGORY':
-            eia_category = CaseVars[z]
-        if Tags == 'EIA_STATE':
-            eia_state = CaseVars[z]
-        if Tags =='GASRATE':
-            print CaseVars[z]
-            GasRate = float(CaseVars[z])
+#    for z,Tags in enumerate(CaseTags):
+#        Tags = Tags.strip().upper()
+#        if CaseVars[z] == '-':
+#            continue
+#        if Tags == 'E_RATE_FILE':
+#            e_rate_file = CaseVars[z]
+#        if Tags == 'EIA_UTIL_ID':
+#            eia_util_id = CaseVars[z]
+#        if Tags == 'EIA_CATEGORY':
+#            eia_category = CaseVars[z]
+#        if Tags == 'EIA_STATE':
+#            eia_state = CaseVars[z]
+#        if Tags =='GASRATE':
+#            print CaseVars[z]
+#            GasRate = float(CaseVars[z])
 
     if not locals().has_key('Qh_gas'):
         Qh_gas = asarray([0.])
-    NetKW = ((LIGHTS + EQP)/3600 +
-             RTFc * ACKW +
-             KWHT * RTFh * (1 - (Qh_gas.sum() > 0)) / 3412 +
-             RTFacf * FANKW +
-             RTFdf * DFANKW +
-             RTFd * DKW +
-             rtfvf * KWVF +
-             rtfxf * KWXF +
-             rtfhf * KWHF)
-
     if not (e_rate_file is None):
         rate = e_rate(rate='..\\util_rates\\' + e_rate_file, dt=dt, kw=NetKW, power_factor=0.9, verbose=1, verbose_file='utility.out')
         EnergyCost = [sum(c) for c in  rate['cost']]
@@ -117,46 +258,6 @@ def process_outputs(path,run):
     # Run Number (A/C type and DH type)
     f.write('%i%.2i,' % (ANO[0], DNO[0]))
     
-    # Overall RH Data
-    i = where(RHi > 60, 1, 0)
-    f.write('%.2f,%i,%.2f,' % (RHi.mean(), i.sum(), RHi.max()))
-    
-    # Occupied RH Data
-    f.write('%.2f,%i,%.2f,' % ((OCC * RHi).sum() / OCC.sum(), (OCC * i).sum(), (OCC * RHi).max()))
-    
-    # CO2
-    try: f.write('%.2f,' % ((OCC * C_i).sum() * 1e6 / OCC.sum()))
-    except: f.write('0,')
-    f.write('%.2f,' % (C_i.max() * 1e6))
-    
-    # AC SHR and EER
-    try: f.write('%.2f,' % ((Qsac).sum() / ((Qsac).sum() + (Qlac).sum())))
-    except: f.write('0,')
-
-    try: f.write('%.2f,' % (((Qsac + Qlac)).sum() / (ACKW * RTFc).sum() / 1e3))
-    except: f.write('0,')
-    
-    # Various Runtimes
-    vars = ['RTFc', 'RTFe', 'RTFh', 'RTFrh', 'RTFacf', 'RTFd', 'RTFdf', 'rtfvf',
-            'rtfxf', 'rtfhf']
-    for each in vars: 
-        if locals().has_key(each) == False:
-            exec each + ' = asarray([0.])'
-    l = [
-        RTFc.sum(),     # AC Runtime
-        RTFe.sum(),     # Econ Runtime
-        RTFh.sum(),     # Heating Runtime
-        RTFrh.sum(),    # ReHeat Runtime
-        RTFacf.sum(),   # Supply Fan Runtime
-        RTFd.sum(),     # Dehumid Runtime
-        RTFdf.sum(),    # Des Fan Runtime
-        rtfvf.sum(),    # Vent Damper / Fan Runtime
-        rtfxf.sum(),    # Exhaust Fan Runtime
-        rtfhf.sum(),    # HRV Runtime
-        ]
-    fmt_str = ','.join(['%.1f' for each in l]) + ','
-    f.write(fmt_str % tuple(l))
-
     for i in range(len(vars)):
         print vars[i], '\t', l[i]
     
@@ -348,9 +449,4 @@ def process_outputs(path,run):
 ##        hist_plot(compress(i, RTFc), .025, var_range = [0, 1], filename = "Cooling Runtime Histogram.png", 
 ##            color = 'b', y_label = "Number of Hours", x_label = "Cooling Runtime Fraction",  
 ##            units = "-", h_title = "Cooling Runtime Histogram", dpi=100)
-
-    s = "Completed Successfully\n"
-    sys.stdout.write(s)
-    sys.stderr.write(s)
-    return
 
