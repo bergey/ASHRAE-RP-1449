@@ -13,7 +13,7 @@ LATG_BASE = 16.9 # lbs/day
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]
 
-bno_file = open('../Single_Zone_Buildings.txt')
+bno_file = open('../buildings/Single_Zone_Buildings.txt')
 bno_lines = csv.reader(bno_file)
 bno = dict()
 bno_lines.next() # drop header (line count)
@@ -154,6 +154,8 @@ def sim_line(z,h,s,rh,v):
 
 # parameters depending only on DH system
   if s==1:
+    if rh == 60: 
+      return None # no RH setpoint for system 1
     if h < 85:
       return None
     elif h==85: # XXX Can this move to HERS section above?
