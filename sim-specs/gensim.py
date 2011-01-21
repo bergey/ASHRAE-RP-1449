@@ -221,11 +221,11 @@ def sim_line(z,h,s,rh,v):
     HRV_CFM = 0
     HRV_W = 0
     fctyp5 = 3
-    ftim_ON5 = 0.2
-    ftim_OFF5 = 0.3
+    ftim_ON5 = 0.17 # 33% of hour, two cycles per hour
+    ftim_OFF5 = 0.33
     fctyp7 = 5
-    ftim_ON7 = 0.2
-    ftim_OFF7 = 0.3
+    ftim_ON7 = 0.17
+    ftim_OFF7 = 0.33
     ilck71 = 5
     fctyp8 = 0
     fctyp9 = 0
@@ -238,7 +238,7 @@ def sim_line(z,h,s,rh,v):
     HRV_CFM = 2*vent0 # twice 62.2 for 50% of hour
     HRV_W = 0.5*HRV_CFM # 0.5 W/CFM per Task 4 report
     fctyp5 = 3
-    ftim_ON5 = 0.5
+    ftim_ON5 = 0.5 # concurrent with HRV
     ftim_OFF5 = 0.5
     fctyp7 = 0
     ftim_ON7 = 0
@@ -246,7 +246,9 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 0
     fctyp8 = 0
     fctyp9 = 5
-    ilck91 = 0
+    ftim_ON9 = 0.5
+    ftim_OFF9 = 0.5
+    ilck91 = 5
 
   return order_line(locals())
 
