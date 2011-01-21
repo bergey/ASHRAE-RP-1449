@@ -64,6 +64,38 @@ def summarize_csv(spec_path, data_path, out_csv):
     out_csv.writerow(vals)
 
 
+def contiguous_regions(condition):
+    """Finds contiguous True regions of the boolean array "condition". Returns
+    a 2D array where the first column is the start index of the region and the
+    second column is the end index."""
+
+    # Find the indicies of changes in "condition"
+    d = np.diff(condition)
+    idx, = d.nonzero() 
+
+    # We need to start things after the change in "condition". Therefore, 
+    # we'll shift the index by 1 to the right.
+    idx += 1
+
+    if condition[0]:
+        # If the start of condition is True prepend a 0
+        idx = np.r_[0, idx]
+
+    if condition[-1]:
+        # If the end of condition is True, append the length of the array
+        idx = np.r_[idx, condition.size - 1]
+
+    # Reshape the result into two columns
+    idx.shape = (-1,2)
+    return idx
+
+def long_events(condition, length):
+  count = 0
+  for start, stop in contiguous_regions(condition):
+    if stop - start > length:
+      count += 1
+  return count
+
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
 def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
@@ -72,12 +104,24 @@ def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh
 
     # Overall RH Data
     i = np.where(RHi > 60, 1, 0)
-    heads += ['mean RH', 'hours above 60% RH', 'max RH']
-    vals += (RHi.mean(), i.sum(), RHi.max())
+    heads.append('mean RH')
+    vals.append(RHi.mean())
+
+    heads.append('hours above 60% RH')
+    vals.append(i.sum())
+
+    heads.append('max RH')
+    vals.append(RHi.max())
     
     # Occupied RH Data
     heads += ['occupancy weighted RH', 'occupied hours above 60% RH', 'max occupied RH']
     vals += ((OCC * RHi).sum() / OCC.sum(), (OCC * i).sum(), (OCC * RHi).max())
+
+# RH events over 4, 8 hours
+    heads.append('RH events 60% for 4+ hours')
+    vals.append( long_events(RHi > 60, 4) )
+    heads.append('RH events 60% for 8+ hours')
+    vals.append( long_events(RHi > 60, 8) )
     
     # CO2
     heads += ['Occupancy Weighted CO2 [ppm]']
@@ -127,7 +171,7 @@ def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh
       'Econ Runtime',
       'Heating Runtime',
       'ReHeat Runtime',
-      'Supply Fan Runtime',
+      'AHU Fan Runtime',
       'Dehumid Runtime',
       'Des Fan Runtime',
       'Vent Damper / Fan Runtime',
