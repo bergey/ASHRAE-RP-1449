@@ -1,6 +1,5 @@
 #!/usr/bin/python
-#from datetime import datetime, timedelta
-#from dt_dict import dt_dict
+import datetime as dt
 import sys
 import csv
 from os.path import exists, join, basename
@@ -62,7 +61,7 @@ def parse_name(scenario):
     return [match.group(k) for k in ['s', 'z', 'h', 'v', 'rh']] + [desc]
 
 
-def summarize_csv(spec_path, data_path, out_csv):
+def summarize_csv(spec_path, data_path, out_csv, head=None):
 # open the csv from gensim, and parse some useful things out of it
   spec_file = open(spec_path)
   spec = csv.DictReader(spec_file)
@@ -71,7 +70,6 @@ def summarize_csv(spec_path, data_path, out_csv):
   ordered = [(parse_name(s), s) for s in spec]
   ordered.sort() # This is the order in which the summary csv / excel sheet will be printed
 
-  head = None
   for desc, trd_vars in ordered:
     name = desc[-1]
     scenario_path = join(data_path, "Run{0}".format(trd_vars['Run']))
@@ -85,7 +83,7 @@ def summarize_csv(spec_path, data_path, out_csv):
         plot_Wrt(name, hourly)
         plot_rh_hist(name, hourly)
         plot_t_hist(name, hourly)
-        if not head: # first row
+        if not head: # first row in this call, and not a continuation of the same out_csv
             head = parse_name(None) + h # save head from first scenario
             out_csv.writerow(head)
     else:
@@ -226,21 +224,18 @@ def summarize_run(RHi, OCC, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, 
 
     return (heads, vals)
 
-def output_handle( name, data_path ):
-  if name[-4:] == '.csv':
-    root = name[:-4]
-  else:
-    root = name
-  output_path = join(data_path, name+'-summary.csv')
+def output_handle( ):
+  output_path = dt.datetime.now().strftime('%Y-%m-%d-%H:%M-summary.csv')
   file = open(output_path, 'wb')
   return csv.writer(file)
 
 if __name__ == '__main__':
   print sys.argv
   if len(sys.argv) >= 3 and exists(sys.argv[1]) and exists(sys.argv[2]):
-    spec = sys.argv[1]
-    data_path = sys.argv[2]
-    out_file = output_handle(basename(spec), data_path)
-    summarize_csv( spec, data_path, out_file)
+    data_path = sys.argv[1]
+    out_file = output_handle()
+    for i, specfile in enumerate(sys.argv[2:]):
+        data_subdir = join(data_path, basename(specfile)[:-4])  # look for Run# dirs here; remove leading dirs and .csv extension
+        summarize_csv( specfile, data_subdir, out_file, head=i)
   else:
     print """No usage summary yet; read the code"""
