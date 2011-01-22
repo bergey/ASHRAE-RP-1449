@@ -690,7 +690,7 @@ ELA = 5.5000000000000E+01
 EQUATIONS 5
 exh_cfm = 5.0000000000000E+01
 *|    Exhaust Fan Air Flow (exh_cfm)  |cfm|cfm|0|1|0.00|1000.00|29
-exh_wcfm = 5.6000000000000E-01
+exh_wcfm = 4.0000000000000E-01
 *|    Exhaust Fan Power (exh_wcfm) |W/cfm|W/cfm|0|1|0.00|2.00|29
 vnt_wcfm = 0.0000000000000E+00
 *|    Vent Damper/Fan Power (input cfm in "AC Unit" tab) (vnt_wcfm) |W/cfm|W/cfm|0|1|0.00|2.00|29

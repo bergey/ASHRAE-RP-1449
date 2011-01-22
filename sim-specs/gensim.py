@@ -93,8 +93,8 @@ def sim_line(z,h,s,rh,v):
     SENS_DAILY = SENS_BASE*0.9
     sduct_area = 544
     rduct_area = 100
-    leaks = 0.05
-    leakr = 0 # TODO is this what Armin wants?
+    leaks = 0.03 # 5% total leakage, split 60/40
+    leakr = 0.02
     duct_Rval = 8
   elif h==100:
     ELA = ach_to_ela(7)
@@ -102,8 +102,8 @@ def sim_line(z,h,s,rh,v):
     SENS_DAILY = SENS_BASE
     sduct_area = 544
     rduct_area = 100
-    leaks = 0.10
-    leakr = 0
+    leaks = 0.06 # 10% total
+    leakr = 0.04
     duct_Rval = 6
   elif h==130:
     ELA = ach_to_ela(10)
@@ -111,8 +111,8 @@ def sim_line(z,h,s,rh,v):
     SENS_DAILY = SENS_BASE
     sduct_area = 544
     rduct_area = 100
-    leaks = 0.20
-    leakr = 0
+    leaks = 0.12
+    leakr = 0.08
     duct_Rval = 6
   else:
     print("Shouldn't get here: HERS {0}".format(h))
