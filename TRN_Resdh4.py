@@ -5,6 +5,7 @@ from os import chdir, system, sys
 from os.path import exists
 from glob import glob
 from subprocess import check_call, call
+import datetime as dt
 #from matplotlib import use
 #import matplotlib.backends.backend_tkagg as backend
 #from post_install import _get_key_val, _winreg
@@ -170,7 +171,6 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     #fcurrCase.write(CaseLines[0])
     #fcurrCase.write(CaseLines[Run-1])
 
-    
     #fcurrCase.close()
     #print "closed casefile"
     f1 = open(TRDFile, 'r')
@@ -358,7 +358,7 @@ if __name__ == "__main__":
     from time import sleep
     if len(sys.argv) > 2: path = sys.argv[2]
     logf = open('log.txt','a')
-    sys.stderr = logf
+    #sys.stderr = logf
 
     if sys.argv[1] == '-load':
         s = system("del Current\\*.* /q")
@@ -475,6 +475,26 @@ if __name__ == "__main__":
                 for file in glob('for*'):
                     shutil.move(file, os.path.join(run_dir,file))
                 shutil.move(trd, os.path.join(run_dir, trd))
+    elif sys.argv[1]=='-dryrun':
+      dirname = dt.datetime.now().strftime('%Y-%m-%d-%H:%M-trds')
+      if not exists(dirname):
+        os.mkdir(dirname)
+      for csvname in sys.argv[2:]:
+        parametrics = reader(open(csvname))
+        print("opened {0}".format(csvname))
+        simruns = writer(open(os.path.join(dirname, 'SimRuns.csv'),'w'))
+        print "opened simruns"
+        for line in parametrics:
+            simruns.writerow(line[2:])
+        del simruns # this is important, before we open the file again
+        print "finished writing simruns"
+        parametrics = DictReader(open(csvname))
+        for line in parametrics:
+            trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
+            print("creating {0}".format(trd))
+            i = int(float(line['Run']))
+            MakeCaseFile(i, line['BaseFile'], dirname, trd)
+            shutil.move(trd, os.path.join(dirname, trd)
     else:
           #raise
 #except:
