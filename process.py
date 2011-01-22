@@ -75,13 +75,6 @@ def summarize_csv(spec_path, data_path, out_csv, head=None):
     name = desc[-1]
     scenario_path = join(data_path, "Run{0}".format(trd_vars['Run']))
     if exists(scenario_path):
-# Not a great place for this, but it's temporary TODO
-# rename caseruns to share with other people
-        trd_path = join(scenario_path, "CaseRun{0}.trd".format(trd_vars['Run']))
-        print "moving {0} to {1}.trd".format(trd_path, name)
-        shutil.copy(trd_path, "{0}.trd".format(name))
-
-# read the data into NumPy and do useful things with it
         print "loading {0} from {1}".format(name, scenario_path)
         hourly = hourly_data(scenario_path)
         print "summarizing {0}".format(name)

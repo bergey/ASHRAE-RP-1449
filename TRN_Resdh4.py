@@ -450,8 +450,8 @@ if __name__ == "__main__":
                 simruns.writerow(line[2:])
             del simruns # this is important, before we open the file again
             print "finished writing simruns"
+
             parametrics = DictReader(open(csvname))
-        
             # loop over sims in this file
             for line in parametrics:
                 print line
@@ -464,7 +464,7 @@ if __name__ == "__main__":
                     os.mkdir(run_dir)
                     print "created %s" % run_dir
                 # Create the TRD
-                trd = 'CaseRun%s.trd' % i
+                trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
                 MakeCaseFile(i, line['BaseFile'], dirname, trd)
                 # Try to change the file output location
                 # Run the simulation
