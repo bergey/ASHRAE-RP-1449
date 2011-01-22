@@ -44,3 +44,11 @@ def plot_rh_hist(name, hourly):
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor RH Histogram'.format(name))
     fig.savefig( '{0}-rh-histogram.png'.format(name) )
+
+def plot_t_hist(name, hourly):
+    fig = plt.figure()
+    plt.hist(hourly['Ti'],50)
+    plt.xlabel('degrees F')
+    plt.ylabel('Number of Hours')
+    plt.title('{0}: Indoor T Histogram'.format(name))
+    fig.savefig( '{0}-ti-histogram.png'.format(name) )

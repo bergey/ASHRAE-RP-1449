@@ -84,6 +84,7 @@ def summarize_csv(spec_path, data_path, out_csv):
         plot_TRH(name, hourly)
         plot_Wrt(name, hourly)
         plot_rh_hist(name, hourly)
+        plot_t_hist(name, hourly)
         if not head: # first row
             head = parse_name(None) + h # save head from first scenario
             out_csv.writerow(head)
@@ -125,7 +126,7 @@ def long_events(condition, length):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
+def summarize_run(RHi, OCC, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
     heads = []
     vals = []
 
@@ -149,7 +150,16 @@ def summarize_run(RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFa
     vals.append( long_events(RHi > 60, 4) )
     heads.append('RH events 60% for 8+ hours')
     vals.append( long_events(RHi > 60, 8) )
-    
+
+    heads.append('average T')
+    vals.append(Ti.mean())
+
+    heads.append('max T')
+    vals.append(Ti.max())
+
+    heads.append('min T')
+    vals.append(Ti.min())
+
     # CO2
     heads += ['Occupancy Weighted CO2 [ppm]']
     vals.append( (OCC * C_i).sum() * 1e6 / OCC.sum() )
