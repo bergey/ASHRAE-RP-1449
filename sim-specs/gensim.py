@@ -309,7 +309,7 @@ def by_system(systems):
             row = sim_line(z,h,s,rh,v)
             if row:
               lcount += 1
-              row[head.index('Run')] = lcount + 1
+              row[head.index('Run')] = lcount
               file.writerow(row)
       print "%s lines in %s" % (lcount, filename)
 
