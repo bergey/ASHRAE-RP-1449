@@ -7,6 +7,7 @@ import numpy as np
 from glob import glob
 import re
 from graphs import *
+import shutil
 
 descre = re.compile(r'z(?P<z>\d)h(?P<h>\d+)s(?P<s>\d+)rh(?P<rh>\d+)v(?P<v>\d)')
 
@@ -74,11 +75,18 @@ def summarize_csv(spec_path, data_path, out_csv, head=None):
     name = desc[-1]
     scenario_path = join(data_path, "Run{0}".format(trd_vars['Run']))
     if exists(scenario_path):
-        print "loading {0} from {1}".format(desc[-1], scenario_path)
+# Not a great place for this, but it's temporary TODO
+# rename caseruns to share with other people
+        trd_path = join(scenario_path, "CaseRun{0}.trd".format(trd_vars['Run']))
+        print "moving {0} to {1}.trd".format(trd_path, name)
+        shutil.copy(trd_path, "{0}.trd".format(name))
+
+# read the data into NumPy and do useful things with it
+        print "loading {0} from {1}".format(name, scenario_path)
         hourly = hourly_data(scenario_path)
-        print "summarizing {0}".format(desc[-1])
+        print "summarizing {0}".format(name)
         h, sum_vals = summarize_run(**hourly)
-        print "graphing {0}".format(desc[-1])
+        print "graphing {0}".format(name)
         plot_TRH(name, hourly)
         plot_Wrt(name, hourly)
         plot_rh_hist(name, hourly)
