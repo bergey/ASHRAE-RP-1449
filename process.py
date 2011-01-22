@@ -8,7 +8,7 @@ import numpy as np
 from glob import glob
 import re
 
-descre = re.compile(r'z(\d)h(\d+)s(\d+)rh(\d+)v(\d)')
+descre = re.compile(r'z(?P<z>\d)h(?P<h>\d+)s(?P<s>\d+)rh(?P<rh>\d+)v(?P<v>\d)')
 
 #from numarray import asarray, where, reshape, compress
 
@@ -31,13 +31,20 @@ descre = re.compile(r'z(\d)h(\d+)s(\d+)rh(\d+)v(\d)')
 # handle is a file handle to a tab-separated file 
 # with column names in the first row
 # fordat returns a dictionary with keys from the first row and a numpy array of numbers per key
-def fordat(handle):
-    #head = handle.next().split()
-    head = ['a','b','c','d']
+def fordat(filename):
+# Open the file, read the first line, close the file
+# This is ugly; the commented out code would be nicer, but genfromtxt isn't reading names on Ubuntu
+    handle = open(filename)
+    head = handle.next().split()
+    handle.close()
+    handle = open(filename)
+
     arr = np.genfromtxt(handle, names=True)
     ret = dict()
-    for n in arr.dtype.names:
-        ret[n] = arr[n]
+    #for n in arr.dtype.names:
+        #ret[n] = arr[n]
+    for i, n in enumerate(head):
+        ret[n] = arr[:,i]
     return ret
 
 # collect all of the output data for a specified run
@@ -46,35 +53,40 @@ def fordat(handle):
 def hourly_data(path):
   ret = dict()
   for filename in glob(join(path, "for_*.dat")):
-    handle = open(filename)
-    ret.update(fordat(handle))
+    #handle = open(filename)
+    ret.update(fordat(filename))
   return ret
 
 def name(scenario):
-  """split name into component parts"""
+  """Parse name and return value of each key"""
   if not scenario:
-    return ['Description', 'Climate Zone', 'HERS Level', 'System', 'RH Setpoint', 'Ventilation System']
+# return the header that matches the order of the fields returned below
+    return [ 'System', 'Climate Zone', 'HERS Level', 'Ventilation System', 'RH Setpoint', 'Description' ]
   desc = scenario['Desc']
   match = descre.search(desc)
   if match:
-    return [desc] + list(match.groups())
+    return [match.group(k) for k in ['s', 'z', 'h', 'v', 'rh']] + [desc]
 
 
 def summarize_csv(spec_path, data_path, out_csv):
   spec_file = open(spec_path)
   spec = csv.DictReader(spec_file)
+# turn each row of csv into a tuple: name and the original dict
+# the field order in name determines sort order
+  ordered = [(name(s), s) for s in spec]
+  ordered.sort() # This is the order in which the summary csv / excel sheet will be printed
+
   head = None
-  for scenario in spec:
-    desc = scenario['Desc']
-    scenario_path = join(data_path, "Run{0}".format(scenario['Run']))
-    print "loading {0}".format(desc)
+  for desc, trd_vars in ordered:
+    scenario_path = join(data_path, "Run{0}".format(trd_vars['Run']))
+    print "loading {0} from {1}".format(desc[-1], scenario_path)
     hourly = hourly_data(scenario_path)
-    print "summarizing {0}".format(desc)
-    h, vals = summarize_run(desc, **hourly)
-    if not head:
+    print "summarizing {0}".format(desc[-1])
+    h, sum_vals = summarize_run(**hourly)
+    if not head: # first row
       head = name(None) + h # save head from first scenario
       out_csv.writerow(head)
-    out_csv.writerow(name(scenario) + vals)
+    out_csv.writerow(desc + sum_vals)
 
 
 def contiguous_regions(condition):
@@ -111,9 +123,9 @@ def long_events(condition, length):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(name, RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
-    heads = ['scenario name',]
-    vals = [name,]
+def summarize_run(RHi, OCC, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
+    heads = []
+    vals = []
 
     # Overall RH Data
     i = np.where(RHi > 60, 1, 0)
