@@ -1,7 +1,7 @@
 import csv
 from math import sqrt
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
 
 
@@ -181,7 +181,7 @@ def sim_line(z,h,s,rh,v):
 
   
 # Ventilation systems
-  if v ==0: # No ventilation
+  if v==0: # No ventilation
     if h != 130 and s != 7:
       return None
     VCFM = 0
@@ -197,6 +197,8 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 0
     fctyp8 = 0
     fctyp9 = 0
+    ftim_ON9 = 0.0
+    ftim_OFF9 = 0.0
     ilck91 = 0
   elif v==1: # Exhaust only
     if h == 130:
@@ -214,6 +216,8 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 0
     fctyp8 = 1
     fctyp9 = 0
+    ftim_ON9 = 0.0
+    ftim_OFF9 = 0.0
     ilck91 = 0
   elif v==2: # CFIS
     if h == 130:
@@ -231,6 +235,8 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 5
     fctyp8 = 0
     fctyp9 = 0
+    ftim_ON9 = 0.0
+    ftim_OFF9 = 0.0
     ilck91 = 0
   elif v==3: # HRV
     if h == 130 or s in [5,6,7,9]:
@@ -252,6 +258,7 @@ def sim_line(z,h,s,rh,v):
     ftim_OFF9 = 0.5
     ilck91 = 5
 
+# put all of the variables used above into a list in a consistent order
   return order_line(locals())
 
 
