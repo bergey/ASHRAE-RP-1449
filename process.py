@@ -132,7 +132,7 @@ def long_events(condition, length):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, OCC, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
+def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, **hourly):
     heads = []
     vals = []
 
@@ -147,10 +147,6 @@ def summarize_run(RHi, OCC, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, 
     heads.append('max RH')
     vals.append(RHi.max())
     
-    # Occupied RH Data
-    heads += ['occupancy weighted RH', 'occupied hours above 60% RH', 'max occupied RH']
-    vals += ((OCC * RHi).sum() / OCC.sum(), (OCC * i).sum(), (OCC * RHi).max())
-
 # RH events over 4, 8 hours
     heads.append('RH events 60% for 4+ hours')
     vals.append( long_events(RHi > 60, 4) )
@@ -165,10 +161,6 @@ def summarize_run(RHi, OCC, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, 
 
     heads.append('min T')
     vals.append(Ti.min())
-
-    # CO2
-    heads += ['Occupancy Weighted CO2 [ppm]']
-    vals.append( (OCC * C_i).sum() * 1e6 / OCC.sum() )
 
     heads.append('max CO2')
     vals.append( C_i.max() * 1e6 )
