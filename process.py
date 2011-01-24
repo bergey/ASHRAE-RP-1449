@@ -60,20 +60,23 @@ def parse_name(scenario):
   match = descre.search(desc)
   if match:
     return [match.group(k) for k in ['s', 'z', 'h', 'v', 'rh']] + [desc]
+  else:
+    raise RuntimeError('Cannot interpret scenario name {0}'.format(scenario))
 
 
-def summarize_csv(spec_path, data_path, out_csv, head=None):
+def collect_specs(spec_path, data_path):
+  def scenario_path(s):
+    return join(data_path, basename(spec_path)[:-4], 'Run{0}'.format(s['Run']))
 # open the csv from gensim, and parse some useful things out of it
   spec_file = open(spec_path)
   spec = csv.DictReader(spec_file)
-# turn each row of csv into a tuple: name and the original dict
+# turn each row of csv into a tuple: name and path to data
 # the field order in name determines sort order
-  ordered = [(parse_name(s), s) for s in spec]
-  ordered.sort() # This is the order in which the summary csv / excel sheet will be printed
+  return [(parse_name(s), scenario_path(s)) for s in spec]
 
-  for desc, trd_vars in ordered:
+def summarize_csv(specs, out_csv):
+  for desc, scenario_path in specs:
     name = desc[-1]
-    scenario_path = join(data_path, "Run{0}".format(trd_vars['Run']))
     if exists(scenario_path):
         print "loading {0} from {1}".format(name, scenario_path)
         hourly = hourly_data(scenario_path)
@@ -84,12 +87,14 @@ def summarize_csv(spec_path, data_path, out_csv, head=None):
         plot_Wrt(name, hourly)
         plot_rh_hist(name, hourly)
         plot_t_hist(name, hourly)
-        if not head: # first row in this call, and not a continuation of the same out_csv
+        if not head: 
+          # first row of output
             head = parse_name(None) + h # save head from first scenario
             out_csv.writerow(head)
+        out_csv.writerow(desc + sum_vals)
     else:
+# scenario path does not exist
         print "skipping {0}: path {1} does not exist".format(name, scenario_path)
-    out_csv.writerow(desc + sum_vals)
 
 def contiguous_regions(condition):
     """Finds contiguous True regions of the boolean array "condition". Returns
@@ -217,6 +222,12 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
 
     return (heads, vals)
 
+def concat(lst):
+  ret = []
+  for l in lst:
+    ret += l
+  return ret
+
 def output_handle( ):
   output_path = dt.datetime.now().strftime('%Y-%m-%d-%H:%M-summary.csv')
   file = open(output_path, 'wb')
@@ -227,8 +238,8 @@ if __name__ == '__main__':
   if len(sys.argv) >= 3 and exists(sys.argv[1]) and exists(sys.argv[2]):
     data_path = sys.argv[1]
     out_file = output_handle()
-    for i, specfile in enumerate(sys.argv[2:]):
-        data_subdir = join(data_path, basename(specfile)[:-4])  # look for Run# dirs here; remove leading dirs and .csv extension
-        summarize_csv( specfile, data_subdir, out_file, head=i)
+    specs = concat( [ collect_specs(c) for c in sys.argv[2:] ] )
+    specs.sort()
+    summarize_csv( specs, out_file )
   else:
     print """No usage summary yet; read the code"""
