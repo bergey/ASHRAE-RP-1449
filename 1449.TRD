@@ -872,8 +872,8 @@ AI_SS = [12,52]
 *  OCC is used only for CO2
 *  HVAC is used for set points, fan control, and ventilation
 EQUATIONS 7
-  SENS   = SENS_DAILY/14.2*1.055*[15,1] ! convert to peak rate, kJ/hr
-  LATG   = LATG_DAILY/15.5/2.2*[15,2]    ! convert to peak rate, kg/hr
+  SENS   = SENS_DAILY*1.055*[15,1] ! convert to peak rate, kJ/hr
+  LATG   = LATG_DAILY/2.2*[15,2]    ! convert to peak rate, kg/hr
   OCC    = [15,3]
   HVAC   = [5,4]
   TMIN   = HVAC * (THhi-THlo) + THlo

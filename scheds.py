@@ -1,6 +1,6 @@
 # Writes one file per schedule
 # then, put schedules in order using:
-# head -n' res_dh_schedules.dat | xargs paste -d' ' > temp && mv temp res_dh_schedules.dat
+# head -n1 res_dh_schedules.dat | xargs paste -d' ' > temp && mv temp res_dh_schedules.dat
 sens5 = [2182,2084,2033,2029,2327,3101,3727,3652,2456,2026,1952,1907,1853,1802,1799,2124,3028,4321,5321,5561,5527,4576,3477,2722]
 
 sens2 = [2182,2084,2033,2029,2327,3107,3712,3808,2888,2454,2380,2335,2281,2231,2228,2481,3485,4321,5028,5318,5237,4771,3765,2722]
@@ -27,7 +27,7 @@ for name, hours, avg in zip(['Weekday_Sensible', 'Weekend_Sensible', 'Weekday_La
     d2 = n+p-2*h
     for t in map( (lambda x: x/100.0), range(-50,50,2)):
       BTUs = d2*t**2 + d1*(t+0.5) + d0 - (d2/12 + d1/2)
-      str_out = '{0:.5}\n'.format(BTUs/avg)
+      str_out = '{0:.5}\n'.format(BTUs/avg/50)
       fout.write(str_out)
   fout.close()
 
