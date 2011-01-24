@@ -373,7 +373,7 @@ EQUATIONS 5
 *
 EQUATIONS 6
 * Convert to lb/h
-  Macmx0  = (EQL(RTFh,1)*HCFM + (1-EQL(RTFh,1))*ACCFM) * 60 * 0.075 * fspd_on
+  Macmx0  = ( EQL(RTFc,0)*HCFM + EQL(RTFc,1)*ACCFM) * 60 * 0.075 * fspd_on
   Mdmx   = DCFM  * 60 * 0.075
   Mvmx   = VCFM  * 60 * 0.075 * fspd_on
 *
@@ -1238,7 +1238,7 @@ EQUATIONS 12
 *
   IACH    = EQL(btype,8)*ACH0 + EQL(btype,9)*ACH0*(1-RTFacf) + EQL(btype,10)*ACH0*EQL(RTFacf+RTFdf,0)
   NPEOP   = OCC*Peop
-  PEOPLE  = NPEOP * peop_Q
+  PEOPLE  = NPEOP
 *
 *
   cfm_in = VCFM*rtfvf + DCFM*eql(DSIN1,0)*rtfdf + HRV_cfm*RTFhf
@@ -1262,8 +1262,8 @@ EQUATIONS 10
   ZN_FRAC_S = ZN_FRAC + leaks
   Supp_cfm = msupp2/(0.075*60.)
 *
-* Assume 0.3 lit/min at 1.2 met or 600 Btu/h
-  Q_co2 = NPEOP*(0.3*Peop_Q/600)/28.317/NO_ZONE
+* Assume 0.3 lit/min at 1.2 met --- FOR ALL PEOPLE ---
+  Q_co2 = NPEOP*(0.3)/28.317/NO_ZONE
 *
   rcfm  = Mret/(0.075*60.)*(1 - ZN_FRAC_S)
   Q_co2_2 = leaks*Supp_cfm*Cs2 - leakr*rcfm*Cret
