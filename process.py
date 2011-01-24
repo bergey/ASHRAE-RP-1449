@@ -213,9 +213,19 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
       'Exhaust Fan Runtime',
       'HRV Runtime' ]
 
-
-    #heads.append('kWh')
-    #vals.append(
+# Total energy consumption
+    annual_kWh = [
+        (ACKW * RTFc).sum(),                 # AC Electric Use (kWh)
+        (KWHT * RTFh).sum(),                 # Heater Electric Use (kWh)
+        (RTFacf * FANKW).sum(),              # Supply Fan Electric Use (kWh)
+        (RTFd * DKW).sum(),                  # Des Unit Electric Use (kWh)
+        (RTFdf * DFANKW).sum(),              # Des FAN Electric Use (kWh)
+        (rtfvf * KWVF).sum(),                # Vent Damp/Fan Electric Use (kWh)
+        (rtfxf * KWXF).sum(),                # Exhaust Fan Electric Use (kWh)
+        (rtfhf * KWHF).sum(),                # HRV Electric Use (kWh)
+    ]
+    heads.append('Annual kWh (HVAC)')
+    vals.append( annual_kWh.sum() )
 
     #fmt_str = ','.join(['%.1f' for each in l]) + ','
     #f.write(fmt_str % tuple(l))
