@@ -494,7 +494,7 @@ if __name__ == "__main__":
             print("creating {0}".format(trd))
             i = int(float(line['Run']))
             MakeCaseFile(i, line['BaseFile'], dirname, trd)
-            shutil.move(trd, os.path.join(dirname, trd)
+            shutil.move(trd, os.path.join(dirname, trd))
     else:
           #raise
 #except:
