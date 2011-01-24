@@ -140,10 +140,10 @@ def GetMnuOption(col, Opt, OptFile):
 
 
 def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
-    print DestFolder
+    #print DestFolder
     fcase = open("%s/SimRuns.csv" % DestFolder)
     #print fcase
-    print "Opened SimRuns.csv"
+    #print "Opened SimRuns.csv"
     CaseLines = fcase.readlines()
     fcase.close()
     #print "Closed SimRuns.csv"
@@ -476,18 +476,16 @@ if __name__ == "__main__":
                     shutil.move(file, os.path.join(run_dir,file))
                 shutil.move(trd, os.path.join(run_dir, trd))
     elif sys.argv[1]=='-dryrun':
-      dirname = dt.datetime.now().strftime('%Y-%m-%d-%H:%M-trds')
+      dirname = dt.datetime.now().strftime('%Y-%m-%d-%H%M-trds')
       if not exists(dirname):
         os.mkdir(dirname)
       for csvname in sys.argv[2:]:
         parametrics = reader(open(csvname))
         print("opened {0}".format(csvname))
         simruns = writer(open(os.path.join(dirname, 'SimRuns.csv'),'w'))
-        print "opened simruns"
         for line in parametrics:
             simruns.writerow(line[2:])
         del simruns # this is important, before we open the file again
-        print "finished writing simruns"
         parametrics = DictReader(open(csvname))
         for line in parametrics:
             trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
