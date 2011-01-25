@@ -1,7 +1,8 @@
 import csv
 from math import sqrt
+import os
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'HCFM', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
 
 
@@ -84,9 +85,10 @@ def sim_line(z,h,s,rh,v):
     leaks = 0
     leakr = 0
     duct_Rval = 1
+    Ht_QIN = 40
   elif h==70:
 # TODO punt for now
-    pass
+    Ht_QIN = 40
   elif h==85:
     ELA = ach_to_ela(5)
     WCFM_H = 0.35
@@ -96,6 +98,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.03 # 5% total leakage, split 60/40
     leakr = 0.02
     duct_Rval = 8
+    Ht_QIN = 60
   elif h==100:
     ELA = ach_to_ela(7)
     WCFM_H = 0.5
@@ -105,6 +108,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.06 # 10% total
     leakr = 0.04
     duct_Rval = 6
+    Ht_QIN = 60
   elif h==130:
     ELA = ach_to_ela(10)
     WCFM_H = 0.5
@@ -114,6 +118,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.12
     leakr = 0.08
     duct_Rval = 6
+    Ht_QIN = 60
   else:
     print("Shouldn't get here: HERS {0}".format(h))
     return None
@@ -135,6 +140,7 @@ def sim_line(z,h,s,rh,v):
     WeatherFile = 'Miami-FL'
     HRV_eS = 0.7
     HRV_eL = 0.6
+    Ht_QIN = 40
   elif z==2:
     WeatherFile = 'Houston-TX'
     HRV_eS = 0.7
@@ -189,9 +195,11 @@ def sim_line(z,h,s,rh,v):
     exh_cfm = 0
     HRV_CFM = 0
     HRV_W = 0
-    fctyp5 = 0
-    ftim_ON5 = 0
-    ftim_OFF5 = 0
+    if not 'fctyp5' in locals():
+      # fan cycling not required by DH system
+      fctyp5 = 0
+      ftim_ON5 = 0
+      ftim_OFF5 = 0
     fctyp7 = 0
     ftim_ON7 = 0
     ftim_OFF7 = 0
@@ -208,9 +216,11 @@ def sim_line(z,h,s,rh,v):
     exh_cfm = vent0
     HRV_CFM = 0
     HRV_W = 0
-    fctyp5 = 0
-    ftim_ON5 = 0
-    ftim_OFF5 = 0
+    if not 'fctyp5' in locals():
+      # fan cycling not required by DH system
+      fctyp5 = 0
+      ftim_ON5 = 0
+      ftim_OFF5 = 0
     fctyp7 = 0
     ftim_ON7 = 0
     ftim_OFF7 = 0
@@ -227,7 +237,7 @@ def sim_line(z,h,s,rh,v):
     exh_cfm = 0
     HRV_CFM = 0
     HRV_W = 0
-    fctyp5 = 3
+    fctyp5 = 3 # CFIS requires more fan runtime than DH mixing
     ftim_ON5 = 0.17 # 33% of hour, two cycles per hour
     ftim_OFF5 = 0.33
     fctyp7 = 5
@@ -246,6 +256,11 @@ def sim_line(z,h,s,rh,v):
     exh_cfm = 0
     HRV_CFM = 2*vent0 # twice 62.2 for 50% of hour
     HRV_W = 0.5*HRV_CFM # 0.5 W/CFM per Task 4 report
+    if not 'fctyp5' in locals():
+      # fan cycling not required by DH system
+      fctyp5 = 0
+      ftim_ON5 = 0
+      ftim_OFF5 = 0
     fctyp5 = 3
     ftim_ON5 = 0.5 # concurrent with HRV
     ftim_OFF5 = 0.5
@@ -303,16 +318,21 @@ def by_system(systems):
       for v in [0, 1, 2, 3]:
         lcount = 0
         filename = "s{0}h{1}v{2}.csv".format(s,h,v)
-        file = csv.writer(open(filename, 'w'))
-        file.writerow(head)
+        handle = open(filename, 'w')
+        out_csv = csv.writer(handle)
+        out_csv.writerow(head)
         for z in range(1,6):
           for rh in [50, 60]:
             row = sim_line(z,h,s,rh,v)
             if row:
               lcount += 1
               row[head.index('Run')] = lcount
-              file.writerow(row)
-        print "%s lines in %s" % (lcount, filename)
+              out_csv.writerow(row)
+        if lcount==0:
+            handle.close()
+            os.remove(filename)
+        else:
+            print "%s lines in %s" % (lcount, filename)
 
 def just_one(z, h, s, rh, v):
   filename = 'z{0}h{1}s{2}v{3}rh{4}.csv'.format(z,h,s,v,rh) 
