@@ -193,7 +193,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
             CaseTags.extend(['DTYPE','DPAR3a','DPAR4','DPAR5','DPAR6','DPAR7','DPAR8','DPAR9','DPAR10','DPAR11','DPAR12','DPAR13','DPAR14','DPAR15','DPAR16','DPAR17','DPAR18'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11],opt[12],opt[13],opt[14],opt[15],opt[16],opt[17],opt[18]])
         elif case.upper() == 'ANO':
-            opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'AC_Units.txt')
+            opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'ac_units.txt')
             if opt == None: continue
             CaseTags.extend(['IAC','AC_EER','AC_SHR','WCFM_AC','chrg_ratio','exp_type','rown','hparea','ihp'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11]])
