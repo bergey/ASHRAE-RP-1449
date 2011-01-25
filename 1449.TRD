@@ -904,8 +904,8 @@ WW_n = 0.67
 WW_c = ELA_SI*(2/1.2)^0.5*4^(0.5-WW_n) ! where 1.2 is density of air
 WW_Qs = WW_c*WW_Cs*ABS(TAI_SI-TAO_SI)^WW_n ! stack effect
 WW_Qw = WW_c*WW_Cw*(WW_s*WW_G*VW_SI)^(2*WW_n) ! wind induced infiltration
-WW_Q = (WW_Qs^2 + WW_Qw^2)^0.5
-ACH_WW = WW_Q*35.3147/VOL*60 ! VOL in cubic feet
+WW_Q = (WW_Qs^2 + WW_Qw^2)^0.5 ! Q in m^3/s
+ACH_WW = WW_Q*35.3147*3600/VOL ! VOL in cubic feet
 ! Pick Infiltration Model
 ACH0 = EQL(ACH_TYPE,1)*ACH_file+EQL(ACH_TYPE,2)*ACH_SET + GT(ACH_TYPE,2)*LT(ACH_TYPE,6)*ACH_ASHRAE + GT(ACH_TYPE,5)*LT(ACH_TYPE,11)* ACH_SG + GT(ACH_TYPE,10)*ACH_WW
 *
