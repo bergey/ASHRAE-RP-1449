@@ -7,7 +7,8 @@ import numpy as np
 from glob import glob
 import re
 import shutil
-graphs = False
+import platform
+graphs = platform.system() == 'Linux'
 if graphs:
     from graphs import *
 
@@ -144,10 +145,10 @@ def rh_above_threshold(threshold, RHi):
     vals = [i.sum()]
 
 # RH events over 4, 8 hours
-    heads.append('RH events 60% for 4+ hours')
-    vals.append( long_events(RHi > 60, 4) )
-    heads.append('RH events 60% for 8+ hours')
-    vals.append( long_events(RHi > 60, 8) )
+    heads.append('RH events {0}% for 4+ hours'.format(threshold))
+    vals.append( long_events(RHi > threshold, 4) )
+    heads.append('RH events {0}% for 8+ hours'.format(threshold))
+    vals.append( long_events(RHi > threshold, 8) )
 
     return (heads, vals)
 
@@ -168,7 +169,7 @@ def rh_stats(RHi, **hourly):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, **hourly):
+def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, **hourly):
     heads = []
     vals = []
 
@@ -270,6 +271,15 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
     heads.append('AHU fan energy for Ventilation and Mixing')
     vals.append( ( (RTFacf - RTFc - RTFh) * FANKW ).sum() )
 
+# Infiltration --- mechanical and natural
+    heads.append('Lowest Infiltration in one hour')
+    vals.append(ACH.min())
+
+    heads.append('Mean Infiltration')
+    vals.append(ACH.mean())
+
+    heads.append('Highest Infiltration in one hour')
+    vals.append(ACH.max())
 
 # Total energy consumption
     heads.append('Total annual kWh')
