@@ -1096,7 +1096,7 @@ Cret = (C_i*(1.-leakr) 		+  C_i2*leakr)*(1-RTFe) + C_o*RTFe
 *  HRV/ERV Calculations
 *
 EQUATIONS 4
-KWHF = HRV_W * RTFhf/1000 ! kW
+KWHF = HRV_W * 1000 ! kW
 Thrv = TAO + HRV_eS * (TAI_1 - TAO) + HRV_W*3.412*1.08/(HRV_CFM+0.001)/2 ! Draws air only from Zone 1 and outside
 Whrv = WAO + HRV_eL * (WAI_1 - WAO) 
 Chrv = C_o + HRV_eC * (C_i - C_o) 
@@ -1126,7 +1126,7 @@ PARAMETERS 31
    TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
 INPUTS 13
 * Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off	T_ON_c	T_OFF_c  fspd_off2_d
-  Taci waci   TAO  WAO    0,0     bpON  rtfacf  rtfc  0,0      fspd_off_ac     T_ON_c  T_Off_c   fspd_off2_d
+  Taci waci   TAO  WAO    Macmx0     bpON  rtfacf  rtfc  0,0      fspd_off_ac     T_ON_c  T_Off_c   fspd_off2_d
   95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0        0
 * trace 0 3450
 ************************************************************************
