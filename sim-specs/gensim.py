@@ -85,10 +85,10 @@ def sim_line(z,h,s,rh,v):
     leaks = 0
     leakr = 0
     duct_Rval = 1
-    Ht_QIN = 40
+    Ht_QIN = 40000
   elif h==70:
 # TODO punt for now
-    Ht_QIN = 40
+    Ht_QIN = 40000
   elif h==85:
     ELA = ach_to_ela(5)
     WCFM_H = 0.35
@@ -98,7 +98,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.03 # 5% total leakage, split 60/40
     leakr = 0.02
     duct_Rval = 8
-    Ht_QIN = 60
+    Ht_QIN = 60000
   elif h==100:
     ELA = ach_to_ela(7)
     WCFM_H = 0.5
@@ -108,7 +108,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.06 # 10% total
     leakr = 0.04
     duct_Rval = 6
-    Ht_QIN = 60
+    Ht_QIN = 60000
   elif h==130:
     ELA = ach_to_ela(10)
     WCFM_H = 0.5
@@ -118,7 +118,7 @@ def sim_line(z,h,s,rh,v):
     leaks = 0.12
     leakr = 0.08
     duct_Rval = 6
-    Ht_QIN = 60
+    Ht_QIN = 60000
   else:
     print("Shouldn't get here: HERS {0}".format(h))
     return None
@@ -140,7 +140,7 @@ def sim_line(z,h,s,rh,v):
     WeatherFile = 'Miami-FL'
     HRV_eS = 0.7
     HRV_eL = 0.6
-    Ht_QIN = 40
+    Ht_QIN = 40000
   elif z==2:
     WeatherFile = 'Houston-TX'
     HRV_eS = 0.7
