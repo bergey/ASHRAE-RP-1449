@@ -233,7 +233,7 @@ def sim_line(z,h,s,rh,v):
   elif v==2: # CFIS
     if h == 130:
       return None
-    VCFM = vent0
+    VCFM = vent0*3 # average vent0 over the hour
     exh_cfm = 0
     HRV_CFM = 0
     HRV_W = 0
