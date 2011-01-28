@@ -14,7 +14,7 @@ from csv import reader,writer,DictWriter, DictReader
 logf = 0
 
 # path to external harddrive dir
-external = '/cygdrive/d/'
+external = '/cygdrive/c/'
 
     
 ##    ##### Plots Section #####
