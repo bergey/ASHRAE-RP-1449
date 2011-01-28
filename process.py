@@ -133,11 +133,13 @@ def contiguous_regions(condition):
     return idx
 
 def long_events(condition, length):
-  count = 0
-  for start, stop in contiguous_regions(condition):
-    if stop - start > length:
-      count += 1
-  return count
+    bounds = contiguous_regions(condition)
+    return (bounds[:,1] - bounds[:,0] >= length).sum()
+  #count = 0
+  #for start, stop in contiguous_regions(condition):
+    #if stop - start >= length:
+      #count += 1
+  #return count
 
 def rh_above_threshold(threshold, RHi):
     i = np.where(RHi > threshold, 1, 0)
