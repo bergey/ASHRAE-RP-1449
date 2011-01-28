@@ -27,7 +27,7 @@ for name, hours, avg in zip(['Weekday_Sensible', 'Weekend_Sensible', 'Weekday_La
     d2 = n+p-2*h
     for t in map( (lambda x: x/100.0), range(-50,50,2)):
       BTUs = d2*t**2 + d1*(t+0.5) + d0 - (d2/12 + d1/2)
-      str_out = '{0:.5}\n'.format(BTUs/avg/50)
+      str_out = '{0:.5}\n'.format(BTUs/avg)
       fout.write(str_out)
   fout.close()
 
