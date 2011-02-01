@@ -187,6 +187,7 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
     vals.extend(v)
 
 
+# Temperature 
     heads.append('average T')
     vals.append(Ti.mean())
 
@@ -196,6 +197,19 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
     heads.append('min T')
     vals.append(Ti.min())
 
+    heads.append('hours below 67.5F')
+    vals.append( np.where(Ti < 67.5, 1, 0).sum() )
+
+    heads.append('hours below 67F')
+    vals.append( np.where(Ti < 67, 1, 0).sum() )
+
+    heads.append('hours above 78.5F')
+    vals.append( np.where(Ti > 78.5, 1, 0).sum() )
+
+    heads.append('hours above 79F')
+    vals.append( np.where(Ti > 79, 1, 0).sum() )
+
+# CO2
     heads.append('max CO2')
     vals.append( C_i.max() * 1e6 )
     
