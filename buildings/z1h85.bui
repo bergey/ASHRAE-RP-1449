@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   D:\BSC\TRN-Resdh4\ashrae_dh\buildings\z1h85.bui
+*   FOR BUILDING:   C:\TRN-Resdh4\bldgs\z1h85.bui
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -375,6 +375,15 @@ OUTPUTS
         =  38 : SQGCON - sum of internal convective gains for group of zones
         =  19 : SURF = 5,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  43 : SGQRAD - sum of total internal radiative gains for group of zones
+ AIRNODES = ROOM 
+ NTYPES = 903 : SURF = 7,  : BAL_3 - solar balance for a window
+        = 903 : SURF = 8,  : BAL_3 - solar balance for a window
+        = 903 : SURF = 9,  : BAL_3 - solar balance for a window
+        = 903 : SURF = 10,  : BAL_3 - solar balance for a window
+        = 906 : SURF = 3, 4, 5, 6, 11,  : BAL_6 - energy balance for a surface
+        = 906 : SURF = 2,  : BAL_6 - energy balance for a surface
+        = 906 : SURF = 1,  : BAL_6 - energy balance for a surface
+        = 906 : SURF = 7, 8, 9, 10,  : BAL_6 - energy balance for a surface
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  E n d
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
