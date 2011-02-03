@@ -11,6 +11,7 @@ assign for_31.dat 31
 assign for_41.dat 41
 assign for_51.dat 51
 assign for_71.dat 71
+assign for_72.dat 72
 assign for_81.dat 81
 assign for_91.dat 91
 assign for_99.dat 99
@@ -1480,6 +1481,20 @@ ISTEP ISTEP 8760 71 0 0 0 0 0 1
 INPUTS 10
 69,1    69,2    69,3 69,4 69,5  69,6  69,7 69,8  69,9 69,10
 PEOPLE  SENS   LATG INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
+******************************************************************************
+UNIT 50 TYPE 24 integrator - Enclosure Loads
+PARAMETERS 2
+ISTEP 0
+INPUTS 8
+5,12    5,13    5,14    5,15    5,16    5,17    5,18    5,19
+0       0       0       0       0       0       0       0
+******************************************************************************
+UNIT 74 TYPE 25 summary printer - Enclosure Loads
+PARAMETERS 10
+ISTEP ISTEP 8760 72 0 0 0 0 0 1
+INPUTS 8
+50,1    50,2    50,3    50,4    50,5    50,6    50,7    50,8
+SOLN    SOLE    SOLS    SOLW    QWALLS  QCEIL   QFLR    QWIN
 ******************************************************************************
 UNIT 70 TYPE 24 integrator - Air Flows
 PARAMETERS 2
