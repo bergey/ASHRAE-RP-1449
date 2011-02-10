@@ -78,16 +78,20 @@ def collect_specs(spec_path, data_path):
   return [(parse_name(s), scenario_path(s)) for s in spec]
 
 def output_row(desc, f, hourly, out_csv, first_run=False):
-    h, sum_vals = f(**hourly)
-    if first_run: 
-        # first row of output
-        out_csv.writerow( parse_name(None) + h )
-    out_csv.writerow(desc + sum_vals)
+    #try:
+        h, sum_vals = f(**hourly)
+        if first_run: 
+            # first row of output
+            out_csv.writerow( parse_name(None) + h )
+        out_csv.writerow(desc + sum_vals)
+    #except TypeError:
+        #print "Not enough data for {1}; skipping: {0}".format(desc, f.__name__)
 
 def summarize_csv(specs):
   first_run = True
   general_csv = output_handle('summary')
   rh_csv = output_handle('rh-thresholds')
+  check_csv = output_handle('checking')
   for desc, scenario_path in specs:
     name = desc[-1]
     if exists(scenario_path):
@@ -96,6 +100,10 @@ def summarize_csv(specs):
         print "summarizing {0}".format(name)
         output_row(desc, summarize_run, hourly, general_csv, first_run)
         output_row(desc, rh_stats, hourly, rh_csv, first_run)
+        output_row(desc, check_loads, hourly, check_csv, first_run)
+        for k in ['SOLN', 'SOLE', 'SOLS', 'SOLW', 'QWALLS', 'QCEIL', 'QFLR', ]:
+            if not k in hourly:
+                print("missing {0}".format(k))
         first_run = False # flag, never becomes true again in this call
         if graphs:
             print "graphing {0}".format(name)
@@ -103,6 +111,9 @@ def summarize_csv(specs):
             plot_Wrt(name, hourly)
             plot_rh_hist(name, hourly)
             plot_t_hist(name, hourly)
+            #plot_AC_balance(name, hourly)
+            #plot_AC_hist(name, hourly)
+            #plot_window_gain(name, hourly)
     else:
 # scenario path does not exist
         print "skipping {0}: path {1} does not exist".format(name, scenario_path)
@@ -153,6 +164,17 @@ def rh_above_threshold(threshold, RHi):
     vals.append( long_events(RHi > threshold, 8) )
 
     return (heads, vals)
+
+def check_loads(SOLN, SOLE, SOLS, SOLW, QWALLS, QCEIL, QFLR, **hourly):
+    ret = [ ( 'Window Gain North', SOLN.sum() ),
+            ( 'Window Gain East',  SOLE.sum() ),
+            ( 'Window Gain South', SOLS.sum() ),
+            ( 'Window Gain West',  SOLW.sum() ),
+            ( 'Total Wall Gain', QWALLS.sum() ),
+            ( 'Ceiling Gain',     QCEIL.sum() ),
+            ( 'Floor Gain',        QFLR.sum() ),
+          ]
+    return map(list, zip(*ret))
 
 def rh_stats(RHi, **hourly):
     heads = ['mean RH']
