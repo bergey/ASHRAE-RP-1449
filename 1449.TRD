@@ -1402,10 +1402,10 @@ Q2_EQ_KJHR
 EQUATIONS 4
   QCONV = SENS
 * convert from kJ/hr to Btu/h
-  INFQ = [5,5]*.947187
+  INFQ = [5,7]*.947187
 * convert from kJ/hr to kg/hr and subtract ventilation gains
-  SCHWg = [5,6]/2460.26 - msupp_si*(Wsupp2-WAI)
-  SCHQs = [5,5]
+  SCHWg = [5,8]/2460.26 - msupp_si*(Wsupp2-WAI)
+  SCHQs = [5,9] + [5,11] ! convective plus radiative
 *
 *
 * Sum of all latent loads minus AC (Zone transfers balance out)   
