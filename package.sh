@@ -5,4 +5,3 @@ cp buildings/* package
 cp lookups/* package
 cp res_dh_sched.dat package
 cp -r sim-specs package
-cp -r package/ /mnt/flash
