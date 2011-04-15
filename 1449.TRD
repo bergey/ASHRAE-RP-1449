@@ -188,7 +188,7 @@ EQUATIONS 10
 *
 EQUATIONS 6
   HRV_ec = 0.
-*   HRV leakage or "crossover"
+*   HRV leakage or "crossover" (Not Used)
   HRV_eS = 6.7000000000000E-01
 *| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
   HRV_eL = 0.0000000000000E+00
