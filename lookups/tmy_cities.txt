@@ -1,0 +1,240 @@
+239
+1,1-AK-Anchorage              ,61.17,Anchorage-AK.tm2          ,53,12,34
+2,2-AK-Annette                ,55.03,Annette-AK.tm2            ,53,12,37
+3,3-AK-Barrow                 ,71.30,Barrow-AK.tm2             ,53,12,36
+4,4-AK-Bethel                 ,60.78,Bethel-AK.tm2             ,53,12,38
+5,5-AK-Bettles                ,66.92,Bettles-AK.tm2            ,53,12,31
+6,6-AK-Big Delta              ,64.00,Big_Delta-AK.tm2          ,53,12,36
+7,7-AK-Cold Bay               ,55.20,Cold_Bay-AK.tm2           ,53,12,40
+8,8-AK-Fairbanks              ,64.82,Fairbanks-AK.tm2          ,53,12,34
+9,9-AK-Gulkana                ,62.15,Gulkana-AK.tm2            ,53,12,36
+10,10-AK-King Salmon          ,58.68,King_Salmon-AK.tm2        ,53,12,36
+11,11-AK-Kodiak               ,57.75,Kodiak-AK.tm2             ,53,12,34
+12,12-AK-Kotzebue             ,66.87,Kotzebue-AK.tm2           ,53,12,33
+13,13-AK-Mcgrath              ,62.97,Mcgrath-AK.tm2            ,53,12,45
+14,14-AK-Nome                 ,64.50,Nome-AK.tm2               ,53,12,32
+15,15-AK-St Paul Is.          ,57.15,St_Paul_Is.-AK.tm2        ,39,31,32
+16,16-AK-Talkeetna            ,62.30,Talkeetna-AK.tm2          ,53,12,34
+17,17-AK-Yakutat              ,59.52,Yakutat-AK.tm2            ,53,12,30
+18,18-AL-Birmingham           ,33.57,Birmingham-AL.tm2         ,61,19,32
+19,19-AL-Huntsville           ,34.65,Huntsville-AL.tm2         ,61,19,54
+20,20-AL-Mobile               ,30.68,Mobile-AL.tm2             ,70,15,36
+21,21-AL-Montgomery           ,32.30,Montgomery-AL.tm2         ,67,18,36
+22,22-AR-Fort Smith           ,35.33,Fort_Smith-AR.tm2         ,62,23,32
+23,23-AR-Little Rock          ,34.73,Little_Rock-AR.tm2        ,63,21,36
+24,24-AZ-Flagstaff            ,35.13,Flagstaff-AZ.tm2          ,73,23,36
+25,25-AZ-Phoenix              ,33.43,Phoenix-AZ.tm2            ,73,23,36
+26,26-AZ-Prescott             ,34.65,Prescott-AZ.tm2           ,73,23,37
+27,27-AZ-Tucson               ,32.12,Tucson-AZ.tm2             ,70,18,38
+28,28-CA-Arcata               ,40.98,Arcata-CA.tm2             ,55,17,31
+29,29-CA-Bakersfield          ,35.42,Bakersfield-CA.tm2        ,64, 7,33
+30,30-CA-Daggett              ,34.87,Daggett-CA.tm2            ,64, 7,34
+31,31-CA-Fresno               ,36.77,Fresno-CA.tm2             ,69,23,43
+32,32-CA-Long Beach           ,33.82,Long_Beach-CA.tm2         ,64, 7,37
+33,33-CA-Los Angeles          ,33.93,Los_Angeles-CA.tm2        ,64, 7,38
+34,34-CA-Sacramento           ,38.52,Sacramento-CA.tm2         ,47,22,38
+35,35-CA-San Diego            ,32.73,San_Diego-CA.tm2          ,64, 7,32
+36,36-CA-San Francisco        ,37.62,San_Francisco-CA.tm2      ,69,23,32
+37,37-CA-Santa Maria          ,34.90,Santa_Maria-CA.tm2        ,65,17,38
+38,38-CO-Alamosa              ,37.45,Alamosa-CO.tm2            ,51,21,37
+39,39-CO-Boulder              ,40.02,Boulder-CO.tm2            ,52,22,34
+40,40-CO-Colorado Springs     ,38.82,Colorado_Springs-CO.tm2   ,51,21,37
+41,41-CO-Eagle                ,39.65,Eagle-CO.tm2              ,52,22,39
+42,42-CO-Grand Junction       ,39.12,Grand_Junction-CO.tm2     ,55,25,37
+43,43-CO-Pueblo               ,38.28,Pueblo-CO.tm2             ,51,21,35
+44,44-CT-Bridgeport           ,41.17,Bridgeport-CT.tm2         ,55,22,33
+45,45-CT-Hartford             ,41.93,Hartford-CT.tm2           ,51,21,32
+46,46-DE-Wilmington           ,39.67,Wilmington-DE.tm2         ,55,22,33
+47,47-FL-Daytona Beach        ,29.18,Daytona_Beach-FL.tm2      ,70,15,31
+48,48-FL-Jacksonville         ,30.50,Jacksonville-FL.tm2       ,70,15,39
+49,49-FL-Key West             ,24.55,Key_West-FL.tm2           ,70,15,37
+50,50-FL-Miami                ,25.80,Miami-FL.tm2              ,70,15,37
+51,51-FL-Tallahassee          ,30.38,Tallahassee-FL.tm2        ,67,17,36
+52,52-FL-Tampa                ,27.97,Tampa-FL.tm2              ,70,15,36
+53,53-FL-West Palm Beach      ,26.68,West_Palm_Beach-FL.tm2    ,70,15,35
+54,54-GA-Athens               ,33.95,Athens-GA.tm2             ,62,19,32
+55,55-GA-Atlanta              ,33.65,Atlanta-GA.tm2            ,62,19,34
+56,56-GA-Augusta              ,33.37,Augusta-GA.tm2            ,65,18,30
+57,57-GA-Columbus             ,32.52,Columbus-GA.tm2           ,67,17,39
+58,58-GA-Macon                ,32.70,Macon-GA.tm2              ,67,17,32
+59,59-GA-Savannah             ,32.13,Savannah-GA.tm2           ,66,16,35
+60,60-HI-Hilo                 ,19.72,Hilo-HI.tm2               ,64, 7,36
+61,61-HI-Honolulu             ,21.33,Honolulu-HI.tm2           ,64, 7,54
+62,62-HI-Kahului              ,20.90,Kahului-HI.tm2            ,64, 7,35
+63,63-HI-Lihue                ,21.98,Lihue-HI.tm2              ,64, 7,36
+64,64-IA-Des Moines           ,41.53,Des_Moines-IA.tm2         ,52,28,35
+65,65-IA-Mason City           ,43.15,Mason_City-IA.tm2         ,52,28,39
+66,66-IA-Sioux City           ,42.40,Sioux_City-IA.tm2         ,51,29,35
+67,67-IA-Waterloo             ,42.55,Waterloo-IA.tm2           ,52,28,37
+68,68-ID-Boise                ,43.57,Boise-ID.tm2              ,53,21,37
+69,69-ID-Pocatello            ,42.92,Pocatello-ID.tm2          ,46,23,35
+70,70-IL-Chicago              ,41.78,Chicago-IL.tm2            ,51,25,28
+71,71-IL-Moline               ,41.45,Moline-IL.tm2             ,52,28,32
+72,72-IL-Peoria               ,40.67,Peoria-IL.tm2             ,53,26,35
+73,73-IL-Rockford             ,42.20,Rockford-IL.tm2           ,46,24,35
+74,74-IL-Springfield          ,39.83,Springfield-IL.tm2        ,53,26,38
+75,75-IN-Evansville           ,38.05,Evansville-IN.tm2         ,60,22,37
+76,76-IN-Fort Wayne           ,41.00,Fort_Wayne-IN.tm2         ,53,24,33
+77,77-IN-Indianapolis         ,39.73,Indianapolis-IN.tm2       ,55,24,36
+78,78-IN-South Bend           ,41.70,South_Bend-IN.tm2         ,52,25,35
+79,79-KS-Dodge City           ,37.77,Dodge_City-KS.tm2         ,57,25,33
+80,80-KS-Goodland             ,39.37,Goodland-KS.tm2           ,51,21,35
+81,81-KS-Topeka               ,39.07,Topeka-KS.tm2             ,56,26,34
+82,82-KS-Wichita              ,37.65,Wichita-KS.tm2            ,57,25,35
+83,83-KY-Covington            ,39.07,Covington-KY.tm2          ,56,24,34
+84,84-KY-Lexington            ,38.03,Lexington-KY.tm2          ,60,22,32
+85,85-KY-Louisville           ,38.18,Louisville-KY.tm2         ,60,22,34
+86,86-LA-Baton Rouge          ,30.53,Baton_Rouge-LA.tm2        ,70,15,36
+87,87-LA-Lake Charles         ,30.12,Lake_Charles-LA.tm2       ,70,16,35
+88,88-LA-New Orleans          ,29.98,New_Orleans-LA.tm2        ,70,15,32
+89,89-LA-Shreveport           ,32.47,Shreveport-LA.tm2         ,66,19,35
+90,90-MA-Boston               ,42.37,Boston-MA.tm2             ,51,21,36
+91,91-MA-Worchester           ,42.27,Worchester-MA.tm2         ,51,21,37
+92,92-MD-Baltimore            ,39.18,Baltimore-MD.tm2          ,57,22,31
+93,93-ME-Caribou              ,46.87,Caribou-ME.tm2            ,48,22,33
+94,94-ME-Portland             ,43.65,Portland-ME.tm2           ,48,22,54
+95,95-MI-Alpena               ,45.07,Alpena-MI.tm2             ,42,26,36
+96,96-MI-Detroit              ,42.42,Detroit-MI.tm2            ,50,25,35
+97,97-MI-Flint                ,42.97,Flint-MI.tm2              ,50,24,43
+98,98-MI-Grand Rapids         ,42.88,Grand_Rapids-MI.tm2       ,50,24,36
+99,99-MI-Houghton             ,47.17,Houghton-MI.tm2           ,41,28,54
+100,100-MI-Lansing            ,42.78,Lansing-MI.tm2            ,50,24,54
+101,101-MI-Muskegon           ,43.17,Muskegon-MI.tm2           ,50,24,37
+102,102-MI-Sault Ste. Marie   ,46.47,Sault_Ste._Marie-MI.tm2   ,42,26,33
+103,103-MI-Traverse City      ,44.73,Traverse_City-MI.tm2      ,46,26,33
+104,104-MN-Duluth             ,46.83,Duluth-MN.tm2             ,41,28,31
+105,105-MN-International Falls,48.57,International_Falls-MN.tm2,39,31,35
+106,106-MN-Minneapolis        ,44.88,Minneapolis-MN.tm2        ,47,29,34
+107,107-MN-Rochester          ,43.92,Rochester-MN.tm2          ,50,24,34
+108,108-MN-Saint Cloud        ,45.55,Saint_Cloud-MN.tm2        ,47,29,31
+109,109-MO-Columbia           ,38.82,Columbia-MO.tm2           ,57,24,36
+110,110-MO-Kansas City        ,39.30,Kansas_City-MO.tm2        ,58,26,54
+111,111-MO-Springfield        ,37.23,Springfield-MO.tm2        ,58,23,32
+112,112-MO-St. Louis          ,38.75,St._Louis-MO.tm2          ,57,24,35
+113,113-MS-Jackson            ,32.32,Jackson-MS.tm2            ,67,18,36
+114,114-MS-Meridian           ,32.33,Meridian-MS.tm2           ,67,18,36
+115,115-MT-Billings           ,45.80,Billings-MT.tm2           ,49,23,31
+116,116-MT-Cut Bank           ,48.60,Cut_Bank-MT.tm2           ,48,23,36
+117,117-MT-Glasgow            ,48.22,Glasgow-MT.tm2            ,45,29,36
+118,118-MT-Great Falls        ,47.48,Great_Falls-MT.tm2        ,48,23,35
+119,119-MT-Helena             ,46.60,Helena-MT.tm2             ,48,23,32
+120,120-MT-Kalispell          ,48.30,Kalispell-MT.tm2          ,46,21,38
+121,121-MT-Lewistown          ,47.05,Lewistown-MT.tm2          ,48,23,35
+122,122-MT-Miles City         ,46.43,Miles_City-MT.tm2         ,49,23,32
+123,123-MT-Missoula           ,46.92,Missoula-MT.tm2           ,46,21,36
+124,124-NC-Asheville          ,35.43,Asheville-NC.tm2          ,62,19,33
+125,125-NC-Cape Hatteras      ,35.27,Cape_Hatteras-NC.tm2      ,61,20,54
+126,126-NC-Charlotte          ,35.22,Charlotte-NC.tm2          ,62,19,32
+127,127-NC-Greensboro         ,36.08,Greensboro-NC.tm2         ,60,20,54
+128,128-NC-Raleigh            ,35.87,Raleigh-NC.tm2            ,60,20,54
+129,129-NC-Wilmington         ,34.27,Wilmington-NC.tm2         ,65,17,33
+130,130-ND-Bismarck           ,46.77,Bismarck-ND.tm2           ,44,31,34
+131,131-ND-Fargo              ,46.90,Fargo-ND.tm2              ,42,33,33
+132,132-ND-Minot              ,48.27,Minot-ND.tm2              ,45,29,33
+133,133-NE-Grand Island       ,40.97,Grand_Island-NE.tm2       ,52,27,30
+134,134-NE-Norfolk            ,41.98,Norfolk-NE.tm2            ,51,29,36
+135,135-NE-North Platte       ,41.13,North_Platte-NE.tm2       ,51,26,37
+136,136-NE-Omaha              ,41.37,Omaha-NE.tm2              ,53,28,35
+137,137-NE-Scottsbluff        ,41.87,Scottsbluff-NE.tm2        ,48,21,37
+138,138-NH-Concord            ,43.20,Concord-NH.tm2            ,48,22,36
+139,139-NJ-Atlantic City      ,39.45,Atlantic_City-NJ.tm2      ,55,22,34
+140,140-NJ-Newark             ,40.70,Newark-NJ.tm2             ,55,22,32
+141,141-NM-Albuquerque        ,35.05,Albuquerque-NM.tm2        ,59,22,31
+142,142-NM-Tucumcari          ,35.18,Tucumcari-NM.tm2          ,59,22,36
+143,143-NV-Elko               ,40.83,Elko-NV.tm2               ,53,24,28
+144,144-NV-Ely                ,39.28,Ely-NV.tm2                ,47,22,37
+145,145-NV-Las Vegas          ,36.08,Las_Vegas-NV.tm2          ,69,23,36
+146,146-NV-Reno               ,39.50,Reno-NV.tm2               ,52,22,35
+147,147-NV-Tonopah            ,38.07,Tonopah-NV.tm2            ,47,22,34
+148,148-NV-Winnemucca         ,40.90,Winnemucca-NV.tm2         ,52,22,32
+149,149-NY-Albany             ,42.75,Albany-NY.tm2             ,50,25,32
+150,150-NY-Binghamton         ,42.22,Binghamton-NY.tm2         ,48,24,35
+151,151-NY-Buffalo            ,42.93,Buffalo-NY.tm2            ,50,24,31
+152,152-NY-Massena            ,44.93,Massena-NY.tm2            ,46,26,35
+153,153-NY-New York City      ,40.78,New_York_City-NY.tm2      ,55,22,32
+154,154-NY-Rochester          ,43.12,Rochester-NY.tm2          ,49,27,32
+155,155-NY-Syracuse           ,43.12,Syracuse-NY.tm2           ,50,24,38
+156,156-OH-Akron              ,40.92,Akron-OH.tm2              ,52,23,38
+157,157-OH-Cleveland          ,41.40,Cleveland-OH.tm2          ,52,23,36
+158,158-OH-Columbus           ,40.00,Columbus-OH.tm2           ,55,22,34
+159,159-OH-Dayton             ,39.90,Dayton-OH.tm2             ,56,24,37
+160,160-OH-Mansfield          ,40.82,Mansfield-OH.tm2          ,52,23,34
+161,161-OH-Toledo             ,41.60,Toledo-OH.tm2             ,51,25,35
+162,162-OH-Youngstown         ,41.27,Youngstown-OH.tm2         ,52,23,34
+163,163-OK-Oklahoma City      ,35.40,Oklahoma_City-OK.tm2      ,62,23,36
+164,164-OK-Tulsa              ,36.20,Tulsa-OK.tm2              ,62,23,34
+165,165-OR-Astoria            ,46.15,Astoria-OR.tm2            ,53, 9,29
+166,166-OR-Burns              ,43.58,Burns-OR.tm2              ,53,21,35
+167,167-OR-Eugene             ,44.12,Eugene-OR.tm2             ,54,13,34
+168,168-OR-Medford            ,42.37,Medford-OR.tm2            ,55,17,33
+169,169-OR-North Bend         ,43.42,North_Bend-OR.tm2         ,55,17,35
+170,170-OR-Pendleton          ,45.68,Pendleton-OR.tm2          ,53,23,36
+171,171-OR-Portland           ,45.60,Portland-OR.tm2           ,54,13,34
+172,172-OR-Redmond            ,44.27,Redmond-OR.tm2            ,54,13,32
+173,173-OR-Salem              ,44.92,Salem-OR.tm2              ,54,13,39
+174,174-PA-Allentown          ,40.65,Allentown-PA.tm2          ,52,23,37
+175,175-PA-Bradford           ,41.80,Bradford-PA.tm2           ,50,24,33
+176,176-PA-Erie               ,42.08,Erie-PA.tm2               ,50,24,43
+177,177-PA-Harrisburg         ,40.22,Harrisburg-PA.tm2         ,55,23,36
+178,178-PA-Philadelphia       ,39.88,Philadelphia-PA.tm2       ,55,22,36
+179,179-PA-Pittsburgh         ,40.50,Pittsburgh-PA.tm2         ,52,23,31
+180,180-PA-Wilkes/Barre       ,41.33,Wilkes-barre-PA.tm2       ,52,23,38
+181,181-PA-Williamsport       ,41.27,Williamsport-PA.tm2       ,52,23,37
+182,182-PI-Guam               ,13.55,Guam-PI.tm2               ,64, 7,33
+183,183-PR-San Juan           ,18.43,San_Juan-PR.tm2           ,64, 7,33
+184,184-RI-Providence         ,41.73,Providence-RI.tm2         ,51,21,33
+185,185-SC-Charleston         ,32.90,Charleston-SC.tm2         ,66,16,36
+186,186-SC-Columbia           ,33.95,Columbia-SC.tm2           ,65,18,38
+187,187-SC-Greenville         ,34.90,Greenville-SC.tm2         ,62,19,37
+188,188-SD-Huron              ,44.38,Huron-SD.tm2              ,47,30,38
+189,189-SD-Pierre             ,44.38,Pierre-SD.tm2             ,47,30,35
+190,190-SD-Rapid City         ,44.05,Rapid_City-SD.tm2         ,50,25,35
+191,191-SD-Sioux Falls        ,43.57,Sioux_Falls-SD.tm2        ,51,29,37
+192,192-TN-Bristol            ,36.48,Bristol-TN.tm2            ,59,20,35
+193,193-TN-Chattanooga        ,35.03,Chattanooga-TN.tm2        ,61,21,54
+194,194-TN-Knoxville          ,35.82,Knoxville-TN.tm2          ,61,21,32
+195,195-TN-Memphis            ,35.05,Memphis-TN.tm2            ,63,21,54
+196,196-TN-Nashville          ,36.12,Nashville-TN.tm2          ,60,21,32
+197,197-TX-Abilene            ,32.43,Abilene-TX.tm2            ,68,21,54
+198,198-TX-Amarillo           ,35.23,Amarillo-TX.tm2           ,62,23,35
+199,199-TX-Austin             ,30.30,Austin-TX.tm2             ,72,16,40
+200,200-TX-Brownsville        ,25.90,Brownsville-TX.tm2        ,72,16,32
+201,201-TX-Corpus Christi     ,27.77,Corpus_Christi-TX.tm2     ,72,16,39
+202,202-TX-El Paso            ,31.80,El_Paso-TX.tm2            ,66,20,36
+203,203-TX-Fort Worth         ,32.83,Fort_Worth-TX.tm2         ,68,21,35
+204,204-TX-Houston            ,29.98,Houston-TX.tm2            ,71,16,32
+205,205-TX-Lubbock            ,33.65,Lubbock-TX.tm2            ,68,21,34
+206,206-TX-Lufkin             ,31.23,Lufkin-TX.tm2             ,71,16,34
+207,207-TX-Midland            ,31.93,Midland-TX.tm2            ,66,20,37
+208,208-TX-Port Arthur        ,29.95,Port_Arthur-TX.tm2        ,66,16,32
+209,209-TX-San Angelo         ,31.37,San_Angelo-TX.tm2         ,64, 7,34
+210,210-TX-San Antonio        ,29.53,San_Antonio-TX.tm2        ,72,16,35
+211,211-TX-Victoria           ,28.85,Victoria-TX.tm2           ,72,16,34
+212,212-TX-Waco               ,31.62,Waco-TX.tm2               ,68,21,34
+213,213-TX-Wichita Falls      ,33.97,Wichita_Falls-TX.tm2      ,68,21,34
+214,214-UT-Cedar City         ,37.70,Cedar_City-UT.tm2         ,47,22,38
+215,215-UT-Salt Lake City     ,40.77,Salt_Lake_City-UT.tm2     ,53,24,36
+216,216-VA-Lynchburg          ,37.33,Lynchburg-VA.tm2          ,59,20,30
+217,217-VA-Norfolk            ,36.90,Norfolk-VA.tm2            ,61,20,36
+218,218-VA-Richmond           ,37.50,Richmond-VA.tm2           ,60,19,36
+219,219-VA-Roanoke            ,37.32,Roanoke-VA.tm2            ,59,20,35
+220,220-VA-Sterling           ,38.95,Sterling-VA.tm2           ,55,17,35
+221,221-VT-Burlington         ,44.47,Burlington-VT.tm2         ,46,26,37
+222,222-WA-Olympia            ,46.97,Olympia-WA.tm2            ,53,12,34
+223,223-WA-Quillayute         ,47.95,Quillayute-WA.tm2         ,53,12,31
+224,224-WA-Seattle            ,47.45,Seattle-WA.tm2            ,53,12,34
+225,225-WA-Spokane            ,47.63,Spokane-WA.tm2            ,49,21,32
+226,226-WA-Yakima             ,46.57,Yakima-WA.tm2             ,53,23,34
+227,227-WI-Eau Claire         ,44.87,Eau_Claire-WI.tm2         ,47,29,35
+228,228-WI-Green Bay          ,44.48,Green_Bay-WI.tm2          ,46,26,36
+229,229-WI-La Crosse          ,43.87,La_Crosse-WI.tm2          ,47,29,35
+230,230-WI-Madison            ,43.13,Madison-WI.tm2            ,49,27,34
+231,231-WI-Milwaukee          ,42.95,Milwaukee-WI.tm2          ,49,27,36
+232,232-WV-Charleston         ,38.37,Charleston-WV.tm2         ,58,20,36
+233,233-WV-Elkins             ,38.88,Elkins-WV.tm2             ,52,20,34
+234,234-WV-Huntington         ,38.37,Huntington-WV.tm2         ,58,20,35
+235,235-WY-Casper             ,42.92,Casper-WY.tm2             ,49,24,33
+236,236-WY-Cheyenne           ,41.15,Cheyenne-WY.tm2           ,48,21,43
+237,237-WY-Lander             ,42.82,Lander-WY.tm2             ,46,24,29
+238,238-WY-Rock Springs       ,41.60,Rock_Springs-WY.tm2       ,51,25,36
+239,239-WY-Sheridan           ,44.77,Sheridan-WY.tm2           ,48,24,37
