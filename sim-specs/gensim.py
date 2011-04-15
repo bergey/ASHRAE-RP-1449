@@ -322,13 +322,14 @@ def full_parametric():
 
 def by_system(systems):
   for s in systems:
+    lcount = 0
+    #filename = "s{0}h{1}v{2}.csv".format(s,h,v)
+    filename = "s{0}.csv".format(s)
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
     for h in [50, 70, 85, 100, 130]:
       for v in [0, 1, 2, 3, 4]:
-        lcount = 0
-        filename = "s{0}h{1}v{2}.csv".format(s,h,v)
-        handle = open(filename, 'w')
-        out_csv = csv.writer(handle)
-        out_csv.writerow(head)
         for z in range(1,6):
           for rh in [50, 60]:
             row = sim_line(z,h,s,rh,v)
@@ -336,10 +337,10 @@ def by_system(systems):
               lcount += 1
               row[head.index('Run')] = lcount
               out_csv.writerow(row)
-        if lcount==0:
+    if lcount==0:
             handle.close()
             os.remove(filename)
-        else:
+    else:
             print "%s lines in %s" % (lcount, filename)
 
 def just_one(z, h, s, rh, v):
