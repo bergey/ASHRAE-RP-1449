@@ -238,3 +238,9 @@
 237,237-WY-Lander             ,42.82,Lander-WY.tm2             ,46,24,29
 238,238-WY-Rock Springs       ,41.60,Rock_Springs-WY.tm2       ,51,25,36
 239,239-WY-Sheridan           ,44.77,Sheridan-WY.tm2           ,48,24,37
+240,240-FL-Miami-TMY3         ,25.80,Miami-FL-3.tm2            ,70,15,37
+241,241-TX-Houston-TMY3       ,29.98,Houston-TX-3.tm2          ,71,16,32
+242,242-GA-Atlanta-TMY3       ,33.65,Atlanta-GA-3.tm2          ,62,19,34
+243,243-TN-Nashville-TMY3     ,36.12,Nashville-TN-3.tm2        ,60,21,32
+244,244-IN-Indianapolis-TMY3  ,39.73,Indianapolis-IN-3.tm2     ,55,24,36
+245,245-FL-Orlando-TMY3       ,28.54,Orlando-FL-3.tm2          ,70,15,37
