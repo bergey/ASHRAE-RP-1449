@@ -137,16 +137,16 @@ def sim_line(z,h,s,rh,v):
 
 # parameters depending on zone, or zone and HERS
   if z==1:
-    WeatherFile = 'Miami-FL'
+    WeatherFile = 'Miami-FL-3'
     Ht_QIN = 40000
   elif z==2:
-    WeatherFile = 'Houston-TX'
+    WeatherFile = 'Houston-TX-3'
   elif z==3:
-    WeatherFile = 'Atlanta-GA'
+    WeatherFile = 'Atlanta-GA-3'
   elif z==4:
-    WeatherFile = 'Nashville-TN'
+    WeatherFile = 'Nashville-TN-3'
   elif z==5:
-    WeatherFile = 'Indianapolis-IN'
+    WeatherFile = 'Indianapolis-IN-3'
 
 # parameters depending only on DH system
   if s==1:
