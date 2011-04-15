@@ -9,7 +9,7 @@ run_index = head.index('Run')
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
 # TODO adjust vent for different house sizes in parametric
 SENS_BASE = 72700 # BTU/day
-LATG_BASE = 16.9 # lbs/day 
+LATG_BASE = 15 # lbs/day 
 
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]
@@ -138,25 +138,15 @@ def sim_line(z,h,s,rh,v):
 # parameters depending on zone, or zone and HERS
   if z==1:
     WeatherFile = 'Miami-FL'
-    HRV_eS = 0.7
-    HRV_eL = 0.6
     Ht_QIN = 40000
   elif z==2:
     WeatherFile = 'Houston-TX'
-    HRV_eS = 0.7
-    HRV_eL = 0.6 
   elif z==3:
     WeatherFile = 'Atlanta-GA'
-    HRV_eS = 0.7 # TODO also run with HRV
-    HRV_eL = 0.6
   elif z==4:
     WeatherFile = 'Nashville-TN'
-    HRV_eS = 0.75
-    HRV_eL = 0
   elif z==5:
     WeatherFile = 'Indianapolis-IN'
-    HRV_eS = 0.75
-    HRV_eL = 0
 
 # parameters depending only on DH system
   if s==1:
@@ -209,6 +199,8 @@ def sim_line(z,h,s,rh,v):
     ftim_ON9 = 0.0
     ftim_OFF9 = 0.0
     ilck91 = 0
+    HRV_eS = 0
+    HRV_eL = 0
   elif v==1: # Exhaust only
     if h == 130:
       return None
@@ -230,6 +222,8 @@ def sim_line(z,h,s,rh,v):
     ftim_ON9 = 0.0
     ftim_OFF9 = 0.0
     ilck91 = 0
+    HRV_eS = 0
+    HRV_eL = 0
   elif v==2: # CFIS
     if h == 130:
       return None
@@ -249,9 +243,22 @@ def sim_line(z,h,s,rh,v):
     ftim_ON9 = 0.0
     ftim_OFF9 = 0.0
     ilck91 = 0
-  elif v==3: # HRV
+    HRV_eS = 0
+    HRV_eL = 0
+  elif v==3 or v==4: # HRV or ERV
     if h == 130 or s in [5,6,7,9]:
       return None
+    if v==4: # ERV
+      HRV_eS = 0.7
+      HRV_eL = 0.6
+      if z==4 or z==5: # Don't use ERV in cold climates
+          return None
+    else: # HRV
+      HRV_eS = 0.75
+      HRV_eL = 0
+      if z==1 or z==2: # prefer ERV; in zone 3 either HRV or ERV
+          return None
+    # parameters the same for ERV or HRV
     VCFM = 0
     exh_cfm = 0
     HRV_CFM = 2*vent0 # twice 62.2 for 50% of hour
@@ -273,6 +280,7 @@ def sim_line(z,h,s,rh,v):
     ftim_ON9 = 0.5
     ftim_OFF9 = 0.5
     ilck91 = 5
+  
 
 # put all of the variables used above into a list in a consistent order
   return order_line(locals())
@@ -304,7 +312,7 @@ def full_parametric():
     for z in range(1,6):
       for s in range(1, 15):
         for rh in [50, 60]:
-          for v in [0, 1, 2, 3]:
+          for v in [0, 1, 2, 3, 4]:
             lcount += 1
             row = sim_line(z,h,s,rh,v)
             if row:
@@ -315,7 +323,7 @@ def full_parametric():
 def by_system(systems):
   for s in systems:
     for h in [50, 70, 85, 100, 130]:
-      for v in [0, 1, 2, 3]:
+      for v in [0, 1, 2, 3, 4]:
         lcount = 0
         filename = "s{0}h{1}v{2}.csv".format(s,h,v)
         handle = open(filename, 'w')
