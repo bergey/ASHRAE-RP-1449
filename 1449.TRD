@@ -513,9 +513,9 @@ EQUATIONS 19
 *|<STYLE1> BOLD
 *
 *|[ STPT | Set Points
-  THhi    = 6.8000000000000E+01
+  THhi    = 7.0000000000000E+01
 *|        Heating Set Point - Day/Occupied (THhi)      |deg F (50-99)|deg F (50-99)|0|1|50|99|16
-  THlo    = 6.8000000000000E+01
+  THlo    = 7.0000000000000E+01
 *|                            - Night/Unoccupied (THlo) |deg F (50-99)|deg F (50-99)|0|1|50|99|16
   TClo    = 7.8000000000000E+01
 *|        Cooling Set Point - Day/Occupied (TChi)     |deg F (50-99)|deg F (50-99)|0|1|50|99|17
