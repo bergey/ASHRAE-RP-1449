@@ -20,7 +20,7 @@ def plot_TRH(name, hourly):
     ax2.axis([0,8760,0,100])
     plt.title('{0}: Annual Conditions'.format(name))
     #plt.show()
-    fig.savefig( '{0}-annual-trh.png'.format(name) )
+    fig.savefig( 'summary/{0}-annual-trh.png'.format(name) )
     plt.close()
 
 def plot_Wrt(name, hourly):
@@ -37,7 +37,7 @@ def plot_Wrt(name, hourly):
     plt.ylabel('Fraction of Hour')
     plt.legend([line_Wo, line_Wi, line_RTFc], ['Outdoor W', 'Indoor W', 'Cooling Runtime'], loc='upper left')
     plt.title('{0}: Moisture Removal'.format(name))
-    fig.savefig('{0}-annual-moisture.png'.format(name))
+    fig.savefig('summary/{0}-annual-moisture.png'.format(name))
     plt.close()
 
 def plot_rh_hist(name, hourly):
@@ -46,7 +46,7 @@ def plot_rh_hist(name, hourly):
     plt.xlabel('percent RH')
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor RH Histogram'.format(name))
-    fig.savefig( '{0}-rh-histogram.png'.format(name) )
+    fig.savefig( 'summary/{0}-rh-histogram.png'.format(name) )
     plt.close()
 
 def plot_t_hist(name, hourly):
@@ -55,7 +55,7 @@ def plot_t_hist(name, hourly):
     plt.xlabel('degrees F')
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor T Histogram'.format(name))
-    fig.savefig( '{0}-ti-histogram.png'.format(name) )
+    fig.savefig( 'summary/{0}-ti-histogram.png'.format(name) )
     plt.close()
 
 def plot_AC_balance(name, hourly):
@@ -64,7 +64,7 @@ def plot_AC_balance(name, hourly):
     plt.xlabel('Outdoor T (degrees F)')
     plt.ylabel('kW cooling')
     plt.title('{0}: Cooling Balance'.format(name))
-    fig.savefig( '{0}-AC-balance.png'.format(name) )
+    fig.savefig( 'summary/{0}-AC-balance.png'.format(name) )
     plt.close()
 
 def plot_AC_hist(name, hourly):
@@ -80,7 +80,7 @@ def plot_AC_hist(name, hourly):
     plt.xlabel('Outdoor T (degrees F)') # TODO why doesn't unicode ° render in png graph?
     plt.ylabel('Hours with at least 3 minutes Cooling')
     plt.title( '{0}: Cooling Hours Breakdown'.format(name) )
-    fig.savefig( '{0}-AC_hist'.format(name) )
+    fig.savefig( 'summary/{0}-AC_hist'.format(name) )
     plt.close()
 
 month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
@@ -102,7 +102,7 @@ def plot_window_gain(name, hourly):
         plt.ylabel('Net Gain')
         plt.legend(lines, month_names, loc='upper left')
         plt.title('{0} By Month'.format(name))
-        fig.savefig('{0}-by-month.png'.format(name))
+        fig.savefig('summary/{0}-by-month.png'.format(name))
         plt.close()
     try:
         for key in ['SOLS', 'SOLE', 'SOLN', 'SOLW']:
