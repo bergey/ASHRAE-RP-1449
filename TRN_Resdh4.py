@@ -514,5 +514,6 @@ if __name__ == "__main__":
         -runsim file  Launches TRNExe and executes specified file for simulation.
         -edit file	Launches TRNEdit and loads specified file.
         -case		Conditions Parametric Case File
-        -batch  Run simulations as specified in a csv file, one per row
+        -batch  Run simulations as specified in a csv file(s), one per row
+        -dryrun  Generate TRD files from specified csv file(s), do not run simulations
       """
