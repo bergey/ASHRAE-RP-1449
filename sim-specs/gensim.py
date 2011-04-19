@@ -62,7 +62,7 @@ def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
   if s != 1:
     return None
-  if h <= 70:
+  if h == 70:
     return None
 
   Run = 1 # update in enclosing code
@@ -152,8 +152,10 @@ def sim_line(z,h,s,rh,v):
   if s==1:
     if rh == 60: 
       return None # no RH setpoint for system 1
-    if h < 85:
+    if h==70:
       return None
+    elif h==50:
+      ANO = 18 # temporary hack XXX TODO
     elif h==85: # XXX Can this move to HERS section above?
       ANO = 18
     elif h==100:
@@ -328,7 +330,7 @@ def by_system(systems):
     handle = open(filename, 'w')
     out_csv = csv.writer(handle)
     out_csv.writerow(head)
-    for h in [50, 70, 85, 100, 130]:
+    for h in [70, 85, 100, 130]:
       for v in [0, 1, 2, 3, 4]:
         for z in range(1,6):
           for rh in [50, 60]:
