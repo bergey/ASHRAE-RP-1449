@@ -1,0 +1,35 @@
+Notes on how all of these files are intended to work together.
+
+TRNSYS reads a TRD file, along with some supporting files, and writes hourly
+data to several for_##.dat files.  The most important of these supporting files
+are the building descriptions (for TRNSYS Type 56), in the buildings/
+subdirectory.  The files in lookups/ are also read by TRNSYS, and have been
+modified for the RP-1449 work.
+
+Everything else here---mostly python scripts---exists to prepare the TRD files
+for TRNSYS, and then process and summarize the .dat outputs.  
+    
+TRN_Resdh4.py takes an input TRD file, changes some input variables, and calls
+TRNSYS on the output file.  In it's --batch mode, it reads a csv file
+specifying source TRD, variable names, and values, and calls TRNSYS once per
+line in the csv file.
+
+These csv files are kept in the sim-specs/ subdirectory (short for simulation
+specifications).  Using one line per simulation run is simple and transparent,
+but obscures the relationship between different runs.  The script gensim.py
+(also in sim-specs/) generates the simulation specifications, grouping
+variables that are part of one logical change.  For instance, central fan
+integrated supply ventilation (CFIS) requires setting the runtimes for the AHU
+fan and the outdoor air damper, as well as zeroing out airflow for the exhaust
+fan and the HRV.
+
+process.py is used to produce tables of annual values from the hourly data.  It
+uses the same specification files as TRN_Resdh4, to correctly name each row of
+the summary.  The fields used in the name are also used to sort the output
+data.  process.py calls several functions in graphs.py, which uses matplotlib
+to graph the hourly data.  It is intended that adding graphs, summary columns,
+or additional summary files should be relatively easy.  To make this easy,
+process.py reads all of the hourly output for a given simulation run into a
+python dictionary, which is passed to each output function.  The keys in this
+hourly dictionary are the column heads in the TRNSYS .dat files, while the
+values are numpy arrays of length 8760 (one floating point value per hour).
