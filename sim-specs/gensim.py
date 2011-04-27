@@ -23,7 +23,11 @@ for line in bno_lines:
 bno_file.close()
 
 def get_bno(z,h):
-  return bno['z{0}h{1}.bui'.format(z,h)]
+  if z==0: 
+    building_zone=1
+  else:
+    building_zone=z
+  return bno['z{0}h{1}.bui'.format(building_zone,h)]
 
 def ach_to_ela(ach):
   v = 2016*10 # volume
@@ -147,6 +151,8 @@ def sim_line(z,h,s,rh,v):
     WeatherFile = 'Nashville-TN-3'
   elif z==5:
     WeatherFile = 'Indianapolis-IN-3'
+  elif z==0:
+    WeatherFile = 'Orlando-FL-3'
 
 # parameters depending only on DH system
   if s==1:
@@ -332,7 +338,7 @@ def by_system(systems):
     out_csv.writerow(head)
     for h in [70, 85, 100, 130]:
       for v in [0, 1, 2, 3, 4]:
-        for z in range(1,6):
+        for z in range(0,6):
           for rh in [50, 60]:
             row = sim_line(z,h,s,rh,v)
             if row:
