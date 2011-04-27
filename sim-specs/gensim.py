@@ -187,8 +187,6 @@ def sim_line(z,h,s,rh,v):
   
 # Ventilation systems
   if v==0: # No ventilation
-    if h != 130 and s != 7:
-      return None
     VCFM = 0
     exh_cfm = 0
     HRV_CFM = 0
@@ -259,12 +257,12 @@ def sim_line(z,h,s,rh,v):
     if v==4: # ERV
       HRV_eS = 0.7
       HRV_eL = 0.6
-      if z==4 or z==5: # Don't use ERV in cold climates
+      if z>3: # Don't use ERV in cold climates
           return None
     else: # HRV
       HRV_eS = 0.75
       HRV_eL = 0
-      if z==1 or z==2: # prefer ERV; in zone 3 either HRV or ERV
+      if z<3: # prefer ERV; in zone 3 either HRV or ERV
           return None
     # parameters the same for ERV or HRV
     VCFM = 0
