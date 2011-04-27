@@ -385,10 +385,9 @@ OUTPUTS
         =  19 : SURF = 8,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 9,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 3, 4, 5, 6, 11,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
+        =  19 : SURF = 3, 4, 5, 6, : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 2,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 1,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 7, 8, 9, 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  E n d
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

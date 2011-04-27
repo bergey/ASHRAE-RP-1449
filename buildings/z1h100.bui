@@ -108,9 +108,9 @@ LAYER DRYWALL
  CONDUCTIVITY=  0.576 : CAPACITY=  1.088 : DENSITY=  802.6
 LAYER PW04_SHINS
  CONDUCTIVITY= 0.3862 : CAPACITY=1.21336 : DENSITY=573.516
-LAYER CINS_FRAMING
- CONDUCTIVITY=  0.148 : CAPACITY=   1.38 : DENSITY=     37
 LAYER CINS
+ CONDUCTIVITY=  0.148 : CAPACITY=   1.38 : DENSITY=     37
+LAYER CINS_FRAMING
  CONDUCTIVITY=  0.185 : CAPACITY=  1.405 : DENSITY=   93.3
 LAYER AS_SHG_1
  CONDUCTIVITY=  0.295 : CAPACITY=  1.255 : DENSITY= 1123.6
@@ -359,7 +359,7 @@ WALL  =GABBLE     : SURF= 18 : AREA=     12.54 : EXTERNAL : ORI=WEST : FSKY=0.5
  GAIN        = EQUIP2     : SCALE= 1
  INFILTRATION= INFIL002
  VENTILATION = EQUIP_VENT2
- CAPACITANCE = 316.68  : VOLUME= 263.9   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 1
+ CAPACITANCE = 316.68  : VOLUME= 263.9   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 15
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  O u t p u t s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -385,10 +385,9 @@ OUTPUTS
         =  19 : SURF = 8,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 9,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 3, 4, 5, 6, 11,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
+        =  19 : SURF = 3, 4, 5, 6,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 2,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 1,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 7, 8, 9, 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  E n d
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

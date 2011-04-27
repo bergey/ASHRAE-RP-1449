@@ -1399,13 +1399,14 @@ Q2_EQ_KJHR
 *ASSIGN "T56_std-temp.prn" 34
 *ASSIGN "T56_std-q.prn" 35
 *
-EQUATIONS 4
+EQUATIONS 5
   QCONV = SENS
 * convert from kJ/hr to Btu/h
   INFQ = [5,7]*.947187
 * convert from kJ/hr to kg/hr and subtract ventilation gains
   SCHWg = [5,8]/2460.26 - msupp_si*(Wsupp2-WAI)
   SCHQs = [5,9] + [5,11] ! convective plus radiative
+  QWALLS = [5,16] + [5,17] + [5,18] + [5,19]
 *
 *
 * Sum of all latent loads minus AC (Zone transfers balance out)   
@@ -1485,16 +1486,16 @@ PEOPLE  SENS   LATG INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
 UNIT 50 TYPE 24 integrator - Enclosure Loads
 PARAMETERS 2
 ISTEP 0
-INPUTS 8
-5,12    5,13    5,14    5,15    5,16    5,17    5,18    5,19
-0       0       0       0       0       0       0       0
+INPUTS 7
+5,12    5,13    5,14    5,15    QWALLS  5,20    5,21
+0       0       0       0       0       0       0
 ******************************************************************************
 UNIT 74 TYPE 25 summary printer - Enclosure Loads
 PARAMETERS 10
 ISTEP ISTEP 8760 72 0 0 0 0 0 1
-INPUTS 8
-50,1    50,2    50,3    50,4    50,5    50,6    50,7    50,8
-SOLN    SOLE    SOLS    SOLW    QWALLS  QCEIL   QFLR    QWIN
+INPUTS 7
+50,1    50,2    50,3    50,4    50,5    50,6    50,7
+SOLN    SOLE    SOLS    SOLW    QWALLS  QCEIL   QFLR
 ******************************************************************************
 UNIT 70 TYPE 24 integrator - Air Flows
 PARAMETERS 2
