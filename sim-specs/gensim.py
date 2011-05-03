@@ -359,4 +359,21 @@ def just_one(z, h, s, rh, v):
   else:
     print "No run planned for {0}".format(filename)
 
-by_system([1])
+def debug_runs():
+    lcount = 0
+    filename = 'z1s1.csv'
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for h in [50, 85, 100, 130]:
+        for v in [0, 1]:
+            for z in range(0,2):
+                row = sim_line(z, h, 1, 50, v)
+                if row:
+                    lcount += 1
+                    row[head.index('Run')] = lcount
+                    out_csv.writerow(row)
+    print "%s lines in %s" % (lcount, filename)
+
+#by_system([1])
+debug_runs()
