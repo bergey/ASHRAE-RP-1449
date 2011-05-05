@@ -457,21 +457,21 @@ if __name__ == "__main__":
                 print line
                 i = int(float(line['Run']))
                 print "Run: %s" % i
-                run_dir = os.path.join(dirname, 'Run%s' % i)
+                desc = line['Desc'].replace(' ', '-')
+                run_dir = os.path.join(dirname, desc)
                 if exists(run_dir):
                     print "%s exists" % run_dir
                 else:
                     os.mkdir(run_dir)
                     print "created %s" % run_dir
                 # Create the TRD
-                trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
+                trd = '{0}.trd'.format(desc)
                 MakeCaseFile(i, line['BaseFile'], dirname, trd)
-                # Try to change the file output location
                 # Run the simulation
                 cmd = [executable, trd, '/n']
                 print cmd
                 call(cmd, stdout=log, stderr=log)
-                # move output TODO this prevents parallelism
+                # move output 
                 for file in glob('for*'):
                     shutil.move(file, os.path.join(run_dir,file))
                 shutil.move(trd, os.path.join(run_dir, trd))
