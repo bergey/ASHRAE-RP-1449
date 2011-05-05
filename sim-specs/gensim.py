@@ -65,10 +65,11 @@ def ach_to_ela(ach):
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
-  if s != 1:
+  if s not in [1,5]:
     return None
   if h == 70:
-    return None
+    #return None
+    pass
 
   Run = 1 # update in enclosing code
   BaseFile = '1449.TRD'
@@ -92,6 +93,21 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 40000
   elif h==70:
 # TODO punt for now
+    ELA = ach_to_ela(4)
+    ANO = 18 # temporary hack XXX TODO
+    # HSPF in post-processing
+    WCFM_H = 0.35
+    SENS_DAILY = SENS_BASE*0.8
+    if z==5:
+        sduct_area = 100
+    elif z==4:
+        sduct_area = 250
+    else:
+        sduct_area = 544
+    rduct_area = 100
+    leaks = 0.03
+    leakr = 0.02
+    duct_Rval = 8
     Ht_QIN = 40000
   elif h==85:
     ELA = ach_to_ela(5)
