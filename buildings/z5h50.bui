@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   C:\TRN-Resdh4\buildings\z5h50.bui
+*   FOR BUILDING:   C:\TRN-Resdh4\b\z5h50.bui
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -292,7 +292,7 @@ INFILTRATION INFIL002
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VENTILATION EQUIP_VENT
  TEMPERATURE=INPUT 1*SUPPLY_TEMP
- AIRCHANGE=INPUT 0.002207*VOLUME_FLOW
+ AIRCHANGE=INPUT 0.001946*VOLUME_FLOW
  HUMIDITY=INPUT 1*SUPPLY_RH
 VENTILATION VENT001
  TEMPERATURE=25
@@ -300,7 +300,7 @@ VENTILATION VENT001
  HUMIDITY=OUTSIDE
 VENTILATION EQUIP_VENT2
  TEMPERATURE=INPUT 1*SUPPLY_TEMP
- AIRCHANGE=INPUT 0.00680272*VOL_FLOW2
+ AIRCHANGE=INPUT 0.003789*VOL_FLOW2
  HUMIDITY=INPUT 1*SUPPLY_RH
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  C o o l i n g
@@ -344,22 +344,22 @@ WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
- CAPACITANCE = 16310.4 : VOLUME= 456.7   : TINITIAL= 20      : PHINITIAL= 30      : WCAPR= 15
+ CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 30      : WCAPR= 15
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ZONE ATTIC
 AIRNODE ATTIC
-WALL  =FRONT_RF_2 : SURF= 12 : AREA=      97.9 : EXTERNAL : ORI=NSLOPE : FSKY=0.76
+WALL  =FRONT_RF_2 : SURF= 12 : AREA=    101.45 : EXTERNAL : ORI=NSLOPE : FSKY=0.76
 WALL  =CEILING_60 : SURF= 14 : AREA=     187.3 : ADJACENT=ROOM : BACK
-WALL  =FRONT_RF_2 : SURF= 15 : AREA=      97.9 : EXTERNAL : ORI=SSLOPE : FSKY=0.76
-WALL  =GABBLE     : SURF= 17 : AREA=    15.455 : EXTERNAL : ORI=EAST : FSKY=0.5
-WALL  =GABBLE     : SURF= 18 : AREA=    15.455 : EXTERNAL : ORI=WEST : FSKY=0.5
+WALL  =FRONT_RF_2 : SURF= 15 : AREA=    101.45 : EXTERNAL : ORI=SSLOPE : FSKY=0.76
+WALL  =GABBLE     : SURF= 17 : AREA=     12.54 : EXTERNAL : ORI=EAST : FSKY=0.5
+WALL  =GABBLE     : SURF= 18 : AREA=     12.54 : EXTERNAL : ORI=WEST : FSKY=0.5
  REGIME
  GAIN        = EQUIP2     : SCALE= 1
  INFILTRATION= INFIL002
  VENTILATION = EQUIP_VENT2
- CAPACITANCE = 176.4   : VOLUME= 147     : TINITIAL= 20      : PHINITIAL= 30      : WCAPR= 1
+ CAPACITANCE = 316.68  : VOLUME= 263.9   : TINITIAL= 20      : PHINITIAL= 30      : WCAPR= 1
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  O u t p u t s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

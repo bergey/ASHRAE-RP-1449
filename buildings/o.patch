@@ -1,0 +1,31 @@
+--- z1h130.bui	2011-04-19 15:12:50.788682000 -0400
++++ tmp.bui	2011-04-19 15:12:27.817764000 -0400
+@@ -344,22 +344,22 @@
+  GAIN        = LATENT     : SCALE= 1
+  INFILTRATION= INFIL001
+  VENTILATION = EQUIP_VENT
+- CAPACITANCE = 16310.4 : VOLUME= 456.7   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 15
++ CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 15
+ *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
+ *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ZONE ATTIC
+ AIRNODE ATTIC
+-WALL  =FRONT_RF_2 : SURF= 12 : AREA=      97.9 : EXTERNAL : ORI=NSLOPE : FSKY=0.76
++WALL  =FRONT_RF_2 : SURF= 12 : AREA=    101.45 : EXTERNAL : ORI=NSLOPE : FSKY=0.76
+ WALL  =CEILING_30 : SURF= 14 : AREA=     187.3 : ADJACENT=ROOM : BACK
+-WALL  =FRONT_RF_2 : SURF= 15 : AREA=      97.9 : EXTERNAL : ORI=SSLOPE : FSKY=0.76
+-WALL  =GABBLE     : SURF= 17 : AREA=    15.455 : EXTERNAL : ORI=EAST : FSKY=0.5
+-WALL  =GABBLE     : SURF= 18 : AREA=    15.455 : EXTERNAL : ORI=WEST : FSKY=0.5
++WALL  =FRONT_RF_2 : SURF= 15 : AREA=    101.45 : EXTERNAL : ORI=SSLOPE : FSKY=0.76
++WALL  =GABBLE     : SURF= 17 : AREA=    12.542 : EXTERNAL : ORI=EAST : FSKY=0.5
++WALL  =GABBLE     : SURF= 18 : AREA=    12.542 : EXTERNAL : ORI=WEST : FSKY=0.5
+  REGIME
+  GAIN        = EQUIP2     : SCALE= 1
+  INFILTRATION= INFIL002
+  VENTILATION = EQUIP_VENT2
+- CAPACITANCE = 176.4   : VOLUME= 147     : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 1
++ CAPACITANCE = 316.68   : VOLUME= 147     : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 1
+ *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ *  O u t p u t s
+ *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
