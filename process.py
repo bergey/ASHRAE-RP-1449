@@ -36,7 +36,7 @@ def fordat(filename):
     handle.close()
     handle = open(filename)
 
-    arr = np.genfromtxt(handle, names=True)
+    arr = np.loadtxt(handle, skiprows=1) # test using loadtxt instead of genfromtxt
     ret = dict()
     #for n in arr.dtype.names:
         #ret[n] = arr[n]
