@@ -1,4 +1,4 @@
-56
+61
  1,1-Single Story Residence with Basement(residential_basement.bui)           , 8, residential_basement.bui, 1600, 1, 8,  0.70, 8, 4.3,510,0.464,   0.0
  2,2-Single Story Residence with Crawl Space(residential_crawl.bui)           , 8,    residential_crawl.bui, 1600, 1, 2,  0.70, 8, 4.3,510,0.464,   0.0
  3,3-Single Story Residence with Crawl Space (19 Clone)(res_type19clone.bui)  , 8,      res_type19clone.bui, 1600, 1, 2,  0.70, 8, 4.3,510,0.379,   0.0
@@ -55,3 +55,8 @@
 54,54-Zone 5 HERS 85 (z5h85.bui)                                              , 8,                z5h85.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
 55,55-Zone 5 HERS 100 (z5h100.bui)                                            , 8,                z5h100.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
 56,56-Zone 5 HERS 130 (z5h130.bui)                                            , 8,                z5h130.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
+57,57-z1h100wc1                                                               , 8,             z1h100wc1.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
+58,58-z1h100wc8                                                               , 8,             z1h100wc8.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
+59,59-z1h100wc30                                                              , 8,            z1h100wc30.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
+60,60-z1h100wc60                                                              , 8,            z1h100wc60.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
+61,61-z1h100wc120                                                             , 8,           z1h100wc120.bui, 2016, 1, 0, 0.495, 10,   4,0,  0, 0
