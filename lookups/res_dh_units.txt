@@ -19,3 +19,4 @@
 18,18-NovelAire Electric Unit  (8 units;2400 cfm; 0.7 W/cfm)             , 16,   1, 0.7, 8,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
 19,19-NovelAire Gas-Fired Unit (6 units;2400 cfm; 0.6 W/cfm)             , 16,   2, 0.6, 6,   0,   0,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
 20,20-Munters HCU (HCUb-1004/0.2 Unit/stgs 1 = 50&70F/ 0.70 W/cfm)       , 15,   1, 0.70,0.2,50.,70.,  0,   0,  0,   0,    0, 3.74,  0,   0,0,0,0
+21,21-Conventional DH 1449 EF=1.55 50 pint/day (0.0 W/cfm Proc Fan Pwr)  , 11,148., 0.0,0.0 ,  0,   0,   0,  0, 6,   0,    0, 1.46,  0,0,0,0,0

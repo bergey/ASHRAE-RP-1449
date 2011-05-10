@@ -2,8 +2,9 @@ import csv
 from math import sqrt
 import os
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'HUM_CNTL_type', 'Res_DNO', 'DSET', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DSET', 'DCFM', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
+      
 
 
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
@@ -79,8 +80,7 @@ def sim_line(z,h,s,rh,v):
 # parameters depending only on HERS
   if h==50:
     ELA = ach_to_ela(3)
-    # TODO SEER
-    # TODO EER
+    ANO = 18 # temporary hack XXX TODO
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.7
@@ -95,6 +95,7 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 40000
   elif h==85:
     ELA = ach_to_ela(5)
+    ANO = 18
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.9
     sduct_area = 544
@@ -105,6 +106,7 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 60000
   elif h==100:
     ELA = ach_to_ela(7)
+    ANO = 17
     WCFM_H = 0.5
     SENS_DAILY = SENS_BASE
     sduct_area = 544
@@ -115,6 +117,7 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 60000
   elif h==130:
     ELA = ach_to_ela(10)
+    ANO = 16
     WCFM_H = 0.5
     SENS_DAILY = SENS_BASE
     sduct_area = 544
@@ -160,31 +163,45 @@ def sim_line(z,h,s,rh,v):
       return None # no RH setpoint for system 1
     if h==70:
       return None
-    elif h==50:
-      ANO = 18 # temporary hack XXX TODO
-    elif h==85: # XXX Can this move to HERS section above?
-      ANO = 18
-    elif h==100:
-      ANO = 17
-    elif h==130:
-      ANO = 16
     #ACTON = 2 
     ACCFM = ACTON*375
     HCFM = ACTON*275
     HUM_CNTL_type = 0  # No enhanced DH
     # turn off standalone dehumidifier
-    Res_DNO = 1
+    Res_DNO = 21
+    DS_TYPE = 0
+    DSET = 50
+    DCFM = 148
+    REGEN = 0
+    DSIN_OPT = 1
+    RSCHD = 0
+    DSOUT = 1
     ilck61 = 0
     Humlo_0 = 99
     Humhi_0 = 99
-    DSET = 0 # TODO decide on units (SCFM or pints/day)
-  else:
+  else: # all systems except 1
     Humlo_0 = rh
     Humhi_0 = rh
 
-# TODO check DH air sources (should be same for all systems w/ DH)
+  if s==5:
+      if h<85:
+          return None
+      ACCFM = ACTON*375 # AHU airflow during cooling
+      HCFM = ACTON*275  # AHU airflow during heating
+      HUM_CNTL_type = 0 # No active dehumification by AC
+      Res_DNO = 21
+      DS_TYPE = 0 # DSET from lookup file
+      DSET = 50 # pints per day
+      DCFM = 148 # same as in lookup file
+      REGEN = 0 # reject heat to interior
+      DSIN_OPT = 1 # draw air from interior
+      RSCHD = 0 # recirc mode off
+      DSOUT = 1 # supply air sent to space (== supply duct)
+      ilck61 = 3 # run DH fan when DH is running
+      fctyp5 = 3 # cycle AHU 5 minutes out of 30
+      ftim_ON5 = 0.08
+      ftim_OFF5 = 0.42
 
-  
 # Ventilation systems
   if v==0: # No ventilation
     VCFM = 0
@@ -269,11 +286,6 @@ def sim_line(z,h,s,rh,v):
     exh_cfm = 0
     HRV_CFM = 2*vent0 # twice 62.2 for 50% of hour
     HRV_W = 0.5*HRV_CFM # 0.5 W/CFM per Task 4 report
-    if not 'fctyp5' in locals():
-      # fan cycling not required by DH system
-      fctyp5 = 0
-      ftim_ON5 = 0
-      ftim_OFF5 = 0
     fctyp5 = 3
     ftim_ON5 = 0.5 # concurrent with HRV
     ftim_OFF5 = 0.5
@@ -375,5 +387,5 @@ def debug_runs():
                     out_csv.writerow(row)
     print "%s lines in %s" % (lcount, filename)
 
-#by_system([1])
-debug_runs()
+by_system([5])
+#debug_runs()
