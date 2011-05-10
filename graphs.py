@@ -109,3 +109,11 @@ def plot_window_gain(name, hourly):
             helper('{0}-{1}'.format(name, key), hourly[key])
     except KeyError:
         print "Not enough data for plot_window_gain; skipping: {0}".format(name)
+
+def rh_hist_compare(hs, names):
+    ret = plt.hist(np.vstack([h['RHi'] for h in hs]).transpose(), 30, label=names)
+    plt.xlim(40,90)
+    plt.xlabel('RH [%]')
+    plt.ylabel('Number of Hours')
+    plt.legend()
+    return ret
