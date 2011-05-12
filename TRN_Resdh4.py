@@ -354,6 +354,37 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     if logf: logf.write(str([t for t,v in zip(CaseTags,var_changed) if v == 0]))
     return
 
+def make_simruns(csvname, dirname):
+    parametrics = reader(open(csvname))
+    simruns = writer(open(os.path.join(dirname,'SimRuns.csv'),'w'))
+    for line in parametrics:
+        simruns.writerow(line[2:])
+    del simruns # this is important, before we open the file again
+
+def move_output(trd, dest):
+    for file in glob('for*'):
+        shutil.move(file, os.path.join(dest,file))
+    shutil.move(trd, os.path.join(dest, trd))
+
+def run_trd(trd, dest):
+    executable = os.path.join(os.getcwd(), 'TRNExe.exe')
+    # Run the simulation
+    cmd = [executable, trd, '/n']
+    call(cmd, stdout=log, stderr=log)
+    # after simulation
+    run_dir = os.path.join(dest, trd[:-4])
+    if not exists(run_dir):
+        os.mkdir(run_dir)
+    move_output(trd, run_dir)
+
+def renew_log():
+    global log
+    if 'log' in dir():
+        log.close()
+    if os.path.exists('batch-log'):
+        os.rename('batch-log', 'batch-log.0')
+    log = open('batch-log', 'w')
+
 if __name__ == "__main__":
     from time import sleep
     if len(sys.argv) > 2: path = sys.argv[2]
@@ -398,11 +429,7 @@ if __name__ == "__main__":
         system('move "%s" "%s"' % (sys.argv[2], sys.argv[3]))
 
     elif sys.argv[1] == '-runsim':
-        TRNSYSPath = '.'
-        cmd = '%s "%s"  %s' % (os.path.join(os.getcwd(), "TRNExe.exe"), sys.argv[2], "/n")
-        print cmd
-        system(cmd)
-        #system('%s\%s "%s" %s' % (os.getcwd(), "TRNExe.exe", sys.argv[2], "/n"))
+        run_trd(sys.argv[2], external)
 
     elif sys.argv[1] == '-edit':
         TRNSYSPath = '.'
@@ -416,65 +443,35 @@ if __name__ == "__main__":
         DestTRD = sys.argv[5]
         print DestTRD
         MakeCaseFile(Run, TRDFile, DestFolder, DestTRD)
+    
     elif sys.argv[1] == '-batch':
-# read input from 1+ CSVs, run a simulation for each row, save results
-        # setup filepaths
-        executable = os.path.join(os.getcwd(), 'TRNExe.exe')
+    # read input from 1+ CSVs, run a simulation for each row, save results
 
         # per argument
         for csvname in sys.argv[2:]:
             print "beginning file: %s" % csvname
-            if 'log' in dir():
-                log.close()
-            try:
-              if os.path.exists('batch-log'):
-                  os.rename('batch-log', 'batch-log.0')
-              log = open('batch-log', 'w')
-            except:
-                print "failed to open log"
+            renew_log()
+
             # store the results of each csv in a separate directory
-            dirname = csvname.replace(' ','-').replace('.csv','')
-            dirname = os.path.join(external, dirname)
+            dirname = os.path.join( external, csvname.replace(' ','-').replace('.csv','') )
     
             # initialize 
-            if exists(dirname):
-                print "%s exists" % dirname
-            else:
+            if not exists(dirname):
                 os.mkdir(dirname)
-                print "created %s" % dirname
-            parametrics = reader(open(csvname))
-            print "opened %s" % csvname
-            simruns = writer(open(os.path.join(dirname,'SimRuns.csv'),'w'))
-            print "opened simruns"
-            for line in parametrics:
-                simruns.writerow(line[2:])
-            del simruns # this is important, before we open the file again
-            print "finished writing simruns"
+            # TODO remove whole simruns shenanigans, once MakeCaseFile doesn't need it
+            make_simruns(csvname, dirname) # csv file used by MakeCaseFile
 
             parametrics = DictReader(open(csvname))
             # loop over sims in this file
             for line in parametrics:
-                print line
-                i = int(float(line['Run']))
-                print "Run: %s" % i
                 desc = line['Desc'].replace(' ', '-')
-                run_dir = os.path.join(dirname, desc)
-                if exists(run_dir):
-                    print "%s exists" % run_dir
-                else:
-                    os.mkdir(run_dir)
-                    print "created %s" % run_dir
+                print "Starting run {0}".format(desc)
                 # Create the TRD
                 trd = '{0}.trd'.format(desc)
+                i = int(float(line['Run']))
                 MakeCaseFile(i, line['BaseFile'], dirname, trd)
-                # Run the simulation
-                cmd = [executable, trd, '/n']
-                print cmd
-                call(cmd, stdout=log, stderr=log)
-                # move output 
-                for file in glob('for*'):
-                    shutil.move(file, os.path.join(run_dir,file))
-                shutil.move(trd, os.path.join(run_dir, trd))
+                run_trd(trd, dirname)
+
     elif sys.argv[1]=='-dryrun':
       dirname = dt.datetime.now().strftime('%Y-%m-%d-%H%M-trds')
       if not exists(dirname):
