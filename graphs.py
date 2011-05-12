@@ -86,7 +86,7 @@ def plot_AC_hist(name, hourly):
 month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
 
 def by_month(hours):
-    splits = [32,60,91,121,152,182,213,244,274,305,335]
+    splits = [31,59,90,120,151,181,212,243,273,304,334]
     by_day = hours.reshape(365, 24) # throw error if not 8760 long
     return np.array_split(by_day, splits, axis=0)
 
