@@ -23,6 +23,15 @@ for line in bno_lines:
   bno[line[3].strip()] = line[0].strip()
 bno_file.close()
 
+def recirc(tons):
+    "return on-time (in hours) to provide 0.5 ACH"
+    if tons==2:
+        return 0.18
+    elif tons==2.5:
+        return 0.14
+    elif tons==3:
+        return 0.12
+
 def get_bno(z,h):
   if z==0: 
     building_zone=1
@@ -215,8 +224,8 @@ def sim_line(z,h,s,rh,v):
       DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 3 # run DH fan when DH is running
       fctyp5 = 3 # cycle AHU 5 minutes out of 30
-      ftim_ON5 = 0.08
-      ftim_OFF5 = 0.42
+      ftim_ON5 = recirc(ACTON)
+      ftim_OFF5 = 1 - ftim_ON5
 
 # Ventilation systems
   if v==0: # No ventilation
