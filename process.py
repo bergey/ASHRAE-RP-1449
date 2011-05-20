@@ -8,6 +8,7 @@ from glob import glob
 import re
 import shutil
 import platform
+from parametric import hourly_data
 graphs = platform.system() == 'Linux'
 if graphs:
     from graphs import *
@@ -28,31 +29,6 @@ descre = re.compile(r'z(?P<z>\d)h(?P<h>\d+)s(?P<s>\d+)rh(?P<rh>\d+)v(?P<v>\d)')
 # handle is a file handle to a tab-separated file 
 # with column names in the first row
 # fordat returns a dictionary with keys from the first row and a numpy array of numbers per key
-def fordat(filename):
-# Open the file, read the first line, close the file
-# This is ugly; the commented out code would be nicer, but genfromtxt isn't reading names on Ubuntu
-    handle = open(filename)
-    head = handle.next().split()
-    handle.close()
-    handle = open(filename)
-
-    arr = np.loadtxt(handle, skiprows=1) # test using loadtxt instead of genfromtxt
-    ret = dict()
-    #for n in arr.dtype.names:
-        #ret[n] = arr[n]
-    for i, n in enumerate(head):
-        ret[n] = arr[:,i]
-    return ret
-
-# collect all of the output data for a specified run
-# returns 
-# path should be a directory with several for_*.dat files
-def hourly_data(path):
-  ret = dict()
-  for filename in glob(join(path, "for_*.dat")):
-    #handle = open(filename)
-    ret.update(fordat(filename))
-  return ret
 
 def parse_name(scenario):
   """Parse name and return value of each key"""

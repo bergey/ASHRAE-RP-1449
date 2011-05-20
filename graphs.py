@@ -1,6 +1,7 @@
 # coding= utf-8
 import numpy as np
 import matplotlib.pyplot as plt
+from parametrics import by_month, month_names
 
 def plot_TRH(name, hourly):
     fig = plt.figure()
@@ -83,13 +84,6 @@ def plot_AC_hist(name, hourly):
     fig.savefig( 'summary/{0}-AC_hist'.format(name) )
     plt.close()
 
-month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
-
-def by_month(hours):
-    splits = [31,59,90,120,151,181,212,243,273,304,334]
-    by_day = hours.reshape(365, 24) # throw error if not 8760 long
-    return np.array_split(by_day, splits, axis=0)
-
 def plot_window_gain(name, hourly):
     def helper(name, gain):
         fig = plt.figure()
@@ -111,7 +105,7 @@ def plot_window_gain(name, hourly):
         print "Not enough data for plot_window_gain; skipping: {0}".format(name)
 
 def rh_hist_compare(hs, names):
-    ret = plt.hist(np.vstack([h['RHi'] for h in hs]).transpose(), 30, label=names)
+    ret = plt.hist(np.vstack([h['RHi'] for h in hs]).transpose(), np.linspace(0,100,51), label=names)
     plt.xlim(40,90)
     plt.xlabel('RH [%]')
     plt.ylabel('Number of Hours')
