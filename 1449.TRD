@@ -21,7 +21,7 @@ EQUATIONS 4
   TSTART = 0
   TSTOP = 8760
   TSTEP = 0.02
-  ISTEP = 1
+  ISTEP = 1.0
 *
 SIMULATION TSTART TSTOP TSTEP
 TOLERANCE  0.001 0.001
@@ -122,7 +122,7 @@ EQUATIONS 19
 *|<   |Res_DH_units.txt|0|9|2
   DPAR9 = 0
 *|<   |Res_DH_units.txt|0|10|2
-  DPAR10 = 5
+  DPAR10 = 1
 *|<   |Res_DH_units.txt|0|11|2
   DPAR11 = 0
 *|<   |Res_DH_units.txt|0|12|2
@@ -238,17 +238,17 @@ DPAR3 = EQL(DS_TYPE,0)*DPAR3a + EQL(DS_TYPE,1)*DSET + EQL(DS_TYPE,2)*DSET/(DCAP_
 *|<size1> 12
 *|<style1> BOLD
 *
-EQUATIONS 14
-  ANO = 1
+EQUATIONS 19
+  ANO = 20
 *|< AC Type (ANO)   |AC_units.txt|2|1|9
-  IAC = 4
+  IAC = 3
 *|<           |AC_units.txt|0|3|9
-  AC_EER = 13.3
+  AC_EER = 14.85
 *|<           |AC_units.txt|0|4|9
   AC_SHR = 0.77
 *|<           |AC_units.txt|0|5|9
 * skip column 6
-  WCFM_AC = 0.35
+  WCFM_AC = 0.15
 *|<           |AC_units.txt|0|7|9
   chrg_ratio = 1
 *|<           |AC_units.txt|0|8|9
@@ -260,6 +260,16 @@ EQUATIONS 14
 *|<           |AC_units.txt|0|11|9
   ihp = 0
 *|<           |AC_units.txt|0|12|9
+  AC_EER_lo = 20.56
+*|<           |AC_units.txt|0|13|9
+  AC_SHR_lo= 0.77
+*|<           |AC_units.txt|0|14|9
+  tons_frac_lo= 0.33
+*|<           |AC_units.txt|0|15|9
+  wcfm_ac_lo= 0.10
+*|<           |AC_units.txt|0|16|9
+  cfm_frac_lo= 0.3
+*|<           |AC_units.txt|0|17|9
 *
   AC_coef = 1
   ACTON = 2.0000000000000E+00
@@ -372,9 +382,17 @@ EQUATIONS 5
 *
 *|]
 *
-EQUATIONS 6
+EQUATIONS 10
+ 
+  flg2 = GT(AC_EER_lo,0)*EQL(iac,4) + GT(AC_EER_lo,0)*EQL(iac,3)
+  fspd = flg2* ( Hi_STG_c*EQL(iac,4) + fhz*EQL(iac,3) )
+  
+  cfm_ON_c = ACCFM*(1-flg2)  + ACCFM*flg2*((1-fspd)*cfm_frac_lo + fspd)
+  cfm_OFF  =  HCFM*(1-flg2)  + ACCFM*flg2*cfm_frac_lo
+ 
 * Convert to lb/h
-  Macmx0  = ( EQL(RTFc,0)*HCFM + EQL(RTFc,1)*ACCFM) * 60 * 0.075 * fspd_on
+*
+  Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*cfm_ON_c) * 60 * 0.075 * fspd_on
   Mdmx   = DCFM  * 60 * 0.075
   Mvmx   = VCFM  * 60 * 0.075 * fspd_on
 *
@@ -600,9 +618,9 @@ EQUATIONS 9
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|8|25
   WALLH  = 10
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|9|25
-  Peop   = 3.420
+  Peop   = 4
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|10|25
-  peop_Q = 0.3
+  peop_Q = 0
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|11|25
 ASSIGN z1h50.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
@@ -968,9 +986,9 @@ RH_CTL = (1-ZN_CTL)*RHI_1 + ZN_CTL*RHI_2
 *
 *********************************************************************
 UNIT 3 TYPE 152 SHORT TIMESTEP Controller
-PARAMETERS 48
-*                                                 
-1  0.0  REHEAT Trht_offset OVR_cool RH_Gain T_Gain TDBND Ta_o  taua taue  HDBND CDBND
+PARAMETERS 50
+* STG_delay                                               
+1  0.1  REHEAT Trht_offset OVR_cool RH_Gain T_Gain TDBND Ta_o  taua taue  HDBND CDBND
 * Cntl_type  Time_ON  Time_OFF  Interlock1 Interlock2 Interlock3 Fsched 
 *     -3         0.2    0.3        1          2           0       0
 *      0         0       0         0          0           0       0
@@ -981,16 +999,19 @@ PARAMETERS 48
     fctyp7   ftim_ON7 ftim_OFF7 ilck71 ilck72 ilck73 fsched7 
     fctyp8   ftim_ON8 ftim_OFF8 ilck81 ilck82 ilck83 fsched8 
     fctyp9   ftim_ON9 ftim_OFF9 ilck91 ilck92 ilck93 fsched9 
+*   fhz_PGAIN  fhz_IGAIN
+     0.8        0.04
 INPUTS 7
-T_CTL  TMIN  TMAX  HUM_CTL   HMAX 0,0  0,0
-60   60    76    Humlo  Humlo 0 100
+T_CTL  TMIN  TMAX  HUM_CTL   HMAX  0,0  0,0
+60      60    76    Humlo    Humlo  0   100
 * trace 2482 2628
 **********************************************************************
-EQUATIONS 11
+EQUATIONS 13
 *
 *     Equipment Runtimes
   RTFh	= [3,1]
   RTFc 	= [3,2]
+*
 *
 *                       Disable "RTFd" if HUM_CNTL_type =4,5,6..
   RTFd0   = [3,3]*(1-REHEAT) * (1- GT(HUM_CNTL_type,3))
@@ -1001,7 +1022,12 @@ EQUATIONS 11
   RTFdf	 = [3,20]
   RTFvf  = [3,21]
   RTFxf  = [3,22] 
-  RTFhf = [3,23]
+  RTFhf  = [3,23]
+*                   Only used for two stage AC
+  Hi_STG_c = [3,24]*flg2
+*		    Only Used for Variable speed AC
+  fhz     =   [3,25]
+*
   RTFacf_time = RTFacf
 *
 **********************************************************************
@@ -1118,17 +1144,19 @@ T_OFF_c = [3,12]
 *
 *********************************************************************
 UNIT 4 TYPE 140  AC -  TYPE7SUP Standard Electric AC
-PARAMETERS 31
+PARAMETERS 35
 *  imode  iac  tons  dpsys  fnstef  ipflag  rown  hparea  ihp   wdepth
-    1     IAC   ACTON  1.5    .50    0      rown  hparea  ihp     0.0
-*  mtref  evapefc  hz   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
-    .90    0.0     60.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
+    1     IAC   ACTON  1.5    .50    1      rown  hparea  ihp     0.0
+*  mtref  evapefc  none   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
+    .90    0.0      0.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
 *  twet  gamma  Nmax  tcl NTUo_nom fspd_off2 none none   wcfm    chrg_ratio exp_type AC_COEF  
    TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
-INPUTS 13
-* Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off	T_ON_c	T_OFF_c  fspd_off2_d
-  Taci waci   TAO  WAO    Macmx0     bpON  rtfacf  rtfc  0,0      fspd_off_ac     T_ON_c  T_Off_c   fspd_off2_d
-  95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0        0
+*  EER_rated_lo  SHR_rated_lo tons_frac_lo wcfm_ac_lo
+   AC_EER_lo     AC_SHR_lo    tons_frac_lo wcfm_ac_lo
+INPUTS 15
+* Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off       T_ON_c	T_OFF_c  fspd_off2_d Hi_STG_c  fhz
+  Taci waci   TAO  WAO    Macmx0  bpON  rtfacf  rtfc  0,0      fspd_off_ac      T_ON_c  T_Off_c  fspd_off2_d Hi_STG_c  fhz
+  95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0        0            0      0
 * trace 0 3450
 ************************************************************************
 EQUATIONS 5
@@ -1444,16 +1472,16 @@ Mac   Taci  Waci  Taco  Waco  Qsac  Qlac  RTFc   RTFh  Qh    Qh_gas
 UNIT 67 TYPE 24 integrator - AC & DES MISC
 PARAMETERS 2
 ISTEP  0
-INPUTS 10
-RTFacf  4,4   4,7    4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time
-0       0     0      0     0      0       0     0    0     0
+INPUTS 11
+RTFacf  4,4   4,7    4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time  fspd
+0       0     0      0     0      0       0     0    0     0            0
 ******************************************************************************
 UNIT 47 TYPE 25 summary printer - AC & Des misc.
 PARAMETERS 10
 ISTEP ISTEP 8760 41 0 0 0 0 0 1
-INPUTS 10
-67,1    67,2  67,3   67,4  67,5   67,6    67,7  67,8 67,9 67,10
-RTFacf  ACKW  FANKW  Tadp  RTFdf  DFANKW  RTFrh Qrh  RTFe RTFacf_time
+INPUTS 11
+67,1    67,2  67,3   67,4  67,5   67,6    67,7  67,8 67,9 67,10        67,11
+RTFacf  ACKW  FANKW  Tadp  RTFdf  DFANKW  RTFrh Qrh  RTFe RTFacf_time  fspd
 ******************************************************************************
 UNIT 68 TYPE 24 integrator - Desiccant
 PARAMETERS 2
