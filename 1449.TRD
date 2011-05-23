@@ -1450,7 +1450,7 @@ TAO  WAO  TAI  WAI   RHI  OCC  Msupp2  Tsupp2  Wsupp2 ACH
 ***************************************************************************
 UNIT 45 TYPE 25 summary printer - Space
 PARAMETERS 10
-ISTEP ISTEP 8760 21 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 21 0 0 0 0 0 1
 INPUTS 10
 65,1  65,2  65,3 65,4 65,5  65,6  65,7   65,8    65,9  65,10
 To    Wo    Ti   Wi   RHi   OCC  Msupp2  Tsupp2  Wsupp2 ACH
@@ -1464,7 +1464,7 @@ Mac   Taci  Waci  Taco  Waco  4,5   4,6   RTFc   RTFh  Qh Qh_gas
 ******************************************************************************
 UNIT 46 TYPE 25 summary printer - AC
 PARAMETERS 10
-ISTEP ISTEP 8760 31 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 31 0 0 0 0 0 1
 INPUTS 11
 66,1  66,2  66,3  66,4  66,5  66,6  66,7  66,8   66,9  66,10 66,11
 Mac   Taci  Waci  Taco  Waco  Qsac  Qlac  RTFc   RTFh  Qh    Qh_gas
@@ -1478,7 +1478,7 @@ RTFacf  4,4   4,7    4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time  fspd
 ******************************************************************************
 UNIT 47 TYPE 25 summary printer - AC & Des misc.
 PARAMETERS 10
-ISTEP ISTEP 8760 41 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 41 0 0 0 0 0 1
 INPUTS 11
 67,1    67,2  67,3   67,4  67,5   67,6    67,7  67,8 67,9 67,10        67,11
 RTFacf  ACKW  FANKW  Tadp  RTFdf  DFANKW  RTFrh Qrh  RTFe RTFacf_time  fspd
@@ -1492,7 +1492,7 @@ Md  Tdi  Wdi  Tdo  Wdo  9,4  9,5  RTFd  9,7   9,3
 ******************************************************************************
 UNIT 48 TYPE 25 summary printer - Desiccant
 PARAMETERS 10
-ISTEP ISTEP 8760 51 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 51 0 0 0 0 0 1
 INPUTS 10
 68,1 68,2 68,3 68,4 68,5 68,6 68,7 68,8  68,9 68,10
 Md  Tdi  Wdi  Tdo  Wdo  Qsd  Qld  RTFd  DGAS  DKW
@@ -1506,7 +1506,7 @@ PEOPLE  SENS LATG   INFQ 0,0 QCONV SCHQs SCHWg TMIN TMAX
 ******************************************************************************
 UNIT 49 TYPE 25 summary printer - Building Loads
 PARAMETERS 10
-ISTEP ISTEP 8760 71 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 71 0 0 0 0 0 1
 INPUTS 10
 69,1    69,2    69,3 69,4 69,5  69,6  69,7 69,8  69,9 69,10
 PEOPLE  SENS   LATG INFQ INFW QCONV SCHQs SCHWg TMIN TMAX
@@ -1520,7 +1520,7 @@ INPUTS 7
 ******************************************************************************
 UNIT 74 TYPE 25 summary printer - Enclosure Loads
 PARAMETERS 10
-ISTEP ISTEP 8760 72 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 72 0 0 0 0 0 1
 INPUTS 7
 50,1    50,2    50,3    50,4    50,5    50,6    50,7
 SOLN    SOLE    SOLS    SOLW    QWALLS  QCEIL   QFLR
@@ -1534,7 +1534,7 @@ INPUTS 9
 ******************************************************************************
 UNIT 51 TYPE 25 summary printer - Air Flows
 PARAMETERS 10
-ISTEP ISTEP 8760 81 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 81 0 0 0 0 0 1
 INPUTS 9
 70,1    70,2    70,3 70,4    70,5   70,6  70,7    70,8   70,9
  MAC   MACMX    MRET  MHRV   MD_sp  MDMX  Qflrc   Qflrr  TSLAB_SI
@@ -1548,7 +1548,7 @@ INPUTS 13
 ******************************************************************************
 UNIT 52 TYPE 25 summary printer - Other data
 PARAMETERS 10
-ISTEP ISTEP 8760 91 0 0 0 0 0 1 
+ISTEP ISTEP TSTOP 91 0 0 0 0 0 1 
 INPUTS 13
 71,1    71,2    71,3 71,4   71,5   71,6  71,7   71,8  71,9  71,10   71,11 71,12  71,13
 rtfv    C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   ANO   DNO   btype   KWHT  rtfhf  KWHF
@@ -1562,7 +1562,7 @@ RHI_1   RHI_2 TAI_1 TAI_2 Q2_EQ_KJHR Th_rise Tacoc  Thrv  whrv  c_i2 VW_SI TAI_t
 ******************************************************************************
 UNIT 53 TYPE 25 summary printer - Testing data
 PARAMETERS 10
-ISTEP ISTEP 8760 99 0 0 0 0 0 1
+ISTEP ISTEP TSTOP 99 0 0 0 0 0 1
 INPUTS 14
 72,1    72,2  72,3   72,4  72,5  72,6     72,7   72,8   72,9  72,10  72,11  72,12    72,13      72,14 
 RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Th_rise  Tacoc  Thrv   whrv  c_i2   VW_SI  TAI_tl   TSupp_tl   Mv
