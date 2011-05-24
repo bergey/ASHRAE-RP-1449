@@ -40,7 +40,7 @@ def get_bno(z,h):
   return bno['z{0}h{1}.bui'.format(building_zone,h)]
 
 def ach_to_ela(ach):
-  v = 2016*10 # volume
+  v = 2016*8 # volume
   n = 0.67
   cfm4 = v*ach/60*(4./50)**n
   cmps = cfm4/35.3147/60 # cubic meters per second at 4 Pa
