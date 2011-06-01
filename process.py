@@ -8,7 +8,7 @@ from glob import glob
 import re
 import shutil
 import platform
-from parametric import hourly_data
+from parametrics import hourly_data
 graphs = platform.system() == 'Linux'
 if graphs:
     from graphs import *

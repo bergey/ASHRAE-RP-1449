@@ -111,3 +111,17 @@ def rh_hist_compare(hs, names):
     plt.ylabel('Number of Hours')
     plt.legend()
     return ret
+
+def ac_bal_point(h):
+    kw = (h['ACKW']*h['RTFc']).reshape(365,24).sum(axis=1)
+    ts = h['To'].reshape(365,24).mean(axis=1)
+    ch = np.where(kw>0) # cooling hours
+    trlim = (60,90)
+    p = np.polyfit(ts[ch], kw[ch], 1)
+    tr = np.poly1d(p)
+    plt.scatter(ts, kw)
+    plt.plot(trlim, tr(trlim), 'r')
+    plt.ylim(0,40)
+    plt.xlabel('Outdoor Daily Avg T [degF]')
+    plt.ylabel('Daily AC [kWh]')
+    return p[1]/p[0] # Balance Point below which no AC is needed
