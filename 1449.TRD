@@ -1556,16 +1556,16 @@ rtfv    C_i     Cs   rtfvf  rtfxf  KWVF  KWXF   ANO   DNO   btype   KWHT  rtfhf 
 UNIT 72 TYPE 24 integrator - Testing Data
 PARAMETERS 2
 ISTEP  0
-INPUTS 14
-RHI_1   RHI_2 TAI_1 TAI_2 Q2_EQ_KJHR Th_rise Tacoc  Thrv  whrv  c_i2 VW_SI TAI_tloss Tsupp_tloss     Mv
-  0       0     0   0       0           0     0       0      0    0     0    0           0          0
+INPUTS 16
+RHI_1   RHI_2 TAI_1 TAI_2 Q2_EQ_KJHR Th_rise Tacoc  Thrv  whrv  c_i2 VW_SI TAI_tloss Tsupp_tloss     Mv  Tsupp  qs_tloss
+  0       0     0   0       0           0     0       0      0    0     0    0           0          0    0      0
 ******************************************************************************
 UNIT 53 TYPE 25 summary printer - Testing data
 PARAMETERS 10
 ISTEP ISTEP TSTOP 99 0 0 0 0 0 1
-INPUTS 14
-72,1    72,2  72,3   72,4  72,5  72,6     72,7   72,8   72,9  72,10  72,11  72,12    72,13      72,14 
-RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Th_rise  Tacoc  Thrv   whrv  c_i2   VW_SI  TAI_tl   TSupp_tl   Mv
+INPUTS 16
+72,1    72,2  72,3   72,4  72,5  72,6     72,7   72,8   72,9  72,10  72,11  72,12    72,13      72,14   72,15  72,16
+RHI_1  RHI_2 TAI_1  TAI_2  Q2eq  Th_rise  Tacoc  Thrv   whrv  c_i2   VW_SI  TAI_tl   TSupp_tl   Mv      Tsupp  qs_tloss
 *******************************************************************************
 EQUATIONS 6
 RTFe_plt = RTFe*.8 + 14 
