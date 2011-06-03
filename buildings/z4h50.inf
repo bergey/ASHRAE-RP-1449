@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   C:\TRN-Resdh4\b\z4h50.inf
+*   FOR BUILDING:   C:\TRN-Resdh4\package\z4h50.inf
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -54,9 +54,9 @@ LAYER POLYISO
  CONDUCTIVITY=  0.022 : CAPACITY=   1.47 : DENSITY=     30
 LAYER DRYWALL
  CONDUCTIVITY=  0.576 : CAPACITY=  1.088 : DENSITY=  802.6
-LAYER CINS_FRAMING
- CONDUCTIVITY=  0.148 : CAPACITY=   1.38 : DENSITY=     37
 LAYER CINS
+ CONDUCTIVITY=  0.148 : CAPACITY=   1.38 : DENSITY=     37
+LAYER CINS_FRAMING
  CONDUCTIVITY=  0.185 : CAPACITY=  1.405 : DENSITY=   93.3
 LAYER AS_SHG_1
  CONDUCTIVITY=  0.295 : CAPACITY=  1.255 : DENSITY= 1123.6
@@ -197,7 +197,7 @@ WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
- CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 15
+ CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 30
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ WALL  =GABBLE     : SURF= 18 : AREA=     12.54 : EXTERNAL : ORI=WEST : FSKY=0.5
  GAIN        = EQUIP2     : SCALE= 1
  INFILTRATION= INFIL002
  VENTILATION = EQUIP_VENT2
- CAPACITANCE = 316.68  : VOLUME= 263.9   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 1
+ CAPACITANCE = 316.68  : VOLUME= 263.9   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 15
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  O u t p u t s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -238,10 +238,9 @@ OUTPUTS
         =  19 : SURF = 8,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 9,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 3, 4, 5, 6, 11,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
+        =  19 : SURF = 3, 4, 5, 6,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 2,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 1,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 7, 8, 9, 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  E n d
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1029,22 +1028,22 @@ _EXTENSION_WINPOOL_END_
 
               ---------- WALL TYPE CEILING_54          ----------
 
-       THERMAL CONDUCTANCE, U=     0.42906 kJ/h m2K; U-Wert=     0.11682 W/m2K
+       THERMAL CONDUCTANCE, U=     0.40290 kJ/h m2K; U-Wert=     0.10983 W/m2K
               (incl. alpha_i=7.7 W/m^2 K and alpha_o=25 W/m^2 K)
 
                         TRANSFERFUNCTION COEFFICIENTS
    K            A              B              C              D
 
-   0       5.5567378E+00    9.6074260E-12    1.3847962E+01    1.0000000E+00
-   1      -1.5184915E+01    4.1986536E-06   -4.2143815E+01   -2.1469166E+00
-   2       1.5428226E+01    3.6484036E-04    4.8652170E+01    1.6152315E+00
-   3      -7.2697672E+00    2.4058789E-03   -2.6603244E+01   -5.1912233E-01
-   4       1.6358729E+00    3.1274425E-03    7.0698256E+00    7.0750619E-02
-   5      -1.6552137E-01    1.0454396E-03   -8.5544271E-01   -3.5771773E-03
-   6       6.4924189E-03    9.5061629E-05    4.0159047E-02    5.4181924E-05
-   7      -8.0950579E-05    2.2479704E-06   -5.7143071E-04   -2.2074370E-07
-   8       2.8502099E-07    1.2532668E-08    2.1347370E-06
-  SUM      7.0451224E-03    7.0451222E-03    7.0451239E-03    1.6419908E-02
+   0       3.1018895E+00    7.2157302E-10    1.5614738E+01    1.0000000E+00
+   1      -7.7362943E+00    3.7811078E-05   -4.2863922E+01   -1.9082728E+00
+   2       6.9545100E+00    1.5556860E-03    4.3307238E+01    1.2205238E+00
+   3      -2.7568917E+00    6.0194996E-03   -1.9776288E+01   -3.0803889E-01
+   4       4.8295179E-01    4.6460719E-03    4.0590887E+00    2.9299952E-02
+   5      -3.3770165E-02    8.6512497E-04   -3.3638120E-01   -8.4674822E-04
+   6       7.7325898E-04    3.8811820E-05    8.7499282E-03    6.5865770E-06
+   7      -4.9745219E-06    3.8010137E-07   -6.0974889E-05
+   8       6.1520259E-09    7.0043446E-10    7.4148885E-08
+  SUM      1.3163387E-02    1.3163387E-02    1.3163387E-02    3.2671907E-02
 
 
               ---------- WALL TYPE FRONT_RF_2          ----------
@@ -1160,13 +1159,8 @@ _EXTENSION_WINPOOL_END_
 * |  17 | QCOMI_S4                  | kJ/hr      |   1 | ROOM                 |   4 | inside surface conv-l-wave gains->WALL=WALL_30_ADV:ORI=EAST                                                                          | QCOMI  4
 * |  18 | QCOMI_S5_#2               | kJ/hr      |   1 | ROOM                 |   5 | inside surface conv-l-wave gains->WALL=WALL_30_ADV:ORI=SOUTH                                                                         | QCOMI  5
 * |  19 | QCOMI_S6                  | kJ/hr      |   1 | ROOM                 |   6 | inside surface conv-l-wave gains->WALL=WALL_30_ADV:ORI=WEST                                                                          | QCOMI  6
-* |  20 | QCOMI_S11                 | kJ/hr      |   1 | ROOM                 |  11 | inside surface conv-l-wave gains->WALL=DOOR:ORI=NORTH                                                                                | QCOMI 11
-* |  21 | QCOMI_S2                  | kJ/hr      |   1 | ROOM                 |   2 | inside surface conv-l-wave gains->WALL=CEILING_54:ADJ=ATTIC                                                                          | QCOMI  2
-* |  22 | QCOMI_S1                  | kJ/hr      |   1 | ROOM                 |   1 | inside surface conv-l-wave gains->WALL=FLOOR:KNOWN BOUNDARY                                                                          | QCOMI  1
-* |  23 | QCOMI_S7_#2               | kJ/hr      |   1 | ROOM                 |   7 | inside surface conv-l-wave gains->WIN=EP0.30_0.35:ORI=NORTH                                                                          | QCOMI  7
-* |  24 | QCOMI_S8_#2               | kJ/hr      |   1 | ROOM                 |   8 | inside surface conv-l-wave gains->WIN=EP0.30_0.35:ORI=EAST                                                                           | QCOMI  8
-* |  25 | QCOMI_S9_#2               | kJ/hr      |   1 | ROOM                 |   9 | inside surface conv-l-wave gains->WIN=EP0.30_0.35:ORI=SOUTH                                                                          | QCOMI  9
-* |  26 | QCOMI_S10_#2              | kJ/hr      |   1 | ROOM                 |  10 | inside surface conv-l-wave gains->WIN=EP0.30_0.35:ORI=WEST                                                                           | QCOMI 10
+* |  20 | QCOMI_S2                  | kJ/hr      |   1 | ROOM                 |   2 | inside surface conv-l-wave gains->WALL=CEILING_54:ADJ=ATTIC                                                                          | QCOMI  2
+* |  21 | QCOMI_S1                  | kJ/hr      |   1 | ROOM                 |   1 | inside surface conv-l-wave gains->WALL=FLOOR:KNOWN BOUNDARY                                                                          | QCOMI  1
 
 
 
@@ -1176,7 +1170,7 @@ _EXTENSION_WINPOOL_END_
              WALL FLOOR                     U=     0.318 W/m2K
              WALL WALL_30_ADV               U=     0.103 W/m2K
              WALL DOOR                      U=     2.432 W/m2K
-             WALL CEILING_54                U=     0.117 W/m2K
+             WALL CEILING_54                U=     0.110 W/m2K
              WALL FRONT_RF_2                U=     1.992 W/m2K
              WALL GABBLE                    U=     2.178 W/m2K
              WALL INT_WALL                  U=     2.417 W/m2K

@@ -10,7 +10,7 @@ run_index = head.index('Run')
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
 # TODO adjust vent for different house sizes in parametric
 SENS_BASE = 72700 # BTU/day
-LATG_BASE = 15 # lbs/day 
+LATG_BASE = 8 # lbs/day 
 
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]

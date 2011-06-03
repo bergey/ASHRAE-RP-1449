@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   C:\TRN-Resdh4\b\z1h130.inf
+*   FOR BUILDING:   C:\TRN-Resdh4\package\z1h130.inf
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -195,7 +195,7 @@ WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
- CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 15
+ CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 50      : WCAPR= 30
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -236,10 +236,9 @@ OUTPUTS
         =  19 : SURF = 8,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 9,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 3, 4, 5, 6, 11,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
+        =  19 : SURF = 3, 4, 5, 6,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 2,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 1,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 7, 8, 9, 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  E n d
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1153,13 +1152,8 @@ _EXTENSION_WINPOOL_END_
 * |  17 | QCOMI_S4                  | kJ/hr      |   1 | ROOM                 |   4 | inside surface conv-l-wave gains->WALL=WALL_11:ORI=EAST                                                                              | QCOMI  4
 * |  18 | QCOMI_S5_#2               | kJ/hr      |   1 | ROOM                 |   5 | inside surface conv-l-wave gains->WALL=WALL_11:ORI=SOUTH                                                                             | QCOMI  5
 * |  19 | QCOMI_S6                  | kJ/hr      |   1 | ROOM                 |   6 | inside surface conv-l-wave gains->WALL=WALL_11:ORI=WEST                                                                              | QCOMI  6
-* |  20 | QCOMI_S11                 | kJ/hr      |   1 | ROOM                 |  11 | inside surface conv-l-wave gains->WALL=DOOR:ORI=NORTH                                                                                | QCOMI 11
-* |  21 | QCOMI_S2                  | kJ/hr      |   1 | ROOM                 |   2 | inside surface conv-l-wave gains->WALL=CEILING_20:ADJ=ATTIC                                                                          | QCOMI  2
-* |  22 | QCOMI_S1                  | kJ/hr      |   1 | ROOM                 |   1 | inside surface conv-l-wave gains->WALL=FLOOR:KNOWN BOUNDARY                                                                          | QCOMI  1
-* |  23 | QCOMI_S7_#2               | kJ/hr      |   1 | ROOM                 |   7 | inside surface conv-l-wave gains->WIN=EP1.20_0.40:ORI=NORTH                                                                          | QCOMI  7
-* |  24 | QCOMI_S8_#2               | kJ/hr      |   1 | ROOM                 |   8 | inside surface conv-l-wave gains->WIN=EP1.20_0.40:ORI=EAST                                                                           | QCOMI  8
-* |  25 | QCOMI_S9_#2               | kJ/hr      |   1 | ROOM                 |   9 | inside surface conv-l-wave gains->WIN=EP1.20_0.40:ORI=SOUTH                                                                          | QCOMI  9
-* |  26 | QCOMI_S10_#2              | kJ/hr      |   1 | ROOM                 |  10 | inside surface conv-l-wave gains->WIN=EP1.20_0.40:ORI=WEST                                                                           | QCOMI 10
+* |  20 | QCOMI_S2                  | kJ/hr      |   1 | ROOM                 |   2 | inside surface conv-l-wave gains->WALL=CEILING_20:ADJ=ATTIC                                                                          | QCOMI  2
+* |  21 | QCOMI_S1                  | kJ/hr      |   1 | ROOM                 |   1 | inside surface conv-l-wave gains->WALL=FLOOR:KNOWN BOUNDARY                                                                          | QCOMI  1
 
 
 

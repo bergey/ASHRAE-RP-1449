@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   C:\TRN-Resdh4\b\z2h50.bui
+*   FOR BUILDING:   C:\TRN-Resdh4\package\z2h50.bui
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -344,7 +344,7 @@ WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
- CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 40      : WCAPR= 15
+ CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 40      : WCAPR= 30
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -385,7 +385,7 @@ OUTPUTS
         =  19 : SURF = 8,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 9,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 10,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
-        =  19 : SURF = 3, 4, 5, 6, : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
+        =  19 : SURF = 3, 4, 5, 6,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 2,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
         =  19 : SURF = 1,  : QCOMI - energy from  inside surface incl. conv. to the air and l-wave radiation to other surfaces
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
