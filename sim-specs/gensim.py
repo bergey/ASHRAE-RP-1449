@@ -74,7 +74,7 @@ def ach_to_ela(ach):
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
-  if s not in [1,5]:
+  if s not in [1,3,4,5]:
     return None
   if h == 70:
     #return None
@@ -120,7 +120,7 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 40000
   elif h==85:
     ELA = ach_to_ela(5)
-    ANO = 18
+    ANO = 18 # Overridden by system 2, 3
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.9
     sduct_area = 544
@@ -207,6 +207,27 @@ def sim_line(z,h,s,rh,v):
   else: # all systems except 1
     Humlo_0 = rh
     Humhi_0 = rh
+
+  if s==3 or s==4:
+    if s==3:
+        ANO = 19
+    elif s==4:
+        ANO = 20
+    else:
+        raise UserException("Expected system 3 or 4")
+    ACCFM = ACTON*375
+    HCFM = ACTON*275
+    HUM_CNTL_type = 0  # No enhanced DH
+    # turn off standalone dehumidifier
+    Res_DNO = 21
+    DS_TYPE = 0
+    DSET = 50
+    DCFM = 148
+    REGEN = 0
+    DSIN_OPT = 1
+    RSCHD = 0
+    DSOUT = 1
+    ilck61 = 0
 
   if s==5:
       if h<85:
@@ -412,5 +433,24 @@ def debug_runs():
                     out_csv.writerow(row)
     print "%s lines in %s" % (lcount, filename)
 
-by_system([5])
+def florida(s):
+    lcount = 0
+    filename = 's{0}_florida.csv'.format(s)
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for v in [0,1]:
+        for z in xrange(2):
+            row = sim_line(z, 100, s, 50, v)
+            if row:
+                lcount += 1
+                row[head.index('Run')] = lcount
+                out_csv.writerow(row)
+    print "%s lines in %s" % (lcount, filename)
+
+
+florida(5)
+florida(1)
+florida(3)
+florida(4)
 #debug_runs()
