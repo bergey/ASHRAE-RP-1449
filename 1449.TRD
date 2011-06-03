@@ -262,13 +262,13 @@ EQUATIONS 19
 *|<           |AC_units.txt|0|12|9
   AC_EER_lo = 20.56
 *|<           |AC_units.txt|0|13|9
-  AC_SHR_lo= 0.77
+  AC_SHR_lo = 0.77
 *|<           |AC_units.txt|0|14|9
-  tons_frac_lo= 0.33
+  tons_frac_lo = 0.33
 *|<           |AC_units.txt|0|15|9
-  wcfm_ac_lo= 0.10
+  wcfm_ac_lo = 0.10
 *|<           |AC_units.txt|0|16|9
-  cfm_frac_lo= 0.3
+  cfm_frac_lo = 0.3
 *|<           |AC_units.txt|0|17|9
 *
   AC_coef = 1

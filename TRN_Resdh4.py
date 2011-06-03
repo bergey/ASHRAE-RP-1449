@@ -11,7 +11,6 @@ import datetime as dt
 #from post_install import _get_key_val, _winreg
 from csv import reader,writer,DictWriter, DictReader
 #use('Agg')
-logf = 0
 
 # path to external harddrive dir
 external = '/cygdrive/c/'
@@ -140,6 +139,7 @@ def GetMnuOption(col, Opt, OptFile):
 
 
 def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
+# OBS by DictReader
     #print DestFolder
     fcase = open("%s/SimRuns.csv" % DestFolder)
     #print fcase
@@ -151,6 +151,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     #print Run
     #print len(CaseLines)
 
+# OBS by DictReader
     CaseTags = CaseLines.pop(0).replace('\n', '').split(',') # remove 0 line
     try:
         RunColumn = CaseTags.index('Run')
@@ -191,12 +192,12 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Com_Des_units.txt')
             if opt == None: continue
             CaseTags.extend(['DTYPE','DPAR3a','DPAR4','DPAR5','DPAR6','DPAR7','DPAR8','DPAR9','DPAR10','DPAR11','DPAR12','DPAR13','DPAR14','DPAR15','DPAR16','DPAR17','DPAR18'])
-            CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11],opt[12],opt[13],opt[14],opt[15],opt[16],opt[17],opt[18]])
+            CaseVars.extend(opt[2:])
         elif case.upper() == 'ANO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'ac_units.txt')
             if opt == None: continue
-            CaseTags.extend(['IAC','AC_EER','AC_SHR','WCFM_AC','chrg_ratio','exp_type','rown','hparea','ihp'])
-            CaseVars.extend([opt[2],opt[3],opt[4],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11]])
+            CaseTags.extend(['IAC','AC_EER','AC_SHR','WCFM_AC','chrg_ratio','exp_type','rown','hparea','ihp','AC_EER_lo', 'AC_SHR_lo', 'tons_frac_lo', 'wcfm_ac_lo', 'cfm_frac_lo'])
+            CaseVars.extend([opt[2],opt[3],opt[4],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11], opt[12], opt[13], opt[14], opt[15], opt[16]])
         elif case.upper() == 'LNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'LatDeg.txt')
             if opt == None: continue
@@ -351,7 +352,6 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     fout = open(DestTRD, 'wb')
     fout.writelines(TRDLines)
     fout.close()
-    if logf: logf.write(str([t for t,v in zip(CaseTags,var_changed) if v == 0]))
     return
 
 def make_simruns(csvname, dirname):
@@ -388,13 +388,10 @@ def renew_log():
 if __name__ == "__main__":
     from time import sleep
     if len(sys.argv) > 2: path = sys.argv[2]
-    logf = open('log.txt','a')
-    #sys.stderr = logf
 
     if sys.argv[1] == '-load':
         s = system("del Current\\*.* /q")
         if s == 1: system("mkdir Current")
-        logf = open('log.txt','a')    
         if sys.argv[2] == '0':
             process_outputs("Current\\",int(sys.argv[3]))
             system("del *.dat")
@@ -429,13 +426,13 @@ if __name__ == "__main__":
         system('move "%s" "%s"' % (sys.argv[2], sys.argv[3]))
 
     elif sys.argv[1] == '-runsim':
+        renew_log()
         run_trd(sys.argv[2], external)
 
     elif sys.argv[1] == '-edit':
         TRNSYSPath = '.'
         system('""%s\%s" "%s"' % (TRNSYSPath, "Exe\TRNEdit.exe", sys.argv[2]))
     elif sys.argv[1] == '-trd_write':
-        logf.write('\n\n'+ str(sys.argv)+'\n')
         print sys.argv
         Run = int(sys.argv[2])
         DestFolder = sys.argv[3]
@@ -479,10 +476,7 @@ if __name__ == "__main__":
       for csvname in sys.argv[2:]:
         parametrics = reader(open(csvname))
         print("opened {0}".format(csvname))
-        simruns = writer(open(os.path.join(dirname, 'SimRuns.csv'),'w'))
-        for line in parametrics:
-            simruns.writerow(line[2:])
-        del simruns # this is important, before we open the file again
+        make_simruns(csvname, dirname)
         parametrics = DictReader(open(csvname))
         for line in parametrics:
             trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
