@@ -61,7 +61,7 @@ def vapour_PF(T):
     return vapour_P((T-32)/1.8+273.25)
 
 def humidity_ratio(rh, T):
-    """rh in range [0,1]; T in °F; returns humidity ratio kg H2O per kg dry air (equiv lb/lb)"""
+    """rh in range [0,1]; T in F; returns humidity ratio kg H2O per kg dry air (equiv lb/lb)"""
     P = 101325
     pws = vapour_PF(T)
     xws = pws/P
