@@ -362,7 +362,7 @@ def make_simruns(csvname, dirname):
     del simruns # this is important, before we open the file again
 
 def move_output(trd, dest):
-    for file in glob('for*'):
+    for file in glob('for_*'):
         shutil.move(file, os.path.join(dest,file))
     shutil.move(trd, os.path.join(dest, trd))
 
