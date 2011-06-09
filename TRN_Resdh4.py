@@ -426,8 +426,9 @@ if __name__ == "__main__":
         system('move "%s" "%s"' % (sys.argv[2], sys.argv[3]))
 
     elif sys.argv[1] == '-runsim':
-        renew_log()
-        run_trd(sys.argv[2], external)
+        for trd in sys.argv[2:]:
+            renew_log()
+            run_trd(trd, external)
 
     elif sys.argv[1] == '-edit':
         TRNSYSPath = '.'
