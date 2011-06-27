@@ -45,7 +45,7 @@ def parse_name(scenario):
 
 def collect_specs(spec_path, data_path):
   def scenario_path(s):
-    return join(data_path, basename(spec_path)[:-4], 'Run{0}'.format(s['Run']))
+    return join(data_path, basename(spec_path)[:-4], s['Desc'])
 # open the csv from gensim, and parse some useful things out of it
   spec_file = open(spec_path)
   spec = csv.DictReader(spec_file)
