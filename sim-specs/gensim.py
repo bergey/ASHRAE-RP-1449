@@ -449,8 +449,5 @@ def florida(s):
     print "%s lines in %s" % (lcount, filename)
 
 
-florida(5)
-florida(1)
-florida(3)
-florida(4)
 #debug_runs()
+by_system([1,3,4,5])
