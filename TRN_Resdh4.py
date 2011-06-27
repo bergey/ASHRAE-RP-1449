@@ -152,7 +152,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     #print len(CaseLines)
 
 # OBS by DictReader
-    CaseTags = CaseLines.pop(0).replace('\n', '').split(',') # remove 0 line
+    CaseTags = CaseLines.pop(0).replace('\r', '').replace('\n', '').split(',') # remove 0 line
     try:
         RunColumn = CaseTags.index('Run')
         #print "Run is in column %s" % RunColumn
