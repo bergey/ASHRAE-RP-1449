@@ -675,7 +675,7 @@ EQUATIONS 3
 * 
 *|<COLOR1> BLUE
 *|[Inf|Infiltration Type
-EQUATIONS 13
+EQUATIONS 14
 ACH_TYPE = 13
 *|< Infiltration type (ACH_TYPE)                  |Infiltration.txt|2|1|25
 K1 = 0
@@ -701,7 +701,9 @@ WW_G = 0.48
 ACH_SET = 0.0000000000000E+00
 *|    New Infiltration:(Custom Infiltration) (ACH_SET)   |(0-3 ACH)|(0-3 ACH )|0|1|0.0000|3.0000|29
 ELA = 5.5000000000000E+01
-*|    Effective Leakage Area (Sherman-Grimsrud) (ELA) |Sq.in|Sq.in|0|1|0.00|1000.00|29
+*|    Effective Leakage Area (Sherman-Grimsrud or Walker-Wilson) (ELA) |Sq.in|Sq.in|0|1|0.00|1000.00|29
+ELA_2 = 567.0
+*|    Effective Leakage Area for Attic(Walker-Wilson) (ELA) |Sq.in|Sq.in|0|1|0.00|2000.00|29
 *|]
 *
 *|<COLOR1> BLUE
@@ -899,7 +901,7 @@ EQUATIONS 7
   TMAX   = TChi - HVAC * (TChi-TClo)
   HMAX   = Humhi - HVAC * (Humhi-Humlo)
 ***************************************************************************
-EQUATIONS 23
+EQUATIONS 30
 TAI_SI1 = [5,1]
 TAI_SI2 = [5,5]
 TAI_1 = TAI_SI1*1.8 + 32
@@ -912,8 +914,9 @@ C_i2 = [6,3]
 *  Override ACH if TRNSYS delta-T and V method specified (coefs K1-K3 are from inf_types.txt)
 R = 0.5
 X = 0
-H = WALLH * 0.3048   !(ft to m)
-ELA_SI = ELA/1550    !(Sq.in to Sq.m)
+H = WALLH * 0.3048     !(ft to m)
+ELA_SI = ELA/1550      !(Sq.in to Sq.m)
+ELA_2_SI = ELA_2/1550  !(Sq.in to Sq.m)
 fs =((1+R/2)/3)*(1-X^2/(2-R)^2)^(3/2)*(9.8*H/298)^0.5
 fw = C*(1-R)^(1/3)*A*(H/10)^B
 ACH_ASHRAE = (K1 + K2*ABS(TAI_SI-TAO_SI) + K3*VW_SI)
@@ -928,6 +931,15 @@ ACH_WW = WW_Q*35.3147*3600/VOL ! VOL in cubic feet
 ! Pick Infiltration Model
 ACH0 = EQL(ACH_TYPE,1)*ACH_file+EQL(ACH_TYPE,2)*ACH_SET + GT(ACH_TYPE,2)*LT(ACH_TYPE,6)*ACH_ASHRAE + GT(ACH_TYPE,5)*LT(ACH_TYPE,11)* ACH_SG + GT(ACH_TYPE,10)*ACH_WW
 *
+! Attic uses Walker-Wilson, or 10x house ACH
+* Attic has ELA separate from house, but uses some parameters s Cs Cw G
+WWA_c = ELA_2_SI*(2/1.2)^0.5*4^(0.5-WW_n) ! where 1.2 is density of air
+WWA_Qs = WWA_c*WW_Cs*ABS(TAI_SI-TAO_SI)^WW_n ! stack effect
+WWA_Qw = WWA_c*WW_Cw*(WW_s*WW_G*VW_SI)^(2*WW_n) ! wind induced infiltration
+WWA_Q = (WWA_Qs^2 + WWA_Qw^2)^0.5 ! Q in m^3/s
+ACH_2_WW = WWA_Q*35.3147*3600/9319 ! VOL in cubic feet TODO hardcoded attic volume is crude
+ACH_2 = GT(ACH_TYPE,10)*ACH_2_WW + LT(ACH_TYPE,11)*ACH0*10 ! Pick Infiltration Model
+
 ************************************************************************
 UNIT 33 TYPE 33 PSYCH - Get Space Conditions for Zone 1(SI UNITS) 
 PARAMETERS 3
@@ -1307,10 +1319,11 @@ EQUATIONS 10
 * Implemented  Mar-3-05 and again on May 26, 2006
 * the attic ACH is automatically set to be 10 times the space ACH, or a minimum of 2
 *
+* This volume calc is terrible, and the icfm2 line actually sets to 20 ACH natural
    VOL2 = VOL/3
 *
   icfm1 = icfm 			    + scfm1*min(max((Cs2-C_i1)/(C_o-C_i1+1e-16),0.),1.)
-  icfm2 = max(ACH,2.)*10.*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.)
+  icfm2 = max(ACH,2.)*10.*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.) ! FIXME
 *
 ********************************************************************************
 UNIT 6 TYPE 151 CO2 Balance
@@ -1381,7 +1394,7 @@ WEIGHTIN		! 3 Weighting factor for operative temperature
 *LOGICAL2		! 4 Logical unit for monthly summary
 *LOGICAL3		! 5 Logical unit for hourly temperatures
 *LOGICAL4		! 6 Logical unit for hourly loads
-INPUTS 35
+INPUTS 36
 TAO_SI 		! Psychrometrics:Dry bulb temperature ->    1- TAMB  (AMBIENT TEMPERATURE)
 RHO_SI 		! Psychrometrics:Percent relative humidity  ->    2- ARELHUM  (RELATIVE AMBIENT HUMIDITY)
 169,1 		! Sky temp:Fictive sky temperature ->    3- TSKY  (FIKTIVE SKY TEMPERATURE)
@@ -1410,6 +1423,7 @@ VolFlow_1			! Ventilation Flow to Main Zone ()   23- FLOW_MAIN  (INPUT)
 Tsupp_SI		! Supply Air Temperature to zones    19- TAS  (INPUT)
 RHsupp_SI		! Supply RH to zones    20- RHS  (INPUT)
 ACH			! Infiltration			24- ACH (INPUT)
+ACH_2        ! Attic Infiltration
 SENS
 LATG
 TSLAB_SI		! Temperature of Basement Floor 22- TSLAB  (INPUT)
@@ -1421,7 +1435,7 @@ Q2_EQ_KJHR
 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0
+0 0 0 0 0 0
 *** External files 
 *ASSIGN "T56_std-Output.sum" 33
 *ASSIGN "T56_std-temp.prn" 34
@@ -1444,16 +1458,16 @@ EQUATIONS 5
 UNIT 65 TYPE 24 integrator - Space
 PARAMETERS 2
 ISTEP  0
-INPUTS 10
-TAO  WAO  TAI  WAI   RHI  OCC  Msupp2  Tsupp2  Wsupp2 ACH
-0      0    0    0     0     0     0      0      0    0
+INPUTS 11
+TAO  WAO  TAI  WAI   RHI  OCC  Msupp2  Tsupp2  Wsupp2 ACH  ACH_2
+0      0    0    0     0     0     0      0      0    0    0
 ***************************************************************************
 UNIT 45 TYPE 25 summary printer - Space
 PARAMETERS 10
 ISTEP ISTEP TSTOP 21 0 0 0 0 0 1
-INPUTS 10
-65,1  65,2  65,3 65,4 65,5  65,6  65,7   65,8    65,9  65,10
-To    Wo    Ti   Wi   RHi   OCC  Msupp2  Tsupp2  Wsupp2 ACH
+INPUTS 11
+65,1  65,2  65,3 65,4 65,5  65,6  65,7   65,8    65,9  65,10  65,11
+To    Wo    Ti   Wi   RHi   OCC  Msupp2  Tsupp2  Wsupp2 ACH   ACH_2
 *************************************************************************** 
 UNIT 66 TYPE 24 integrator - AC
 PARAMETERS 2
