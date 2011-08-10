@@ -2,7 +2,7 @@
 *  TRNBuild   1.0.78
 *********************************************************************************************************************************************************************************************************
 *   BUILDING DESCRIPTIONS FILE TRNSYS
-*   FOR BUILDING:   C:\TRN-Resdh4\package\z3h100.inf
+*   FOR BUILDING:   C:\TRN-Resdh4\package\b\z3h100.inf
 *   GET BY WORKING WITH TRNBuild 1.0 for Windows
 *********************************************************************************************************************************************************************************************************
 *
@@ -69,7 +69,7 @@ LAYER MIXFL_SL
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  I n p u t s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-INPUTS VOLUME_FLOW SUPPLY_TEMP SUPPLY_RH INF_ACH SENSIBLE_IN LATENT_IN TGR VOL_FLOW2 MIC SEASON EQUIP2_IN
+INPUTS VOLUME_FLOW SUPPLY_TEMP SUPPLY_RH INF_ACH INF_ACH_2 SENSIBLE_IN LATENT_IN TGR VOL_FLOW2 MIC SEASON EQUIP2_IN
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  S c h e d u l e s
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -143,17 +143,17 @@ GAIN EQUIP2
 INFILTRATION INFIL001
  AIRCHANGE=INPUT 1*INF_ACH
 INFILTRATION INFIL002
- AIRCHANGE=INPUT 10*INF_ACH
+ AIRCHANGE=INPUT 1*INF_ACH_2
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  V e n t i l a t i o n
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VENTILATION EQUIP_VENT
  TEMPERATURE=INPUT 1*SUPPLY_TEMP
- AIRCHANGE=INPUT 0.001946*VOLUME_FLOW
+ AIRCHANGE=INPUT 0.00218956*VOLUME_FLOW
  HUMIDITY=INPUT 1*SUPPLY_RH
 VENTILATION EQUIP_VENT2
  TEMPERATURE=INPUT 1*SUPPLY_TEMP
- AIRCHANGE=INPUT 0.003789*VOL_FLOW2
+ AIRCHANGE=INPUT 0.00378947*VOL_FLOW2
  HUMIDITY=INPUT 1*SUPPLY_RH
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  C o o l i n g
@@ -181,13 +181,13 @@ BUILDING
 ZONE ROOM
 AIRNODE ROOM
 WALL  =CEILING_30 : SURF=  2 : AREA=     187.3 : ADJACENT=ATTIC : FRONT
-WALL  =WALL_13    : SURF=  3 : AREA=     41.62 : EXTERNAL : ORI=NORTH : FSKY=0.5
+WALL  =WALL_13    : SURF=  3 : AREA=     36.64 : EXTERNAL : ORI=NORTH : FSKY=0.5
 WINDOW=EP0.65_0.40 : SURF=  7 : AREA=     10.18 : EXTERNAL : ORI=NORTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3
-WALL  =WALL_13    : SURF=  4 : AREA=     26.76 : EXTERNAL : ORI=EAST : FSKY=0.5
+WALL  =WALL_13    : SURF=  4 : AREA=     23.56 : EXTERNAL : ORI=EAST : FSKY=0.5
 WINDOW=EP0.65_0.40 : SURF=  8 : AREA=      6.54 : EXTERNAL : ORI=EAST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3
-WALL  =WALL_13    : SURF=  5 : AREA=     41.62 : EXTERNAL : ORI=SOUTH : FSKY=0.5
+WALL  =WALL_13    : SURF=  5 : AREA=     36.64 : EXTERNAL : ORI=SOUTH : FSKY=0.5
 WINDOW=EP0.65_0.40 : SURF=  9 : AREA=     10.18 : EXTERNAL : ORI=SOUTH : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3
-WALL  =WALL_13    : SURF=  6 : AREA=     26.76 : EXTERNAL : ORI=WEST : FSKY=0.5
+WALL  =WALL_13    : SURF=  6 : AREA=     23.56 : EXTERNAL : ORI=WEST : FSKY=0.5
 WINDOW=EP0.65_0.40 : SURF= 10 : AREA=      6.54 : EXTERNAL : ORI=WEST : FSKY=0.5 : ISHADE=INPUT -0.15*SEASON+0.3
 WALL  =DOOR       : SURF= 11 : AREA=    3.7161 : EXTERNAL : ORI=NORTH : FSKY=0.5
 WALL  =INT_WALL   : SURF= 19 : AREA=     371.6 : INTERNAL
@@ -197,7 +197,7 @@ WALL  =FLOOR      : SURF=  1 : AREA=     187.3 : BOUNDARY=INPUT 1*TGR
  GAIN        = LATENT     : SCALE= 1
  INFILTRATION= INFIL001
  VENTILATION = EQUIP_VENT
- CAPACITANCE = 12331.2 : VOLUME= 513.8   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 30
+ CAPACITANCE = 12331.2 : VOLUME= 456.7   : TINITIAL= 20      : PHINITIAL= 35      : WCAPR= 30
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *  Z o n e  ATTIC  /  A i r n o d e  ATTIC
 *--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1121,13 +1121,14 @@ _EXTENSION_WINPOOL_END_
 * |  26 | SUPPLY_TEMP          | any        | INPUT                                                                  | SUPPLY_TEM
 * |  27 | SUPPLY_RH            | any        | INPUT                                                                  | SUPPLY_RH 
 * |  28 | INF_ACH              | any        | INPUT                                                                  | INF_ACH   
-* |  29 | SENSIBLE_IN          | any        | INPUT                                                                  | SENSIBLE_I
-* |  30 | LATENT_IN            | any        | INPUT                                                                  | LATENT_IN 
-* |  31 | TGR                  | any        | INPUT                                                                  | TGR       
-* |  32 | VOL_FLOW2            | any        | INPUT                                                                  | VOL_FLOW2 
-* |  33 | MIC                  | any        | INPUT                                                                  | MIC       
-* |  34 | SEASON               | any        | INPUT                                                                  | SEASON    
-* |  35 | EQUIP2_IN            | any        | INPUT                                                                  | EQUIP2_IN 
+* |  29 | INF_ACH_2            | any        | INPUT                                                                  | INF_ACH_2 
+* |  30 | SENSIBLE_IN          | any        | INPUT                                                                  | SENSIBLE_I
+* |  31 | LATENT_IN            | any        | INPUT                                                                  | LATENT_IN 
+* |  32 | TGR                  | any        | INPUT                                                                  | TGR       
+* |  33 | VOL_FLOW2            | any        | INPUT                                                                  | VOL_FLOW2 
+* |  34 | MIC                  | any        | INPUT                                                                  | MIC       
+* |  35 | SEASON               | any        | INPUT                                                                  | SEASON    
+* |  36 | EQUIP2_IN            | any        | INPUT                                                                  | EQUIP2_IN 
 
 
 
