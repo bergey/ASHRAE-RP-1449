@@ -10,7 +10,7 @@ run_index = head.index('Run')
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
 # TODO adjust vent for different house sizes in parametric
 SENS_BASE = 72700 # BTU/day
-LATG_BASE = 8 # lbs/day 
+LATG_BASE = 12 # lbs/day 
 
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]
@@ -439,15 +439,16 @@ def florida(s):
     handle = open(filename, 'w')
     out_csv = csv.writer(handle)
     out_csv.writerow(head)
-    for v in [0,1]:
-        for z in xrange(2):
-            row = sim_line(z, 100, s, 50, v)
-            if row:
-                lcount += 1
-                row[head.index('Run')] = lcount
-                out_csv.writerow(row)
+    for z in xrange(2):
+      row = sim_line(z, 100, s, 50, 0)
+        if row:
+          lcount += 1
+          row[head.index('Run')] = lcount
+          out_csv.writerow(row)
     print "%s lines in %s" % (lcount, filename)
 
 
 #debug_runs()
-by_system([1,3,4,5])
+#by_system([1,3,4,5])
+florida(1)
+florida(5)
