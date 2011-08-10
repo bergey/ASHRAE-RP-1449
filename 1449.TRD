@@ -1344,8 +1344,8 @@ Tsupp_SI  Wsupp2  PATM
 *
 EQUATIONS 4
 RHsupp_SI = [35,6]
-VolFlow_1 = (1 - ZN_FRAC_S) * supp_cfm *0.075*60./2.2/1.09
-VolFlow_2 = ZN_FRAC_S * supp_cfm * 0.075*60./2.2/1.09
+VolFlow_1 = (1 - ZN_FRAC_S) * supp_cfm * 0.3048**3 * 60 ! cfm to m^3/hr
+VolFlow_2 = ZN_FRAC_S * supp_cfm * 0.3048**3 * 60       ! cfm to m^3/hr
 Q2_EQ_KJHR = (qs_tloss + qr_tloss)*1.055
 *
 *******************************************************************************
