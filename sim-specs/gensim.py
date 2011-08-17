@@ -186,7 +186,7 @@ def sim_line(z,h,s,rh,v):
   if s==1:
     if rh == 60: 
       return None # no RH setpoint for system 1
-    if h==70:
+    if h<85:
       return None
     #ACTON = 2 
     ACCFM = ACTON*375
@@ -202,12 +202,15 @@ def sim_line(z,h,s,rh,v):
     RSCHD = 0
     DSOUT = 1
     ilck61 = 0
-    Humlo_0 = 99
+    Humlo_0 = 99 # actually not critical, because TRD does this internally
     Humhi_0 = 99
   else: # all systems except 1
     Humlo_0 = rh
     Humhi_0 = rh
 
+  if s==2:
+    pass # TODO FIXME
+    
   if s==3 or s==4:
     if s==3:
         ANO = 19
@@ -392,7 +395,7 @@ def by_system(systems):
     handle = open(filename, 'w')
     out_csv = csv.writer(handle)
     out_csv.writerow(head)
-    for h in [70, 85, 100, 130]:
+    for h in [50, 70, 85, 100, 130]:
       for v in [0, 1, 2, 3, 4]:
         for z in range(0,6):
           for rh in [50, 60]:
@@ -441,14 +444,11 @@ def florida(s):
     out_csv.writerow(head)
     for z in xrange(2):
       row = sim_line(z, 100, s, 50, 0)
-        if row:
-          lcount += 1
-          row[head.index('Run')] = lcount
-          out_csv.writerow(row)
+      if row:
+        lcount += 1
+        row[head.index('Run')] = lcount
+        out_csv.writerow(row)
     print "%s lines in %s" % (lcount, filename)
 
 
-#debug_runs()
-#by_system([1,3,4,5])
-florida(1)
-florida(5)
+by_system([1,3,5])
