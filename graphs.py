@@ -1,7 +1,8 @@
 # coding= utf-8
 import numpy as np
 import matplotlib.pyplot as plt
-from parametrics import by_month, month_names
+from parametrics import by_month, month_names, daily_total, daily_mean
+from physics import humidity_ratio
 
 def plot_TRH(name, hourly):
     fig = plt.figure()
@@ -49,6 +50,15 @@ def plot_rh_hist(name, hourly):
     plt.title('{0}: Indoor RH Histogram'.format(name))
     fig.savefig( 'summary/{0}-rh-histogram.png'.format(name) )
     plt.close()
+    
+def plot_rh_hist_daily(name, hourly):
+    fig = plt.figure()
+    plt.hist(hourly['RHi'],50)
+    plt.xlabel('average RH [%]')
+    plt.ylabel('Number of Days')
+    plt.title('{0}: Indoor RH Histogram'.format(name))
+    fig.savefig( 'summary/{0}-rh-histogram-daily.png'.format(name) )
+    plt.close()
 
 def plot_t_hist(name, hourly):
     fig = plt.figure()
@@ -57,15 +67,6 @@ def plot_t_hist(name, hourly):
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor T Histogram'.format(name))
     fig.savefig( 'summary/{0}-ti-histogram.png'.format(name) )
-    plt.close()
-
-def plot_AC_balance(name, hourly):
-    fig = plt.figure()
-    plt.scatter(hourly['To'], hourly['RTFc'] * hourly['ACKW'], marker='+', s=10, linewidths=0.1, color='r')
-    plt.xlabel('Outdoor T (degrees F)')
-    plt.ylabel('kW cooling')
-    plt.title('{0}: Cooling Balance'.format(name))
-    fig.savefig( 'summary/{0}-AC-balance.png'.format(name) )
     plt.close()
 
 def plot_AC_hist(name, hourly):
@@ -112,16 +113,57 @@ def rh_hist_compare(hs, names):
     plt.legend()
     return ret
 
-def ac_bal_point(h):
-    kw = (h['ACKW']*h['RTFc']).reshape(365,24).sum(axis=1)
-    ts = h['To'].reshape(365,24).mean(axis=1)
-    ch = np.where(kw>0) # cooling hours
+def ac_bal_point(h, name='', interactive=False):
+    fig = plt.figure()
+    rt = daily_total(h['RTFc']) # AC runtime
+    ts = daily_mean(h['To'])
+    ch = np.where(rt>0) # cooling hours
     trlim = (60,90)
-    p = np.polyfit(ts[ch], kw[ch], 1)
+    p = np.polyfit(ts[ch], rt[ch], 1)
     tr = np.poly1d(p)
-    plt.scatter(ts, kw)
-    plt.plot(trlim, tr(trlim), 'r')
+    plt.scatter(ts, rt, marker='+', s=10, linewidths=0.1, color='r')
+    # don't plot balance point, Hugh says
+    #plt.plot(trlim, tr(trlim), 'r')
     plt.ylim(0,40)
     plt.xlabel('Outdoor Daily Avg T [degF]')
-    plt.ylabel('Daily AC [kWh]')
+    plt.ylabel('Daily AC Runtime [hours]')
+    plt.title('{0}:Cooling Balance'.format(name))
+    if name:
+        fig.savefig('summary/{0}-AC-balance.png'.format(name))
+        if not interactive: # if name is provided, assume called from script, unless interactive set
+            plt.close()
     return p[1]/p[0] # Balance Point below which no AC is needed
+
+def plot_humidity_ratio(hourly, name='', interactive=False):
+    fig = plt.figure()
+    plt.scatter(daily_mean(hourly['Wo']), daily_mean(hourly['Wi']))
+    plt.xlabel('Outdoor Humidity Ratio')
+    plt.ylabel('Indoor Humidity Ratio')
+    plt.title('{0}: Daily Humidity Ratio'.format(name))
+    if name:
+        fig.savefig('summary/{0}-wi-wo.png'.format(name))
+        if not interactive:
+            plt.close()
+                 
+def plot_daily_psychrometric(hourly, name='', interactive=False):
+    fig = plt.figure()
+    ti = daily_mean(hourly['Ti'])
+    wi = daily_mean(hourly['Wi'])
+    rt = daily_total(hourly['RTFc']) # cooling runtime
+    cd = np.where(rt > 0)[0] # cooling days
+    ncd = np.where(rt <= 0)[0] # non-cooling days
+    plt.scatter(ti[cd], wi[cd], color='b')
+    plt.scatter(ti[ncd], wi[ncd], color='r')
+    # plot some lines of constant RH
+    ts = np.linspace(65,85,5)
+    for rh in np.linspace(0.1, 1, 10):
+        plt.plot(ts, humidity_ratio(rh, ts), 'k')
+    plt.xlabel('Indoor Temperature [degF]')
+    plt.ylabel('Indoor Humidity Ratio')
+    plt.title('{0}: Psychrometric Chart'.format(name))
+    if name:
+#        fig.savefig('summary/{0}-psychrometric.png'.format(name))
+        fig.savefig('summary/{0}-wi-wo.png'.format(name))
+        if not interactive:
+            plt.close()
+    

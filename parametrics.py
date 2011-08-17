@@ -38,6 +38,12 @@ def by_month(hours):
     by_day = hours.reshape(365, 24) # throw error if not 8760 long
     return np.array_split(by_day, splits, axis=0)
 
+def daily_total(hours):
+    return hours.reshape(-1, 24).sum(axis=1)
+
+def daily_mean(hours):
+    return hours.reshape(-1, 24).mean(axis=1)
+
 #support function for scenarios, below
 def get_keys(names):
     ks = zip(*names)

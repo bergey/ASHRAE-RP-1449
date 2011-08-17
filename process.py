@@ -84,12 +84,12 @@ def summarize_csv(specs):
         if graphs:
             print "graphing {0}".format(name)
             plot_TRH(name, hourly)
-            plot_Wrt(name, hourly)
-            plot_rh_hist(name, hourly)
-            plot_t_hist(name, hourly)
-            #plot_AC_balance(name, hourly)
-            #plot_AC_hist(name, hourly)
-            #plot_window_gain(name, hourly)
+            plot_humidity_ratio(hourly, name)
+            #plot_Wrt(name, hourly)
+            plot_rh_hist_daily(name, hourly)
+            #plot_t_hist(name, hourly)
+            plot_daily_psychrometric(hourly, name)
+            ac_bal_point(hourly, name)
     else:
 # scenario path does not exist
         print "skipping {0}: path {1} does not exist".format(name, scenario_path)
