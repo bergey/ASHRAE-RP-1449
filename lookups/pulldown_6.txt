@@ -1,0 +1,8 @@
+7
+1,0,0-none
+2,1,1-Condenser Reheat
+3,2,2-Carrier Thermidistat (overcool 3F)
+4,3,3-Carrier Super-Thermidistat (80% flow)
+5,4,4-Low Supply Airflow (80%) for DEHUM
+6,5,5-Lennox Humiditrol w/2F Overcooling
+7,6,6-Lennox Humiditrol w/4F Overcooling
