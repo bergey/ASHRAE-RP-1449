@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from parametrics import by_month, month_names, daily_total, daily_mean
 from physics import humidity_ratio
 
-def plot_TRH(name, hourly):
+def plot_TRH(hourly, name='', interactive=False):
     fig = plt.figure()
     line_ti, = plt.plot(hourly['Ti'])
     line_ti.set_linewidth(0.2)
@@ -25,7 +25,7 @@ def plot_TRH(name, hourly):
     fig.savefig( 'summary/{0}-annual-trh.png'.format(name) )
     plt.close()
 
-def plot_Wrt(name, hourly):
+def plot_Wrt(hourly, name='', interactive=False):
     fig = plt.figure()
     line_Wi, = plt.plot(hourly['Wi'], linewidth=0.2)
     line_Wo, = plt.plot(hourly['Wo'], linewidth=0.2)
@@ -42,7 +42,7 @@ def plot_Wrt(name, hourly):
     fig.savefig('summary/{0}-annual-moisture.png'.format(name))
     plt.close()
 
-def plot_rh_hist(name, hourly):
+def plot_rh_hist(hourly, name='', interactive=False):
     fig = plt.figure()
     plt.hist(hourly['RHi'],50)
     plt.xlabel('percent RH')
@@ -51,7 +51,7 @@ def plot_rh_hist(name, hourly):
     fig.savefig( 'summary/{0}-rh-histogram.png'.format(name) )
     plt.close()
     
-def plot_rh_hist_daily(name, hourly):
+def plot_rh_hist_daily(hourly, name='', interactive=False):
     fig = plt.figure()
     plt.hist(hourly['RHi'],50)
     plt.xlabel('average RH [%]')
@@ -60,7 +60,7 @@ def plot_rh_hist_daily(name, hourly):
     fig.savefig( 'summary/{0}-rh-histogram-daily.png'.format(name) )
     plt.close()
 
-def plot_t_hist(name, hourly):
+def plot_t_hist(hourly, name='', interactive=False):
     fig = plt.figure()
     plt.hist(hourly['Ti'],50)
     plt.xlabel('degrees F')
@@ -69,7 +69,7 @@ def plot_t_hist(name, hourly):
     fig.savefig( 'summary/{0}-ti-histogram.png'.format(name) )
     plt.close()
 
-def plot_AC_hist(name, hourly):
+def plot_AC_hist(hourly, name='', interactive=False):
     fig = plt.figure()
     xs = np.linspace(60,110,51)
     cooling = np.where(hourly['RTFc'] >= 0.05, 1, 0)
@@ -85,7 +85,7 @@ def plot_AC_hist(name, hourly):
     fig.savefig( 'summary/{0}-AC_hist'.format(name) )
     plt.close()
 
-def plot_window_gain(name, hourly):
+def plot_window_gain(hourly, name='', interactive=False):
     def helper(name, gain):
         fig = plt.figure()
         lines = []

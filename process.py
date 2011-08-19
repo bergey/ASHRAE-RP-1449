@@ -83,10 +83,10 @@ def summarize_csv(specs):
         first_run = False # flag, never becomes true again in this call
         if graphs:
             print "graphing {0}".format(name)
-            plot_TRH(name, hourly)
+            plot_TRH(hourly, name)
             plot_humidity_ratio(hourly, name)
             #plot_Wrt(name, hourly)
-            plot_rh_hist_daily(name, hourly)
+            plot_rh_hist_daily(hourly, name)
             #plot_t_hist(name, hourly)
             plot_daily_psychrometric(hourly, name)
             ac_bal_point(hourly, name)
