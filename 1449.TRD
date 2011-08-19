@@ -288,19 +288,19 @@ EQUATIONS 6
 *---------------- HUM_CNTL_type --------------------------------------------
 * Option 1:  condenser reheat (REHEAT=1)
 * Option 2:  thermidistat control (THERMID=1)
-* Option 3:  SUPER thermidistat control (THERMID=1 & fspd_on=80%)
-* Option 4:  lower supply airflow to 80% when in dehumid mode (fspd_on=80%) 
+* Option 3:  SUPER thermidistat control (THERMID=1 & fspd_on=53%)
+* Option 4:  lower supply airflow to 80% when in dehumid mode (fspd_on=53%) 
 * Option 5:  Lennox Humiditrol (OVR_cool = 2 & bpON=1 when overcooling)
 * Option 6:  Lennox Humiditrol (OVR_cool = 4 & bpON=1 when overcooling)
 *
-  fspd_on = 1. - (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))*GT(HUM_CTL,HMAX)*(1-0.8)
+  fspd_on = 1. - (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))*GT(HUM_CTL,HMAX)*(1-0.533)
  
  THERMID  = eql(HUM_CNTL_type,2) + eql(HUM_CNTL_type,3) + GT(HUM_CNTL_type,4)
   REHEAT = eql(HUM_CNTL_type,1)
 *
 *			Carrier Thermid	(2,3)			Lennox (5,6)
 *
-  OVR_cool = LT(HUM_CNTL_type,4)*THERMID*3. 			+ EQL(HUM_CNTL_type,5)*THERMID*2  + EQL(HUM_CNTL_type,6)*THERMID*4
+  OVR_cool = LT(HUM_CNTL_type,4)*THERMID*2. 			+ EQL(HUM_CNTL_type,5)*THERMID*2  + EQL(HUM_CNTL_type,6)*THERMID*4
 *
   T_Gain = LT(HUM_CNTL_type,4)*THERMID*0.1667 			+ GT(HUM_CNTL_type,4)*THERMID*5.
 *
