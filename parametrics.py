@@ -44,6 +44,23 @@ def daily_total(hours):
 def daily_mean(hours):
     return hours.reshape(-1, 24).mean(axis=1)
 
+def sens_cool(hours):
+    """cooling at each hour, in BTU/hr"""
+    # lbs/hr-F to kg to K to kJ to BTU
+    return hours['MAC']*(hours['Taci']-hours['Taco'])/2.2/1.8*1/1.055
+
+def lat_cool(hours):
+    """latent cooling at each hour, in BTU/hr"""
+    # 970 BTU/lb water condensed
+    return hours['MAC']*(hours['Waci']-hours['Waco'])*970.4
+
+def ac_power(hours):
+    """AC average power at each hour, in kW"""
+    return hours['ACKW']*hours['RTFc']
+
+def seer(hours):
+    return ( hours['Qsac'].sum() + hours['Qlac'].sum() ) / ( ac_power(hours).sum() * 1000 )
+
 #support function for scenarios, below
 def get_keys(names):
     ks = zip(*names)
