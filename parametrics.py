@@ -56,7 +56,7 @@ def lat_cool(hours):
 
 def ac_power(hours):
     """AC average power at each hour, in kW"""
-    return hours['ACKW']*hours['RTFc']
+    return ( hours['ACKW'] + hours['FANKW'] )*hours['RTFc']
 
 def seer(hours):
     return ( hours['Qsac'].sum() + hours['Qlac'].sum() ) / ( ac_power(hours).sum() * 1000 )
