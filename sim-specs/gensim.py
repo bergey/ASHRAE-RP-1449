@@ -90,11 +90,11 @@ def sim_line(z,h,s,rh,v):
 # parameters depending only on HERS
   if h==50:
     ELA = ach_to_ela(3)
-    ANO = 18 # temporary hack XXX TODO
+    ANO = 18 # for comparison; overridden by system TODO
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.7
-    sduct_area = 0
+    sduct_area = 0 
     rduct_area = 0
     leaks = 0
     leakr = 0
@@ -103,7 +103,7 @@ def sim_line(z,h,s,rh,v):
   elif h==70:
 # TODO punt for now
     ELA = ach_to_ela(4)
-    ANO = 18 # temporary hack XXX TODO
+    ANO = 18 # for comparison; overridden by system TODO
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.8
@@ -123,8 +123,8 @@ def sim_line(z,h,s,rh,v):
     ANO = 18 # Overridden by system 2, 3
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.9
-    sduct_area = 544
-    rduct_area = 100
+    sduct_area = 544 # overridden by system 4
+    rduct_area = 100 # overridden by system 4
     leaks = 0.03 # 5% total leakage, split 60/40
     leakr = 0.02
     duct_Rval = 8
@@ -187,7 +187,8 @@ def sim_line(z,h,s,rh,v):
     if rh == 60: 
       return None # no RH setpoint for system 1
     if h<85:
-      return None
+      #return None
+      pass # TODO only include these runs for calibration?
     #ACTON = 2 
     ACCFM = ACTON*375
     HCFM = ACTON*275
@@ -216,6 +217,11 @@ def sim_line(z,h,s,rh,v):
         ANO = 19
     elif s==4:
         ANO = 20
+        sduct_area = 0 # override HERS-based ductwork
+        rduct_area = 0 # ductless minisplit
+        leaks = 0
+        leakr = 0
+        duct_Rval = 1
     else:
         raise UserException("Expected system 3 or 4")
     ACCFM = ACTON*375
@@ -451,4 +457,4 @@ def florida(s):
     print "%s lines in %s" % (lcount, filename)
 
 
-by_system([1,3,5])
+by_system([1,3,4,5])
