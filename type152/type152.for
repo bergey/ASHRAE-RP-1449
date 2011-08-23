@@ -1,6 +1,7 @@
       SUBROUTINE TYPE152 (TIME,XIN,OUT,T,DTDT,PAR,INFO,ICNTRL,*)
 
 C     This routuine is a SHORT TIMESTEP CONTROLLER
+c     Now has HIGH STAGE flag for two Speed AC Units (May 2011)
 c	for simulations with time steps on the order of 0.01 hrs (36 sec) or 0.02 hrs (72 sec).  
 c	It looks at the space conditions (Tin, RHin, Cin) and operating states (RTFs) 
 c	from the last timestep and decides when the equipment state should be changed
@@ -10,7 +11,7 @@ c     It also keeps track of the equipment on times and off times
 c 
 c	PARAMETERS
 c	1	ipflag	- flag to initiate printing
-c	2	<not used>
+c	2	STG_Delay - The delay time for High STG to be activated  
 c	3	REHEAT  - (1=ON) flag for when rheat is used (instead of DEHUMID)
 c	4	rh_offset- Offset of reheat set point ((below the cooling set point)
 c	5	OVR_cool - Overcooling factors (max reduction in cooling set point)
@@ -68,6 +69,9 @@ c	19	RTFacf	- AC FAN equipment status (0=OFF, 1=ON)
 c	20	RTFdf	- Dehum FAN equipment status (0=OFF, 1=ON)
 c	21	RTFvf	- Vent FAN equipment status (0=OFF, 1=ON)
 c	22	RTFxf	- Exh FAN equipment status (0=OFF, 1=ON)
+c	23	RTFhf	- HRV FAN equipment status (0=OFF, 1=ON)
+c    24  Hi_STG_c - High Stage Flag (0 = low stage, 1 = High Stage)
+c	25   fhz     - AC speed signal (0-1).  Equals zero when OFF.  Starts out at 0 
 c
 c
 c								(Reheat=0)					(Reheat=1)
@@ -106,7 +110,7 @@ C    REQUIRED BY THE MULTI-DLL VERSION OF TRNSYS
 
 	Implicit none
 	INTEGER*4 INFO(15),ICNTRL
-      double precision XIN(7),PAR(48),OUT(46),TIME, T, DTDT
+      double precision XIN(7),PAR(50),OUT(52),TIME, T, DTDT
 	double precision RTFh,RTFc,RTFd,RTFv,Tin,RHin,Cin,
      & RTFh_last,RTFc_last,RTFd_last,RTFv_last,Tin_last,TIME_last,
      & RHin_last,Cin_last,Tmax,Tmin,RHmax,Cmax,Tmax0,RHmax0,
@@ -114,7 +118,9 @@ C    REQUIRED BY THE MULTI-DLL VERSION OF TRNSYS
      & T_dbnd,RH_dbnd,C_dbnd,
      & Ta_o,tau_a,tau_b,Ta,Te,Ta_last,Te_last,dt,
      & T_ON_h,T_ON_c,T_ON_d,T_ON_v,T_OFF_h,T_OFF_c,T_OFF_d,T_OFF_v,
-     & T_top,T_bot,RH_top,RH_bot,a0,b0,Tcntl
+     & T_top,T_bot,RH_top,RH_bot,a0,b0,Tcntl,dT_ovr,
+     & Hi_STG_c,Hi_STG_c_last, STG_delay,
+     & fhz,fhz0,fhz_last, fhz_pgain,fhz_igain,sum_err,sum_err_last,err
 	integer ipflag
 	
 	Integer i,j,ihr,ii
@@ -145,15 +151,15 @@ C
 
 C  FIRST CALL OF SIMULATION
       IF (INFO(7) .EQ. -1) THEN
-       CALL TYPECK(1,INFO,7,48,0)  !check no. of inputs, parameters
-       INFO(6)=46					! number of outputs
+       CALL TYPECK(1,INFO,7,50,0)  !check no. of inputs, parameters
+       INFO(6)=52					! number of outputs
        INFO(9)=1					! Output does depend on time                  
-       OUT(1:27)=0.0			! alll current vars = zero
-	 OUT(28)=TIME			! last time = starting time	
-       OUT(29)=0.				! last Tin = zero  (so we will start in heating in next step) 
-       OUT(30)=0.				! last RHin = zero (no dehumid required) 
-       OUT(31)=0.				! last Cin eq zero (no vent required)
-	 OUT(32:46)=0.
+       OUT(1:28)=0.0			! alll current vars = zero
+	 OUT(31)=TIME			! last time = starting time	
+       OUT(32)=0.				! last Tin = zero  (so we will start in heating in next step) 
+       OUT(33)=0.				! last RHin = zero (no dehumid required) 
+       OUT(34)=0.				! last Cin eq zero (no vent required)
+	 OUT(35:52)=0.
 
 
 c	  --- read in coefficients for Fan Control Schedule (if data is required)
@@ -175,26 +181,29 @@ C
 
       if (TIME .ne. OUT(5)) then  ! swap in LAST data if TIME advances
 	  dt = TIME - OUT(5)		 ! timestep
-	  out(24:46) = out(1:23)
-      do i=1,8
+	  out(27:52) = out(1:26)
+      do i=1,9
 	 If (cd_counter(i) .gt. 0) cd_counter(i) = cd_counter(i) - 1
 	enddo
 	endif
 	           
-      RTFh_last=out(24)
-      RTFc_last=out(25)
-      RTFd_last=out(26)
-      RTFv_last=out(27)
+      RTFh_last=out(27)
+      RTFc_last=out(28)
+      RTFd_last=out(29)
+      RTFv_last=out(30)
 
-      TIME_last=out(28)
+      TIME_last=out(31)
       
-	tin_last =out(29)
-      RHin_last=out(30)
-      Cin_last =out(31)
+	tin_last =out(32)
+      RHin_last=out(33)
+      Cin_last =out(34)
 
-	Ta_last = out(40)
-	Te_last = out(41)
-      rtf_vector_last(5:9) = out(42:46)
+	Ta_last = out(43)
+	Te_last = out(44)
+      rtf_vector_last(5:9) = out(45:49)
+	Hi_STG_c_last = out(50)
+	fhz_last = out(51)
+      sum_err_last = out(52)
 
       Tin   = xin(1)
       Tmin  = xin(2)           
@@ -205,7 +214,7 @@ C
 	Cmax  = xin(7)
 
       ipflag = par(1)
-
+	STG_delay = par(2)      ! delay time for STG 2 cooling (hrs)  - May 2011
       reheat = par(3)			! reheat flag (1=ON)
       rht_offset  = par(4)	! offset of RHT Temp set point					Thermidistat        Lennox
 	OVR_cool  = par(5)      ! overcooling factor								3					2 or 4
@@ -235,6 +244,9 @@ C
        ii=ii+7
 	enddo
 
+	fhz_pgain = par(49)
+	fhz_igain = par(50)
+
 c	Thermostat calcs from Henderson 1992 (used for COOLING ONLY)
 
 	a0 = Tin_last
@@ -262,7 +274,9 @@ c	Thermostat calcs from Henderson 1992 (used for COOLING ONLY)
 	   Tmax = Tmax0
 	   RHmax = RHmax0
 	ENDIF
-                     
+        
+	   dT_ovr = Tmax0 - Tmax	! Amount of "overcooling" (F)
+	               
 c HEATING CONTROL
       if ((tin_last .le. (Tmin-0.5*T_dbnd)) 
      &				.and. (RTFh_last .eq. 0.0)) then	! switch heat ON
@@ -280,22 +294,35 @@ c COOLING CONTROL -------------------------------------(use Te_last instead of T
        T_top  = Tmax + 0.5*T_dbnd		! top of band
 	 T_bot  = Tmax - 0.5*T_dbnd 
        RH_top = RHmax + 0.5*RH_dbnd
-	 RH_bot = RHmax - 0.5*RH_dbnd 
-
+	 RH_bot = RHmax - 0.5*RH_dbnd
+	  
        Tcntl = Te_last
 
 	if (reheat .eq. 0) then
-        if ( (Tcntl .ge. T_top) 
+	  if (OVR_cool .gt. 0. .and. Tcntl .lt. T_bot+dT_ovr ) then		!---------Overcooling Mode AND T < clg spt
+          if (RTFc_last .eq. 1 .and.								! HIH Aug-22-2011
+     &			(TIME_last - time_when_ON(2)) .gt. 0.16 )then	!If its been ON for 9.6 minutes, turn it OFF 
+              RTFc = 0.
+	        time_when_OFF(2) = TIME_last
+	    endif
+          if (RTFc_last .eq. 0 .and. 
+     &			(TIME_last - time_when_OFF(2)) .gt. 0.16 )then	!If its been OFF for 9.6 minutes, turn it ON
+              RTFc = 1.
+	        time_when_ON(2) = TIME_last
+	    endif
+	  else														! -------- Normal cooling logic
+          if ( (Tcntl .ge. T_top) 
      &				.and. (RTFc_last .eq. 0.0)) then	! switch cool ON
-	      RTFc = 1.
-	      time_when_ON(2) = TIME_last
-	   endif
+	       RTFc = 1.
+	       time_when_ON(2) = TIME_last
+	     endif
 	
-         if ((Tcntl .le. T_bot) 
+           if ((Tcntl .le. T_bot) 
      &				.and. (RTFc_last .eq. 1.0)) then ! switch cool OFF
-	      RTFc = 0.
-	      time_when_OFF(2) = TIME_last
-	   endif
+	        RTFc = 0.
+	        time_when_OFF(2) = TIME_last
+	     endif
+	  endif
 	else																! ------ REHEAT Mode
         if ((Tcntl .ge. T_top) .or. (RHin_last .ge. RH_top) 
      &				.and. (RTFc_last .eq. 0.0)) then	! switch cool ON
@@ -314,7 +341,40 @@ c COOLING CONTROL -------------------------------------(use Te_last instead of T
 	      time_when_OFF(2) = TIME_last
 	   endif
       endif
-                     
+c     ----------------------------- High stage cooling control (2-speed) (May 2011)
+c	High Stage is activated when the temperature is at or above the top of the set point band -5%)
+c     AND the cooling ON time is greater than Stage Delay time (hrs). The delay time is only used the first time 
+c	High Stage is turned off when the temperature drops to the middle of the deadband (-5%). 
+c	Subsequent High/Low cycles just require Temp to activate/deactivate
+
+	if (Tcntl .ge. (T_top-0.05*T_dbnd) 
+     &		.and. (OUT(37)) .gt. STG_delay) then	! OUT(37) is last T_ON_C (on time)
+			Hi_STG_c = 1
+ 
+	endif
+      if (Tcntl .lt. (Tmax-0.05*T_dbnd).and. Hi_STG_c_last .eq. 1) then
+			Hi_STG_c = 0
+	endif 
+
+c	------------------------------ Variable Speed control ---------------------------
+c	Increment last fractional hz up or down by [T error fraction] x gain
+c	where Tmax is the center of the deadband (the "target")
+c	At the max error the max change is  fhz_pgain x 0.5 
+	
+		    
+	if ((OUT(37)) .gt. STG_delay) then				! OUT(37) is last T_ON_C (on time)
+	  err = (Tcntl-Tmax)/T_dbnd
+        sum_err = sum_err_last + err
+	  fhz0 = sum_err*fhz_igain + fhz_pgain*err
+	  fhz = MIN(MAX(fhz0 , 0.), 1.)
+	  sum_err = min(sum_err,(1.- fhz_pgain*err)/fhz_igain)
+	  sum_err = max(sum_err,(0.- fhz_pgain*err)/fhz_igain)
+	else
+	  fhz = 0.
+	  sum_err = 0.
+      endif
+	fhz = fhz*RTFc
+
 C HUMIDITY CONTROL
 
 	if (reheat .eq. 0) then
@@ -498,15 +558,18 @@ c	OUTPUT VARIABLES
 	out(18) = Te
 
 	out(19:23) = rtf_vector(5:9)					! OUT 19-23  ON & OFF times for acf, df, vf, xf
+	out(24) = Hi_STG_c
+	out(25) = fhz
+	out(26) = sum_err
 	                              
       if (ipflag .gt. 0) then
-        write(123,100) info(7),out(1:44)
+c        write(123,100) info(7),out(1:52)				! turn this on to get the detailed fort.123 file
 c	  write(123,'(7f)') par(14:20)
 c	  write(123,'(7f)') par(21:27)
 c	  write(123,'(7f)') par(28:34)
 c	  write(123,'(7f)') par(35:41)
 c	  write(123,'(7f)') par(42:48)
-100     format(i4,44f7.2)                    
+100     format(i4,46f7.2)                    
 	endif
 
       RETURN 1
