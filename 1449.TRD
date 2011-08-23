@@ -280,7 +280,7 @@ EQUATIONS 19
 *|     Additional Vent Air Flow (at AC) (VCFM)  |scfm (0-10000)|scfm (0-10000)|0|1|0.0|10000.0|12
 *
 *
-EQUATIONS 7
+EQUATIONS 6
  
   HUM_CNTL_type = 0
 *|< AC Humidity Control Options (controlled by Humidity Set Pt) (HUM_CNTL_type)  |pulldown_6.txt|3|2|13
@@ -302,7 +302,6 @@ EQUATIONS 7
 *
   OVR_cool = LT(HUM_CNTL_type,4)*THERMID*3. 			+ EQL(HUM_CNTL_type,5)*THERMID*2  + EQL(HUM_CNTL_type,6)*THERMID*4
 *
-  RH_Gain = LT(HUM_CNTL_type,4)*THERMID*0. 			+ GT(HUM_CNTL_type,4)*THERMID*0.    !NO LONGER USED
   T_Gain = LT(HUM_CNTL_type,4)*THERMID*0.1667 			+ GT(HUM_CNTL_type,4)*THERMID*5.
 *
 EQUATIONS 10
@@ -1000,7 +999,7 @@ RH_CTL = (1-ZN_CTL)*RHI_1 + ZN_CTL*RHI_2
 UNIT 3 TYPE 152 SHORT TIMESTEP Controller
 PARAMETERS 50
 * STG_delay                                               
-1  0.1  REHEAT Trht_offset OVR_cool RH_Gain T_Gain TDBND Ta_o  taua taue  HDBND CDBND
+1  0.1  REHEAT Trht_offset OVR_cool 0 T_Gain TDBND Ta_o  taua taue  HDBND CDBND
 * Cntl_type  Time_ON  Time_OFF  Interlock1 Interlock2 Interlock3 Fsched 
 *     -3         0.2    0.3        1          2           0       0
 *      0         0       0         0          0           0       0
