@@ -124,7 +124,7 @@ C    REQUIRED BY THE MULTI-DLL VERSION OF TRNSYS
 	integer ipflag
 	
 	Integer i,j,ihr,ii
-	logical throw_away(9)
+	logical throw_away(9), desire_cooling
 	Integer rtf_vector(9),Ilock(9,3),
      &		Cntl_type(9),fschd(9),fan_sched_data(10,24),ifsch,
      &		rtf_vector_last(9),cd_counter(9)
@@ -299,7 +299,8 @@ c COOLING CONTROL -------------------------------------(use Te_last instead of T
        Tcntl = Te_last
 
 	if (reheat .eq. 0) then
-	  if (OVR_cool .gt. 0. .and. Tcntl .lt. T_bot+dT_ovr ) then		!---------Overcooling Mode AND T < clg spt
+	  if ( Tcntl .lt. T_bot+dT_ovr .and. Tcntl .gt. T_bot .and. desire_cooling  ) then		!---------Overcooling Mode AND T < clg spt
+! desire_cooling added Aug-23-2011 DMB ; don't cycle on until we hit top of deadband again
           if (RTFc_last .eq. 1 .and.								! HIH Aug-22-2011
      &			(TIME_last - time_when_ON(2)) .gt. 0.16 )then	!If its been ON for 9.6 minutes, turn it OFF 
               RTFc = 0.
@@ -313,12 +314,14 @@ c COOLING CONTROL -------------------------------------(use Te_last instead of T
 	  else														! -------- Normal cooling logic
           if ( (Tcntl .ge. T_top) 
      &				.and. (RTFc_last .eq. 0.0)) then	! switch cool ON
+               desire_cooling = .true.   ! used by cycle logic, above
 	       RTFc = 1.
 	       time_when_ON(2) = TIME_last
 	     endif
 	
            if ((Tcntl .le. T_bot) 
      &				.and. (RTFc_last .eq. 1.0)) then ! switch cool OFF
+                desire_cooling = .false.
 	        RTFc = 0.
 	        time_when_OFF(2) = TIME_last
 	     endif
