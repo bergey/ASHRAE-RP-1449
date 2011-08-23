@@ -2,7 +2,7 @@ import csv
 from math import sqrt
 import os
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DSET', 'DCFM', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DSET', 'DCFM', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
       
 
@@ -155,32 +155,40 @@ def sim_line(z,h,s,rh,v):
     print("Shouldn't get here: HERS {0}".format(h))
     return None
 
-  hp_tonnage = [[3,3,2.5,2,2],
-                [3,3,2.5,2,2],
-                [2.5,2.5,2,2,2],
-                [2.5,2.5,2,2,2],
-                [2.5,2.5,2,2,2]]
-  hp_tonnage = {130: [3,3,2.5,2.5,2.5],
-                100: [3,3,2.5,2.5,2.5],
-                 85: [2.5,2.5,2,2,2],
-                 70: [2,2,2,2,2],
-                 50: [2,2,2,2,2]}
-  ACTON = hp_tonnage[h][z-1] # 0-indexed array
+# each vector is: Orlando, Miami, Houston, Atlanta, Nashville, Indianapolis
+  hp_tonnage = {130: [3,3,3,2.5,2.5,2.5],
+                100: [3,3,3,2.5,2.5,2.5],
+                 85: [2.5,2.5,2.5,2,2,2],
+                 70: [2.5,2,2,2,2,2],
+                 50: [2,2,2,2,2,2]}
+  ACTON = hp_tonnage[h][z] # 0-indexed array, starting with Orlando
 
 # parameters depending on zone, or zone and HERS
   if z==1:
     WeatherFile = 'Miami-FL-3'
     Ht_QIN = 40000
+    THhi = 72
+    THlo = 72
   elif z==2:
     WeatherFile = 'Houston-TX-3'
+    THhi = 72
+    THlo = 72
   elif z==3:
     WeatherFile = 'Atlanta-GA-3'
+    THhi = 70
+    THlo = 70
   elif z==4:
     WeatherFile = 'Nashville-TN-3'
+    THhi = 70
+    THlo = 70
   elif z==5:
     WeatherFile = 'Indianapolis-IN-3'
+    THhi = 70
+    THlo = 70
   elif z==0:
     WeatherFile = 'Orlando-FL-3'
+    THhi = 72
+    THlo = 72
 
 # parameters depending only on DH system
   if s==1:
