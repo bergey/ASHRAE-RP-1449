@@ -1,6 +1,7 @@
 # library of utility functions for analyzing and graphing large datasets
 # much of this is specific to TRNSYS output
 from os.path import join, isdir
+import os.path
 import numpy as np
 from glob import glob
 
@@ -20,6 +21,14 @@ def fordat(filename):
         ret[n] = arr[:,i]
     return ret
 
+def my_basename(path):
+    """similar to unix basename, return filename, or leaf directory of path"""
+    (head, tail) = os.path.split(path)
+    if tail:
+        return tail
+    else:
+        return os.path.basename(head)
+
 # collect all of the output data for a specified run
 # returns dict of 1D numpy arrays
 # path should be a directory with several for_*.dat files
@@ -28,6 +37,7 @@ def hourly_data(path):
   for filename in glob(join(path, "for_*.dat")):
     #handle = open(filename)
     ret.update(fordat(filename))
+  ret['name'] = path
   return ret
 
 month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
