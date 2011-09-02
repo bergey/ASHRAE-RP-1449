@@ -1,0 +1,5 @@
+4
+1,0,0-Continuous DH Fan Operation (CONST)           ,0-Outdoor Air
+2,1,1-DH Fan Cycles with Dehumidifier (AUTO)        ,1-Return/Space Air
+3,2,2-Constant Fan (Day/Occ); Cycles (Night/Unocc)  ,2-Fractional (Ret/Space)
+4,3,3-DH Fan Same as AC Supply Fan                  ,3-AC Supply 
