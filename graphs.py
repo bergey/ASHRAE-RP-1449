@@ -1,6 +1,7 @@
 # coding= utf-8
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 from parametrics import by_month, month_names, daily_total, daily_mean
 from physics import humidity_ratio
 
@@ -161,9 +162,15 @@ def plot_daily_psychrometric(hourly, name='', interactive=False):
     plt.xlabel('Indoor Temperature [degF]')
     plt.ylabel('Indoor Humidity Ratio')
     plt.title('{0}: Psychrometric Chart'.format(name))
+    # RH labels on right hand side
+    ax1 = plt.axes()
+    ax2 = ax1.twinx()
+    ax2.get_yaxis().set_major_locator(ticker.FixedLocator(humidity_ratio(np.linspace(0,1,11), 85)/0.030)) # TODO don't hardcode limits
+    ax2.get_yaxis().set_major_formatter(ticker.FixedFormatter(np.linspace(0,100,11)))
+    plt.ylabel('Indoor RH [%]')
+#    ax2.get_yaxis().set_major_locator(ticker.FixedLocator(np.linspace(0,1,11)))
     if name:
-#        fig.savefig('summary/{0}-psychrometric.png'.format(name))
-        fig.savefig('summary/{0}-wi-wo.png'.format(name))
+        fig.savefig('summary/{0}-psychrometric.png'.format(name))
         if not interactive:
             plt.close()
     
