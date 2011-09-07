@@ -90,7 +90,7 @@ def sim_line(z,h,s,rh,v):
 # parameters depending only on HERS
   if h==50:
     ELA = ach_to_ela(3)
-    ANO = 18 # for comparison; overridden by system TODO
+    ANO = 19 # for comparison; overridden by system TODO
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.7
@@ -103,7 +103,7 @@ def sim_line(z,h,s,rh,v):
   elif h==70:
 # TODO punt for now
     ELA = ach_to_ela(4)
-    ANO = 18 # for comparison; overridden by system TODO
+    ANO = 19 # for comparison; overridden by system TODO
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.8
@@ -195,8 +195,7 @@ def sim_line(z,h,s,rh,v):
     if rh == 60: 
       return None # no RH setpoint for system 1
     if h<85:
-      #return None
-      pass # TODO only include these runs for calibration?
+      ANO = 18 # only for calbiration, direct comparison to HERS 85 system 1; remove for final publication
     #ACTON = 2 
     ACCFM = ACTON*375
     HCFM = ACTON*275
@@ -247,8 +246,6 @@ def sim_line(z,h,s,rh,v):
     ilck61 = 0
 
   if s==5:
-      if h<85:
-          return None
       ACCFM = ACTON*375 # AHU airflow during cooling
       HCFM = ACTON*275  # AHU airflow during heating
       HUM_CNTL_type = 0 # No active dehumification by AC
