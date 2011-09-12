@@ -8,7 +8,7 @@ from glob import glob
 import re
 import shutil
 import platform
-from parametrics import hourly_data
+from parametrics import hourly_data, daily_total, daily_mean
 graphs = platform.system() == 'Linux'
 if graphs:
     from graphs import *
@@ -68,6 +68,7 @@ def summarize_csv(specs):
   general_csv = output_handle('summary')
   rh_csv = output_handle('rh-thresholds')
   check_csv = output_handle('checking')
+  rh_by_runtime_csv = output_handle('daily-rh-runtime')
   for desc, scenario_path in specs:
     name = desc[-1]
     if exists(scenario_path):
@@ -77,6 +78,7 @@ def summarize_csv(specs):
         output_row(desc, summarize_run, hourly, general_csv, first_run)
         output_row(desc, rh_stats, hourly, rh_csv, first_run)
         output_row(desc, check_loads, hourly, check_csv, first_run)
+        output_row(desc, rh_by_runtime, hourly, rh_by_runtime_csv, first_run)
         for k in ['SOLN', 'SOLE', 'SOLS', 'SOLW', 'QWALLS', 'QCEIL', 'QFLR', ]:
             if not k in hourly:
                 print("missing {0}".format(k))
@@ -299,6 +301,32 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
     heads.append('Total annual kWh')
     vals.append(sum(annual_kWh.values()))
 
+    return (heads, vals)
+
+def rh_by_runtime(RTFc, RTFh, RHi, **hourly):
+    heads = ['Hours above 50% RH; days with no cooling or heating',
+             'Number of days; no cooling or heating',
+             'Mean RH, days with no cooling or heating',
+             'Hours above 50% RH; days with cooling, no heating',
+             'Number of days;  cooling, no heating',
+             'Mean RH, days with cooling, no heating',
+             'Hours above 50% RH; days with heating, no cooling',
+             'Number of days; heating, no cooling',
+             'Mean RH, days with heating, no cooling',
+             'Hours above 50% RH; days with heating and cooling',
+             'Number of days; heating and cooling',
+             'Mean RH, days with heating and cooling']
+    vals = []
+    conditions = [np.intersect1d(np.where(daily_total(RTFc)==0)[0], np.where(daily_total(RTFh)==0)[0]),
+                  np.intersect1d(np.where(daily_total(RTFc)>0)[0], np.where(daily_total(RTFh)==0)[0]),
+                  np.intersect1d(np.where(daily_total(RTFc)==0)[0], np.where(daily_total(RTFh)>0)[0]),
+                  np.intersect1d(np.where(daily_total(RTFc)>0)[0], np.where(daily_total(RTFh)>0)[0])]
+    for condition in conditions:
+        vals.append(daily_total(np.where(RHi > 50, 1, 0))[condition].sum())
+        vals.append(len(condition))
+        vals.append(daily_mean(RHi)[condition].mean())
+    if len(heads) != len(vals):
+        print("only {0} values for {1}".format(len(vals), hourly['name']))
     return (heads, vals)
 
 def concat(lst):
