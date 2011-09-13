@@ -270,6 +270,23 @@ def sim_line(z,h,s,rh,v):
       ftim_ON5 = recirc(ACTON)
       ftim_OFF5 = 1 - ftim_ON5
 
+  if s==6:
+      ACCFM = ACTON*375 # AHU airflow during cooling
+      HCFM = ACTON*275  # AHU airflow during heating
+      HUM_CNTL_type = 0 # No active dehumification by AC
+      Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
+      DS_TYPE = 0 # DSET from lookup file
+      DCFM_AHU = 100
+      DCFM_no_AHU = 120
+      REGEN = 0 # reject heat to interior
+      DSIN_OPT = 0 # draw air from outside
+      RSCHD = 0 # recirc mode off
+      DSOUT = 1 # supply air sent to space (== supply duct)
+      ilck61 = 3 # run DH fan when DH is running
+      fctyp5 = 3 # cycle AHU for 0.5 ACH
+      ftim_ON5 = recirc(ACTON)
+      ftim_OFF5 = 1 - ftim_ON5
+
 # Ventilation systems
   if v==0: # No ventilation
     VCFM = 0
