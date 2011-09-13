@@ -2,7 +2,7 @@ import csv
 from math import sqrt
 import os
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DSET', 'DCFM', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DCFM_AHU', 'DCFM_no_AHU', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
       
 
@@ -200,8 +200,8 @@ def sim_line(z,h,s,rh,v):
     # turn off standalone dehumidifier
     Res_DNO = 21
     DS_TYPE = 0
-    DSET = 50
-    DCFM = 148
+    DCFM_AHU = 148
+    DCFM_no_AHU = 148
     REGEN = 0
     DSIN_OPT = 1
     RSCHD = 0
@@ -245,8 +245,8 @@ def sim_line(z,h,s,rh,v):
     # turn off standalone dehumidifier
     Res_DNO = 21
     DS_TYPE = 0
-    DSET = 50
-    DCFM = 148
+    DCFM_AHU = 148
+    DCFM_no_AHU = 148
     REGEN = 0
     DSIN_OPT = 1
     RSCHD = 0
@@ -259,8 +259,8 @@ def sim_line(z,h,s,rh,v):
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21
       DS_TYPE = 0 # DSET from lookup file
-      DSET = 50 # pints per day
-      DCFM = 148 # same as in lookup file
+      DCFM_AHU = 148
+      DCFM_no_AHU = 148
       REGEN = 0 # reject heat to interior
       DSIN_OPT = 1 # draw air from interior
       RSCHD = 0 # recirc mode off

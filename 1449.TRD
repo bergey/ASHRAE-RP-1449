@@ -143,15 +143,17 @@ EQUATIONS 19
  DNO = Res_DNO
 *|*
 *
-EQUATIONS 10
+EQUATIONS 11
   DS_TYPE = 0
 *|<     Dehumidifier Nominal Sizing            |pulldown_3.txt|4|2|27
   DSET  = 4.0000000000000E+02
 *|     New Dehumidifier Size (DSET)                   |use units above (0-5000)|use units above (0-5000)|0|1|0|50000|27
 *|*
 *
-  DCFM  = 4.0000000000000E+02
-*|     Dehumidifier Unit Process/Vent Air Flow (DCFM)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
+  DCFM_AHU  = 4.0000000000000E+02
+*|     Dehumidifier Unit Process/Vent Air Flow when AHU is running (DCFM_AHU)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
+  DCFM_no_AHU  = 4.0000000000000E+02
+*|     Dehumidifier Unit Process/Vent Air Flow when AHU is not running (DCFM_no_AHU)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
 *
 * CONFIGURATION - REGEN:  OA Regen=1, RA Regen=0       REHEAT:   no=0, yes=1
 *                 DSIN:   OA=0, RA=1                   DSOUT:    space=0, supply duct=1
@@ -386,7 +388,7 @@ EQUATIONS 5
 *
 *|]
 *
-EQUATIONS 10
+EQUATIONS 9
  
   flg2 = GT(AC_EER_lo,0)*EQL(iac,4) + GT(AC_EER_lo,0)*EQL(iac,3)
   fspd = flg2* ( Hi_STG_c*EQL(iac,4) + fhz*EQL(iac,3) )
@@ -397,8 +399,8 @@ EQUATIONS 10
 * Convert to lb/h
 *
   Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*cfm_ON_c) * 60 * 0.075 * fspd_on
-  Mdmx   = DCFM  * 60 * 0.075
   Mvmx   = VCFM  * 60 * 0.075 * Macmx0 / (ACCFM * 60 * 0.075) ! scale nominal (VCFM) by total AHU airflow
+  Mvmx   = VCFM  * 60 * 0.075 * fspd_on
 *
   Qh      = HT_QIN
   Qh_gas  = Qh /Ht_eff * HtType  
@@ -1085,7 +1087,7 @@ Mhrv_r = Mhrv*eql(HRV_loc,0)
 Mhrv_s = Mhrv*eql(HRV_loc,1)
 Mhrv_sp= Mhrv*eql(HRV_loc,2)
 *
-EQUATIONS 10
+EQUATIONS 12
 *
 *  "Macmx0" is the nominal input (cooling mode airflow) to Type 140
 *   "Macmx" is the max flow used in all the other calcs 
@@ -1094,6 +1096,8 @@ EQUATIONS 10
    Macmx = max([4,3],1e-6)
 *
   Mac    = Macmx
+  DCFM   = DCFM_AHU * RTFc + DCFM_no_AHU * (1 - RTFc) ! RTFc is always 0 or 1
+  Mdmx   = DCFM  * 60 * 0.075
   Md     = Mdmx  * RTFdf
   Mv     = Mvmx * RTFvf
 *  
