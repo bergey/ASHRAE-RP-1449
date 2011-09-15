@@ -280,7 +280,7 @@ EQUATIONS 19
 *|     Additional Vent Air Flow (at AC) (VCFM)  |scfm (0-10000)|scfm (0-10000)|0|1|0.0|10000.0|12
 *
 *
-EQUATIONS 6
+EQUATIONS 10
  
   HUM_CNTL_type = 0
 *|< AC Humidity Control Options (controlled by Humidity Set Pt) (HUM_CNTL_type)  |pulldown_6.txt|3|2|13
@@ -293,7 +293,9 @@ EQUATIONS 6
 * Option 5:  Lennox Humiditrol (OVR_cool = 2 & bpON=1 when overcooling)
 * Option 6:  Lennox Humiditrol (OVR_cool = 4 & bpON=1 when overcooling)
 *
-  fspd_on = 1. - (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))*GT(HUM_CTL,HMAX)*(1-0.533)
+  hum_cntl_on = (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))
+
+  fspd_on = 1. - hum_cntl_on*GT(HUM_CTL,HMAX)*(1-0.533b)
  
  THERMID  = eql(HUM_CNTL_type,2) + eql(HUM_CNTL_type,3) + GT(HUM_CNTL_type,4)
   REHEAT = eql(HUM_CNTL_type,1)
@@ -303,6 +305,9 @@ EQUATIONS 6
   OVR_cool = LT(HUM_CNTL_type,4)*THERMID*2. 			+ EQL(HUM_CNTL_type,5)*THERMID*2  + EQL(HUM_CNTL_type,6)*THERMID*4
 *
   T_Gain = LT(HUM_CNTL_type,4)*THERMID*0.1667 			+ GT(HUM_CNTL_type,4)*THERMID*5.
+  wcfm_factor_dh = 0.6 ! multiply AHU W/cfm by this value when lowering supply airflow for dehumidification
+  WCFM_AC_final = WCFM_AC * (1 - hum_cntl_on + hum_cntl_on * wcfm_factor_dh)
+  wcfm_ac_lo_final = wcfm_ac_lo * (1 - hum_cntl_on + hum_cntl_on * wcfm_factor_dh)
 *
 EQUATIONS 10
 *
@@ -1162,9 +1167,9 @@ PARAMETERS 35
 *  mtref  evapefc  none   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
     .90    0.0      0.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
 *  twet  gamma  Nmax  tcl NTUo_nom fspd_off2 none none   wcfm    chrg_ratio exp_type AC_COEF  
-   TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
+   TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC_final chrg_ratio exp_type ac_coef
 *  EER_rated_lo  SHR_rated_lo tons_frac_lo wcfm_ac_lo
-   AC_EER_lo     AC_SHR_lo    tons_frac_lo wcfm_ac_lo
+   AC_EER_lo     AC_SHR_lo    tons_frac_lo wcfm_ac_lo_final
 INPUTS 15
 * Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off       T_ON_c	T_OFF_c  fspd_off2_d Hi_STG_c  fhz
   Taci waci   TAO  WAO    Macmx0  bpON  rtfacf  rtfc  0,0      fspd_off_ac      T_ON_c  T_Off_c  fspd_off2_d Hi_STG_c  fhz
