@@ -393,7 +393,7 @@ EQUATIONS 10
 *
   Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*cfm_ON_c) * 60 * 0.075 * fspd_on
   Mdmx   = DCFM  * 60 * 0.075
-  Mvmx   = VCFM  * 60 * 0.075 * fspd_on
+  Mvmx   = VCFM  * 60 * 0.075 * Macmx0 / (ACCFM * 60 * 0.075) ! scale nominal (VCFM) by total AHU airflow
 *
   Qh      = HT_QIN
   Qh_gas  = Qh /Ht_eff * HtType  
@@ -1281,7 +1281,7 @@ EQUATIONS 12
   PEOPLE  = NPEOP
 *
 *
-  cfm_in = VCFM*rtfvf + DCFM*eql(DSIN1,0)*rtfdf + HRV_cfm*RTFhf
+  cfm_in = Mv/60/0.075 + DCFM*eql(DSIN1,0)*rtfdf + HRV_cfm*RTFhf
   cfm_out = exh_cfm*rtfxf + DCFM*eql(REGEN,0)*rtfdf + HRV_cfm*RTFhf 
 *
   bal_cfm = min( cfm_in,cfm_out )
