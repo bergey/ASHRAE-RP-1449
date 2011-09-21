@@ -900,7 +900,7 @@ EQUATIONS 7
   TMAX   = TChi - HVAC * (TChi-TClo)
   HMAX   = Humhi - HVAC * (Humhi-Humlo)
 ***************************************************************************
-EQUATIONS 30
+EQUATIONS 31
 TAI_SI1 = [5,1]
 TAI_SI2 = [5,5]
 TAI_1 = TAI_SI1*1.8 + 32
@@ -932,11 +932,12 @@ ACH0 = EQL(ACH_TYPE,1)*ACH_file+EQL(ACH_TYPE,2)*ACH_SET + GT(ACH_TYPE,2)*LT(ACH_
 *
 ! Attic uses Walker-Wilson, or 10x house ACH
 * Attic has ELA separate from house, but uses some parameters s Cs Cw G
+VOL2 = 9319
 WWA_c = ELA_2_SI*(2/1.2)^0.5*4^(0.5-WW_n) ! where 1.2 is density of air
 WWA_Qs = WWA_c*WW_Cs*ABS(TAI_SI-TAO_SI)^WW_n ! stack effect
 WWA_Qw = WWA_c*WW_Cw*(WW_s*WW_G*VW_SI)^(2*WW_n) ! wind induced infiltration
 WWA_Q = (WWA_Qs^2 + WWA_Qw^2)^0.5 ! Q in m^3/s
-ACH_2_WW = WWA_Q*35.3147*3600/9319 ! VOL in cubic feet TODO hardcoded attic volume is crude
+ACH_2_WW = WWA_Q*35.3147*3600/VOL2 ! VOL in cubic feet TODO VOL2 should be in building lookup table
 ACH_2 = GT(ACH_TYPE,10)*ACH_2_WW + LT(ACH_TYPE,11)*ACH0*10 ! Pick Infiltration Model
 
 ************************************************************************
@@ -1298,7 +1299,7 @@ EQUATIONS 12
   Tsupp_SI = (Tsupp2-32.)/1.8
   msupp_SI = msupp2/2.2
 *
-EQUATIONS 10
+EQUATIONS 9
   ZN_FRAC_S = ZN_FRAC + leaks
   Supp_cfm = msupp2/(0.075*60.)
 *
@@ -1319,10 +1320,9 @@ EQUATIONS 10
 * the attic ACH is automatically set to be 10 times the space ACH, or a minimum of 2
 *
 * This volume calc is terrible, and the icfm2 line actually sets to 20 ACH natural
-   VOL2 = VOL/3
 *
   icfm1 = icfm 			    + scfm1*min(max((Cs2-C_i1)/(C_o-C_i1+1e-16),0.),1.)
-  icfm2 = max(ACH,2.)*10.*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.) ! FIXME
+  icfm2 = ACH_2*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.)
 *
 ********************************************************************************
 UNIT 6 TYPE 151 CO2 Balance
