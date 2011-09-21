@@ -76,9 +76,6 @@ def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
   if s not in [1,3,4,5]:
     return None
-  if h == 70:
-    #return None
-    pass
 
   Run = 1 # update in enclosing code
   BaseFile = '1449.TRD'
@@ -285,7 +282,7 @@ def sim_line(z,h,s,rh,v):
     HRV_eS = 0
     HRV_eL = 0
   elif v==1: # Exhaust only
-    if h == 130:
+    if h == 130 and s != 1:
       return None
     VCFM = 0
     exh_cfm = vent0
