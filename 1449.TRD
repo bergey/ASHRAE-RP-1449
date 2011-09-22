@@ -1593,12 +1593,13 @@ rtfc_plt = RTFC*.8 + 3
 rtfd_plt = RTFD*.8 + 2
 HVAC_plt = HVAC*.8
 *******************************************************************************
-UNIT 55 TYPE 65 On-line plotter
-PARAMETERS 12
-3 6 0 100 0 15 52 7 0 -1 0 0
-INPUTS 9
-T_CTL TAO RH_CTL  RTFe_plt RTFRH_PLT RTFH_plt RTFC_plt RTFd_plt HVAC_plt
-TAI TAO RHI  RTFe     RTFRH     RTFH     RTFC     RTFD     HVAC
+* commented out for batch-file runs
+*UNIT 55 TYPE 65 On-line plotter
+*PARAMETERS 12
+*3 6 0 100 0 15 52 7 0 -1 0 0
+*INPUTS 9
+*T_CTL TAO RH_CTL  RTFe_plt RTFRH_PLT RTFH_plt RTFC_plt RTFd_plt HVAC_plt
+*TAI TAO RHI  RTFe     RTFRH     RTFH     RTFC     RTFD     HVAC
 *******************************************************************************
 *UNIT  TYPE 65 On-line plotter  Radiation Check
 *PARAMETERS 12
