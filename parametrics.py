@@ -29,15 +29,19 @@ def my_basename(path):
     else:
         return os.path.basename(head)
 
+# empty container for hourly_data function
+class Hourly_Data:
+    pass
+
 # collect all of the output data for a specified run
-# returns dict of 1D numpy arrays
+# returns object where each named attr is a 1D numpy array
 # path should be a directory with several for_*.dat files
 def hourly_data(path):
-  ret = dict()
+  ret = Hourly_Data()
+  ret.name = path
   for filename in glob(join(path, "for_*.dat")):
     #handle = open(filename)
-    ret.update(fordat(filename))
-  ret['name'] = path
+    ret.__dict__.update(fordat(filename))
   return ret
 
 month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
@@ -57,19 +61,19 @@ def daily_mean(hours):
 def sens_cool(hours):
     """cooling at each hour, in BTU/hr"""
     # lbs/hr-F to kg to K to kJ to BTU
-    return hours['MAC']*(hours['Taci']-hours['Taco'])/2.2/1.8*1/1.055
+    return hours.MAC*(hours.Taci-hours.Taco)/2.2/1.8*1/1.055
 
 def lat_cool(hours):
     """latent cooling at each hour, in BTU/hr"""
     # 970 BTU/lb water condensed
-    return hours['MAC']*(hours['Waci']-hours['Waco'])*970.4
+    return hours.MAC*(hours.Waci-hours.Waco)*970.4
 
 def ac_power(hours):
     """AC average power at each hour, in kW"""
-    return ( hours['ACKW'] + hours['FANKW'] )*hours['RTFc']
+    return ( hours.ACKW + hours.FANKW )*hours.RTFc
 
 def seer(hours):
-    return ( hours['Qsac'].sum() + hours['Qlac'].sum() ) / ( ac_power(hours).sum() * 1000 )
+    return ( hours.Qsac.sum() + hours.Qlac.sum() ) / ( ac_power(hours).sum() * 1000 )
 
 #support function for scenarios, below
 def get_keys(names):

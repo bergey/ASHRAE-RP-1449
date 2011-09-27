@@ -55,7 +55,7 @@ def collect_specs(spec_path, data_path):
 
 def output_row(desc, f, hourly, out_csv, first_run=False):
     #try:
-        h, sum_vals = f(**hourly)
+        h, sum_vals = f(**hourly.__dict__)
         if first_run: 
             # first row of output
             out_csv.writerow( parse_name(None) + h )
@@ -80,7 +80,7 @@ def summarize_csv(specs):
         output_row(desc, check_loads, hourly, check_csv, first_run)
         output_row(desc, rh_by_runtime, hourly, rh_by_runtime_csv, first_run)
         for k in ['SOLN', 'SOLE', 'SOLS', 'SOLW', 'QWALLS', 'QCEIL', 'QFLR', ]:
-            if not k in hourly:
+            if not hasattr(hourly, k):
                 print("missing {0}".format(k))
         first_run = False # flag, never becomes true again in this call
         if graphs:
