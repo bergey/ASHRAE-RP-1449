@@ -74,7 +74,7 @@ def ach_to_ela(ach):
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
-  if s not in [1,2,3,4,5]:
+  if s not in [1,2,3,4,5,6]:
     return None
 
   Run = 1 # update in enclosing code
@@ -220,7 +220,8 @@ def sim_line(z,h,s,rh,v):
     Res_DNO = 21
     DS_TYPE = 0 # DSET from lookup file
     DSET = 50 # pints per day
-    DCFM = 148 # same as in lookup file
+    DCFM_AHU = 148 # same as in lookup file
+    DCFM_no_AHU = 148 # same as in lookup file
     REGEN = 0 # reject heat to interior
     DSIN_OPT = 1 # draw air from interior
     RSCHD = 0 # recirc mode off
@@ -487,4 +488,4 @@ def florida(s):
     print "%s lines in %s" % (lcount, filename)
 
 
-by_system([1,2,3,4,5])
+by_system([1,2,3,4,5,6])
