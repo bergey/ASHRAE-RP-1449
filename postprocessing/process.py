@@ -336,7 +336,7 @@ def concat(lst):
   return ret
 
 def output_handle(name):
-  output_path = dt.datetime.now().strftime('summary/%Y-%m-%d-%H%M-{0}.csv'.format(name))
+  output_path = dt.datetime.now().strftime('../summary/%Y-%m-%d-%H%M-{0}.csv'.format(name))
   file = open(output_path, 'wb')
   return csv.writer(file)
 

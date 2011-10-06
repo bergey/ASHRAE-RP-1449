@@ -5,6 +5,8 @@ from matplotlib import ticker
 from parametrics import by_month, month_names, daily_total, daily_mean
 from physics import humidity_ratio
 
+summary_path = '../summary'
+
 def plot_TRH(hourly, name='', interactive=False):
     fig = plt.figure()
     line_ti, = plt.plot(hourly.Ti)
@@ -23,7 +25,7 @@ def plot_TRH(hourly, name='', interactive=False):
     ax2.axis([0,8760,0,100])
     plt.title('{0}: Annual Conditions'.format(name))
     #plt.show()
-    fig.savefig( 'summary/{0}-annual-trh.png'.format(name) )
+    fig.savefig( '{1}/{0}-annual-trh.png'.format(name, summary_path) )
     plt.close()
 
 def plot_Wrt(hourly, name='', interactive=False):
@@ -40,7 +42,7 @@ def plot_Wrt(hourly, name='', interactive=False):
     plt.ylabel('Fraction of Hour')
     plt.legend([line_Wo, line_Wi, line_RTFc], ['Outdoor W', 'Indoor W', 'Cooling Runtime'], loc='upper left')
     plt.title('{0}: Moisture Removal'.format(name))
-    fig.savefig('summary/{0}-annual-moisture.png'.format(name))
+    fig.savefig('{1}/{0}-annual-moisture.png'.format(name, summary_path))
     plt.close()
 
 def plot_rh_hist(hourly, name='', interactive=False):
@@ -49,7 +51,7 @@ def plot_rh_hist(hourly, name='', interactive=False):
     plt.xlabel('percent RH')
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor RH Histogram'.format(name))
-    fig.savefig( 'summary/{0}-rh-histogram.png'.format(name) )
+    fig.savefig( '{1}/{0}-rh-histogram.png'.format(name, summary_path) )
     plt.close()
     
 def plot_rh_hist_daily(hourly, name='', interactive=False):
@@ -58,7 +60,7 @@ def plot_rh_hist_daily(hourly, name='', interactive=False):
     plt.xlabel('average RH [%]')
     plt.ylabel('Number of Days')
     plt.title('{0}: Indoor RH Histogram'.format(name))
-    fig.savefig( 'summary/{0}-rh-histogram-daily.png'.format(name) )
+    fig.savefig( '{1}/{0}-rh-histogram-daily.png'.format(name, summary_path) )
     plt.close()
 
 def plot_t_hist(hourly, name='', interactive=False):
@@ -67,7 +69,7 @@ def plot_t_hist(hourly, name='', interactive=False):
     plt.xlabel('degrees F')
     plt.ylabel('Number of Hours')
     plt.title('{0}: Indoor T Histogram'.format(name))
-    fig.savefig( 'summary/{0}-ti-histogram.png'.format(name) )
+    fig.savefig( '{1}/{0}-ti-histogram.png'.format(name, summary_path) )
     plt.close()
 
 def plot_AC_hist(hourly, name='', interactive=False):
@@ -83,7 +85,7 @@ def plot_AC_hist(hourly, name='', interactive=False):
     plt.xlabel('Outdoor T (degrees F)') # TODO why doesn't unicode ° render in png graph?
     plt.ylabel('Hours with at least 3 minutes Cooling')
     plt.title( '{0}: Cooling Hours Breakdown'.format(name) )
-    fig.savefig( 'summary/{0}-AC_hist'.format(name) )
+    fig.savefig( '{1}/{0}-AC_hist'.format(name, summary_path) )
     plt.close()
 
 def plot_window_gain(hourly, name='', interactive=False):
@@ -98,7 +100,7 @@ def plot_window_gain(hourly, name='', interactive=False):
         plt.ylabel('Net Gain')
         plt.legend(lines, month_names, loc='upper left')
         plt.title('{0} By Month'.format(name))
-        fig.savefig('summary/{0}-by-month.png'.format(name))
+        fig.savefig('{1}/{0}-by-month.png'.format(name, summary_path))
         plt.close()
     try:
         for key in ['SOLS', 'SOLE', 'SOLN', 'SOLW']:
@@ -130,7 +132,7 @@ def ac_bal_point(h, name='', interactive=False):
     plt.ylabel('Daily AC Runtime [hours]')
     plt.title('{0}:Cooling Balance'.format(name))
     if name:
-        fig.savefig('summary/{0}-AC-balance.png'.format(name))
+        fig.savefig('{1}/{0}-AC-balance.png'.format(name, summary_path))
         if not interactive: # if name is provided, assume called from script, unless interactive set
             plt.close()
     return p[1]/p[0] # Balance Point below which no AC is needed
@@ -142,7 +144,7 @@ def plot_humidity_ratio(hourly, name='', interactive=False):
     plt.ylabel('Indoor Humidity Ratio')
     plt.title('{0}: Daily Humidity Ratio'.format(name))
     if name:
-        fig.savefig('summary/{0}-wi-wo.png'.format(name))
+        fig.savefig('{1}/{0}-wi-wo.png'.format(name, summary_path))
         if not interactive:
             plt.close()
                  
@@ -170,7 +172,7 @@ def plot_daily_psychrometric(hourly, name='', interactive=False):
     plt.ylabel('Indoor RH [%]')
 #    ax2.get_yaxis().set_major_locator(ticker.FixedLocator(np.linspace(0,1,11)))
     if name:
-        fig.savefig('summary/{0}-psychrometric.png'.format(name))
+        fig.savefig('{1}/{0}-psychrometric.png'.format(name, summary_path))
         if not interactive:
             plt.close()
     
