@@ -488,4 +488,22 @@ def florida(s):
     print "%s lines in %s" % (lcount, filename)
 
 
+def thhi_72():
+  for s in [1,3, 4,5]:
+    lcount = 0
+    filename = 'thhi-s{0}.csv'.format(s)
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for z in xrange(3):
+      for h in [50, 70, 85, 100, 130]:
+        for v in xrange(5):
+          for rh in [50, 60]:
+            row = sim_line(z, h, s, rh, v)
+            if row:
+              lcount += 1
+              row[head.index('Run')] = lcount
+              out_csv.writerow(row)
+    print "%s lines in %s" % (lcount, filename)
+
 by_system([1,2,3,4,5,6])
