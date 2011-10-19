@@ -98,7 +98,6 @@ def sim_line(z,h,s,rh,v):
     duct_Rval = 1
     Ht_QIN = 40000
   elif h==70:
-# TODO punt for now
     ELA = ach_to_ela(4)
     ANO = 19 # for comparison; overridden by system TODO
     # HSPF in post-processing
@@ -280,7 +279,7 @@ def sim_line(z,h,s,rh,v):
       DCFM_AHU = 100
       DCFM_no_AHU = 120
       REGEN = 0 # reject heat to interior
-      DSIN_OPT = 0 # draw air from outside
+      DSIN_OPT = 1 # draw air from inside
       RSCHD = 0 # recirc mode off
       DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 3 # run DH fan when DH is running
