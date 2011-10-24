@@ -1110,7 +1110,7 @@ EQUATIONS 12
   Md_sp = Md*eql(DSOUT,0)*eql(DSPLY,0)    
 *
   Mret   = max(Mac - Mv - Mhrv_r,0)
-  DSIN1 = (1-RSCHD)* DSIN + RSCHD*(1-HVAC)
+  DSIN1 = ( (1-RSCHD)* DSIN + RSCHD*(1-HVAC) ) * RTFvf ! Use same controller for CFIS, DH outdoor air
 *
 * If the desiccant unit pulls air through the DH unit (DSPLY=1) then set the off-cycle flow fraction for INDUCED flow
 *
