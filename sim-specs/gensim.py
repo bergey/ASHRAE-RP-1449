@@ -2,7 +2,7 @@ import csv
 from math import sqrt
 import os
 
-head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DCFM_AHU', 'DCFM_no_AHU', 'REGEN', 'DSIN_OPT', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
+head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DCFM_AHU', 'DCFM_no_AHU', 'REGEN', 'DSIN_OPT', 'DSIN_VAL', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
       
 
@@ -203,6 +203,7 @@ def sim_line(z,h,s,rh,v):
     DCFM_no_AHU = 148
     REGEN = 0
     DSIN_OPT = 1
+    DSIN_VAL = 0 # not used
     RSCHD = 0
     DSOUT = 1
     ilck61 = 0
@@ -223,6 +224,7 @@ def sim_line(z,h,s,rh,v):
     DCFM_no_AHU = 148 # same as in lookup file
     REGEN = 0 # reject heat to interior
     DSIN_OPT = 1 # draw air from interior
+    DSIN_VAL = 0 # not used
     RSCHD = 0 # recirc mode off
     DSOUT = 1 # supply air sent to space (== supply duct)
     ilck61 = 0 # run DH fan when DH is running
@@ -249,6 +251,7 @@ def sim_line(z,h,s,rh,v):
     DCFM_no_AHU = 148
     REGEN = 0
     DSIN_OPT = 1
+    DSIN_VAL = 0 # not used
     RSCHD = 0
     DSOUT = 1
     ilck61 = 0
@@ -263,6 +266,7 @@ def sim_line(z,h,s,rh,v):
       DCFM_no_AHU = 148
       REGEN = 0 # reject heat to interior
       DSIN_OPT = 1 # draw air from interior
+      DSIN_VAL = 0 # not used
       RSCHD = 0 # recirc mode off
       DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 3 # run DH fan when DH is running
@@ -280,12 +284,34 @@ def sim_line(z,h,s,rh,v):
       DCFM_no_AHU = 120
       REGEN = 0 # reject heat to interior
       DSIN_OPT = 1 # draw air from inside
+      DSIN_VAL = 0 # not used
       RSCHD = 0 # recirc mode off
       DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 3 # run DH fan when DH is running
       fctyp5 = 3 # cycle AHU for 0.5 ACH
       ftim_ON5 = recirc(ACTON)
       ftim_OFF5 = 1 - ftim_ON5
+
+  if s==7:
+      ACCFM = ACTON*375 # AHU airflow during cooling
+      HCFM = ACTON*275  # AHU airflow during heating
+      HUM_CNTL_type = 0 # No active dehumification by AC
+      Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
+      DS_TYPE = 0 # DSET from lookup file
+      DCFM_AHU = 100
+      DCFM_no_AHU = 120
+      REGEN = 0 # reject heat to interior
+      DSIN_OPT = 2 # mix indoor and outdoor air
+      DSIN_VAL = 0.67 # 100 CFM recirc, 50 CFM OA
+      RSCHD = 0 # recirc mode off
+      DSOUT = 1 # supply air sent to space (== supply duct)
+      ilck61 = 3 # run DH fan when DH is running
+      fctyp5 = 3 # cycle AHU for 0.5 ACH
+      ftim_ON5 = recirc(ACTON)
+      ftim_OFF5 = 1 - ftim_ON5
+      fctyp7 = 5 # same as CFIS
+      ilck71 = 3 # open vent when DH is running
+      ftim_ON7 = vent0 / (DCFM_no_AHU * (1-DSIN_VAL)) # on time to achieve 62.2
 
 # Ventilation systems
   if v==0: # No ventilation
