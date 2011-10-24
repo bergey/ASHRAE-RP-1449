@@ -400,7 +400,6 @@ EQUATIONS 9
 *
   Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*cfm_ON_c) * 60 * 0.075 * fspd_on
   Mvmx   = VCFM  * 60 * 0.075 * Macmx0 / (ACCFM * 60 * 0.075) ! scale nominal (VCFM) by total AHU airflow
-  Mvmx   = VCFM  * 60 * 0.075 * fspd_on
 *
   Qh      = HT_QIN
   Qh_gas  = Qh /Ht_eff * HtType  
