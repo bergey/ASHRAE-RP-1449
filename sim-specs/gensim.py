@@ -4,13 +4,13 @@ import os
 
 head = ['Desc', '', 'BaseFile', 'Run', 'SinZone_bno', 'WeatherFile', 'ELA', 'ACTON', 'ACCFM', 'ANO', 'Ht_QIN', 'HCFM', 'THhi', 'THlo', 'HUM_CNTL_type', 'Res_DNO', 'DS_TYPE', 'DCFM_AHU', 'DCFM_no_AHU', 'REGEN', 'DSIN_OPT', 'DSIN_VAL', 'RSCHD', 'DSOUT', 'Humlo_0', 'Humhi_0', 'WCFM_H', 'HRV_eS', 'HRV_eL', 'VCFM', 'exh_cfm', 'HRV_CFM', 'HRV_W', 'fctyp5', 'ftim_ON5', 'ftim_OFF5', 'fctyp7', 'ftim_ON7', 'ftim_OFF7', 'ilck71', 'fctyp8', 'fctyp9', 'ftim_ON9', 'ftim_OFF9', 'ilck91', 'sduct_area', 'rduct_area', 'leaks', 'leakr', 'duct_Rval', 'SENS_DAILY', 'LATG_DAILY']
 run_index = head.index('Run')
-      
+
 
 
 vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
 # TODO adjust vent for different house sizes in parametric
 SENS_BASE = 72700 # BTU/day
-LATG_BASE = 12 # lbs/day 
+LATG_BASE = 12 # lbs/day
 
 def order_line(d):
   return [d['Desc'],None]+[d[h] for h in head[2:]]
@@ -18,7 +18,7 @@ def order_line(d):
 bno_file = open('../buildings/Single_Zone_Buildings.txt')
 bno_lines = csv.reader(bno_file)
 bno = dict()
-bno_lines.next() # drop header (line count)
+next(bno_lines) # drop header (line count)
 for line in bno_lines:
   bno[line[3].strip()] = line[0].strip()
 bno_file.close()
@@ -33,7 +33,7 @@ def recirc(tons):
         return 0.12
 
 def get_bno(z,h):
-  if z==0: 
+  if z==0:
     building_zone=1
   else:
     building_zone=z
@@ -45,13 +45,13 @@ def ach_to_ela(ach):
   cfm4 = v*ach/60*(4./50)**n
   cmps = cfm4/35.3147/60 # cubic meters per second at 4 Pa
   # leakage area, sq meters, assume discharge coefficient is 1
-  sm = cmps * sqrt(1.2/2/4)/1 
+  sm = cmps * sqrt(1.2/2/4)/1
   ela = sm * (100/2.54)**2
   return ela
 
 # simulations are parameterized as follows:
 # z zone 1--5
-# 
+#
 # h HERS rating (50, 70, 85, 100, 130
 #
 # s system number from Task 4 report
@@ -74,8 +74,6 @@ def ach_to_ela(ach):
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v):
 # exclude unimplemented scenarios
-  if s not in [1,2,3,4,5,6]:
-    return None
 
   Run = 1 # update in enclosing code
   BaseFile = '1449.TRD'
@@ -91,7 +89,7 @@ def sim_line(z,h,s,rh,v):
     # HSPF in post-processing
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.7
-    sduct_area = 0 
+    sduct_area = 0
     rduct_area = 0
     leaks = 0
     leakr = 0
@@ -152,7 +150,7 @@ def sim_line(z,h,s,rh,v):
     return None
 
 # each vector is: Orlando, Miami, Houston, Atlanta, Nashville, Indianapolis
-  hp_tonnage = {130: [3,3,3,2.5,2.5,2.5],
+  hp_tonnage = {130: [3,3,3,2.,2.5,2.5],
                 100: [3,3,3,2.5,2.5,2.5],
                  85: [2.5,2.5,2.5,2,2,2],
                  70: [2.5,2,2,2,2,2],
@@ -188,11 +186,11 @@ def sim_line(z,h,s,rh,v):
 
 # parameters depending only on DH system
   if s==1:
-    if rh == 60: 
+    if rh == 60:
       return None # no RH setpoint for system 1
     if h<85:
       ANO = 18 # only for calbiration, direct comparison to HERS 85 system 1; remove for final publication
-    #ACTON = 2 
+    #ACTON = 2
     ACCFM = ACTON*375
     HCFM = ACTON*275
     HUM_CNTL_type = 0  # No enhanced DH
@@ -227,8 +225,8 @@ def sim_line(z,h,s,rh,v):
     DSIN_VAL = 0 # not used
     RSCHD = 0 # recirc mode off
     DSOUT = 1 # supply air sent to space (== supply duct)
-    ilck61 = 0 # run DH fan when DH is running
-    
+    ilck61 = 0 # don't run DH
+
   if s==3 or s==4:
     if s==3:
         ANO = 19
@@ -409,7 +407,7 @@ def sim_line(z,h,s,rh,v):
     ftim_ON9 = 0.5
     ftim_OFF9 = 0.5
     ilck91 = 5
-  
+
 
 # put all of the variables used above into a list in a consistent order
   return order_line(locals())
@@ -430,7 +428,7 @@ def single_city(site):
             lcount += 1
             line[head.index('Run')] = lcount
             file.writerow(line)
-  print "%s lines in %s" % (lcount, filename)
+  print("{} lines in {}".format(lcount, filename))
 
 def full_parametric():
   for h in [50, 70, 85, 100, 130]:
@@ -447,7 +445,8 @@ def full_parametric():
             if row:
               row[head.index('Run')] = lcount + 1
               file.writerow(row)
-    print "%s lines in %s" % (lcount, filename)
+      print("{} lines in {}".format(lcount, filename))
+
 
 def by_system(systems):
   for s in systems:
@@ -470,17 +469,17 @@ def by_system(systems):
             handle.close()
             os.remove(filename)
     else:
-            print "%s lines in %s" % (lcount, filename)
+                  print("{} lines in {}".format(lcount, filename))
 
 def just_one(z, h, s, rh, v):
-  filename = 'z{0}h{1}s{2}v{3}rh{4}.csv'.format(z,h,s,v,rh) 
+  filename = 'z{0}h{1}s{2}v{3}rh{4}.csv'.format(z,h,s,v,rh)
   row = sim_line(z,h,s,rh,v)
   if row:
     file = csv.writer(open(filename, 'w'))
     file.writerow(head)
     file.writerow(sim_line(z,h,s,rh,v))
   else:
-    print "No run planned for {0}".format(filename)
+    print("No run planned for {0}".format(filename))
 
 def debug_runs():
     lcount = 0
@@ -496,7 +495,7 @@ def debug_runs():
                     lcount += 1
                     row[head.index('Run')] = lcount
                     out_csv.writerow(row)
-    print "%s lines in %s" % (lcount, filename)
+    print("{} lines in {}".format(lcount, filename))
 
 def florida(s):
     lcount = 0
@@ -510,7 +509,7 @@ def florida(s):
         lcount += 1
         row[head.index('Run')] = lcount
         out_csv.writerow(row)
-    print "%s lines in %s" % (lcount, filename)
+    print("{} lines in {}".format(lcount, filename))
 
 
 def thhi_72():
@@ -529,6 +528,6 @@ def thhi_72():
               lcount += 1
               row[head.index('Run')] = lcount
               out_csv.writerow(row)
-    print "%s lines in %s" % (lcount, filename)
+    print("{} lines in {}".format(lcount, filename))
 
 by_system([1,2,3,4,5,6])
