@@ -326,6 +326,39 @@ def sim_line(z,h,s,rh,v):
       DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 0 # don't run DH
 
+  if s==10:
+    ACCFM = ACTON*375
+    HCFM = ACTON*275
+    HUM_CNTL_type = 4
+    Res_DNO = 21
+    DS_TYPE = 0 # DSET from lookup file
+    DSET = 50 # pints per day
+    DCFM_AHU = 148 # same as in lookup file
+    DCFM_no_AHU = 148 # same as in lookup file
+    REGEN = 0 # reject heat to interior
+    DSIN_OPT = 1 # draw air from interior
+    DSIN_VAL = 0 # not used
+    RSCHD = 0 # recirc mode off
+    DSOUT = 1 # supply air sent to space (== supply duct)
+    ilck61 = 0 # don't run DH
+
+  if s==11:
+    ACCFM = ACTON*375
+    HCFM = ACTON*275
+    HUM_CNTL_type = 2
+    Res_DNO = 21
+    DS_TYPE = 0 # DSET from lookup file
+    DSET = 50 # pints per day
+    DCFM_AHU = 148 # same as in lookup file
+    DCFM_no_AHU = 148 # same as in lookup file
+    REGEN = 0 # reject heat to interior
+    DSIN_OPT = 1 # draw air from interior
+    DSIN_VAL = 0 # not used
+    RSCHD = 0 # recirc mode off
+    DSOUT = 1 # supply air sent to space (== supply duct)
+    ilck61 = 0 # don't run DH
+
+
 # Ventilation systems
   if v==0: # No ventilation
     VCFM = 0
@@ -545,4 +578,25 @@ def thhi_72():
               out_csv.writerow(row)
     print("{} lines in {}".format(lcount, filename))
 
+def sys_10_11():
+  # cf Task 4 report pg 32
+  # should be 48 simulations in this set (24 for each system)
+  for s in [10, 11]:
+    lcount = 0
+    filename = 's{0}.csv'.format(s)
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for z in [2, 4]:
+      for h in [70, 100]:
+        for v in [1, 2, 3, 4]:
+          for rh in [50, 60]:
+            row = sim_line(z, h, s, rh, v)
+            if row:
+              lcount += 1
+              row[head.index('Run')] = lcount
+              out_csv.writerow(row)
+    print("{} lines in {}".format(lcount, filename))
+
 by_system([1,2,3,4,5,6,7,8])
+sys_10_11()
