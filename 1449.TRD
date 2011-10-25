@@ -297,7 +297,7 @@ EQUATIONS 10
 *
   hum_cntl_on = (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))
 
-  fspd_on = 1. - hum_cntl_on*GT(HUM_CTL,HMAX)*(1-0.533)
+  fspd_on = 1. - hum_cntl_on*GT(HUM_CTL,HMAX)*(1-0.533) - GT(HUM_CNTL_type,4)*GT(HUM_CTL,HMAX)*(1-0.65)
  
  THERMID  = eql(HUM_CNTL_type,2) + eql(HUM_CNTL_type,3) + GT(HUM_CNTL_type,4)
   REHEAT = eql(HUM_CNTL_type,1)
