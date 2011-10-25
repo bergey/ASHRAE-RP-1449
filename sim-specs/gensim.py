@@ -311,6 +311,21 @@ def sim_line(z,h,s,rh,v):
       ilck71 = 3 # open vent when DH is running
       ftim_ON7 = vent0 / (DCFM_no_AHU * (1-DSIN_VAL)) # on time to achieve 62.2
 
+  if s==8:
+      ACCFM = ACTON*375 # AHU airflow during cooling
+      HCFM = ACTON*275  # AHU airflow during heating
+      HUM_CNTL_type = 5 # Lennox Dehumidification
+      Res_DNO = 21 # not used
+      DS_TYPE = 0 # DSET from lookup file
+      DCFM_AHU = 100
+      DCFM_no_AHU = 120
+      REGEN = 0 # reject heat to interior
+      DSIN_OPT = 1 # draw air from inside
+      DSIN_VAL = 0 # not used
+      RSCHD = 0 # recirc mode off
+      DSOUT = 1 # supply air sent to space (== supply duct)
+      ilck61 = 0 # don't run DH
+
 # Ventilation systems
   if v==0: # No ventilation
     VCFM = 0
@@ -530,4 +545,4 @@ def thhi_72():
               out_csv.writerow(row)
     print("{} lines in {}".format(lcount, filename))
 
-by_system([1,2,3,4,5,6])
+by_system([1,2,3,4,5,6,7,8])
