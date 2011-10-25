@@ -114,7 +114,7 @@ def sim_line(z,h,s,rh,v):
     Ht_QIN = 40000
   elif h==85:
     ELA = ach_to_ela(5)
-    ANO = 18 # Overridden by system 2, 3
+    ANO = 18 # Overridden by system 3, 4
     WCFM_H = 0.35
     SENS_DAILY = SENS_BASE*0.9
     sduct_area = 544 # overridden by system 4
@@ -184,6 +184,19 @@ def sim_line(z,h,s,rh,v):
     THhi = 72
     THlo = 72
 
+# defaults
+  ACCFM = ACTON*375
+  HCFM = ACTON*275
+  Res_DNO = 21
+  DS_TYPE = 0
+  DCFM_AHU = 148
+  DCFM_no_AHU = 148
+  REGEN = 0
+  DSIN_OPT = 1
+  DSIN_VAL = 0 # not used
+  RSCHD = 0
+  DSOUT = 1
+
 # parameters depending only on DH system
   if s==1:
     if rh == 60:
@@ -191,20 +204,9 @@ def sim_line(z,h,s,rh,v):
     if h<85:
       ANO = 18 # only for calbiration, direct comparison to HERS 85 system 1; remove for final publication
     #ACTON = 2
-    ACCFM = ACTON*375
-    HCFM = ACTON*275
+        # turn off standalone dehumidifier
     HUM_CNTL_type = 0  # No enhanced DH
-    # turn off standalone dehumidifier
-    Res_DNO = 21
-    DS_TYPE = 0
-    DCFM_AHU = 148
-    DCFM_no_AHU = 148
-    REGEN = 0
-    DSIN_OPT = 1
-    DSIN_VAL = 0 # not used
-    RSCHD = 0
-    DSOUT = 1
-    ilck61 = 0
+    ilck61 = 0 # don't run DH
     Humlo_0 = 99 # actually not critical, because TRD does this internally
     Humhi_0 = 99
   else: # all systems except 1
@@ -212,19 +214,7 @@ def sim_line(z,h,s,rh,v):
     Humhi_0 = rh
 
   if s==2:
-    ACCFM = ACTON*375
-    HCFM = ACTON*275
     HUM_CNTL_type = 3
-    Res_DNO = 21
-    DS_TYPE = 0 # DSET from lookup file
-    DSET = 50 # pints per day
-    DCFM_AHU = 148 # same as in lookup file
-    DCFM_no_AHU = 148 # same as in lookup file
-    REGEN = 0 # reject heat to interior
-    DSIN_OPT = 1 # draw air from interior
-    DSIN_VAL = 0 # not used
-    RSCHD = 0 # recirc mode off
-    DSOUT = 1 # supply air sent to space (== supply duct)
     ilck61 = 0 # don't run DH
 
   if s==3 or s==4:
@@ -239,24 +229,10 @@ def sim_line(z,h,s,rh,v):
         duct_Rval = 1
     else:
         raise UserException("Expected system 3 or 4")
-    ACCFM = ACTON*375
-    HCFM = ACTON*275
     HUM_CNTL_type = 0  # No enhanced DH
-    # turn off standalone dehumidifier
-    Res_DNO = 21
-    DS_TYPE = 0
-    DCFM_AHU = 148
-    DCFM_no_AHU = 148
-    REGEN = 0
-    DSIN_OPT = 1
-    DSIN_VAL = 0 # not used
-    RSCHD = 0
-    DSOUT = 1
-    ilck61 = 0
+    ilck61 = 0 # don't run DH
 
   if s==5:
-      ACCFM = ACTON*375 # AHU airflow during cooling
-      HCFM = ACTON*275  # AHU airflow during heating
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21
       DS_TYPE = 0 # DSET from lookup file
@@ -273,8 +249,6 @@ def sim_line(z,h,s,rh,v):
       ftim_OFF5 = 1 - ftim_ON5
 
   if s==6:
-      ACCFM = ACTON*375 # AHU airflow during cooling
-      HCFM = ACTON*275  # AHU airflow during heating
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
       DS_TYPE = 0 # DSET from lookup file
@@ -291,8 +265,6 @@ def sim_line(z,h,s,rh,v):
       ftim_OFF5 = 1 - ftim_ON5
 
   if s==7:
-      ACCFM = ACTON*375 # AHU airflow during cooling
-      HCFM = ACTON*275  # AHU airflow during heating
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
       DS_TYPE = 0 # DSET from lookup file
@@ -312,50 +284,15 @@ def sim_line(z,h,s,rh,v):
       ftim_ON7 = vent0 / (DCFM_no_AHU * (1-DSIN_VAL)) # on time to achieve 62.2
 
   if s==8:
-      ACCFM = ACTON*375 # AHU airflow during cooling
-      HCFM = ACTON*275  # AHU airflow during heating
       HUM_CNTL_type = 5 # Lennox Dehumidification
-      Res_DNO = 21 # not used
-      DS_TYPE = 0 # DSET from lookup file
-      DCFM_AHU = 100
-      DCFM_no_AHU = 120
-      REGEN = 0 # reject heat to interior
-      DSIN_OPT = 1 # draw air from inside
-      DSIN_VAL = 0 # not used
-      RSCHD = 0 # recirc mode off
-      DSOUT = 1 # supply air sent to space (== supply duct)
       ilck61 = 0 # don't run DH
 
   if s==10:
-    ACCFM = ACTON*375
-    HCFM = ACTON*275
     HUM_CNTL_type = 4
-    Res_DNO = 21
-    DS_TYPE = 0 # DSET from lookup file
-    DSET = 50 # pints per day
-    DCFM_AHU = 148 # same as in lookup file
-    DCFM_no_AHU = 148 # same as in lookup file
-    REGEN = 0 # reject heat to interior
-    DSIN_OPT = 1 # draw air from interior
-    DSIN_VAL = 0 # not used
-    RSCHD = 0 # recirc mode off
-    DSOUT = 1 # supply air sent to space (== supply duct)
     ilck61 = 0 # don't run DH
 
   if s==11:
-    ACCFM = ACTON*375
-    HCFM = ACTON*275
     HUM_CNTL_type = 2
-    Res_DNO = 21
-    DS_TYPE = 0 # DSET from lookup file
-    DSET = 50 # pints per day
-    DCFM_AHU = 148 # same as in lookup file
-    DCFM_no_AHU = 148 # same as in lookup file
-    REGEN = 0 # reject heat to interior
-    DSIN_OPT = 1 # draw air from interior
-    DSIN_VAL = 0 # not used
-    RSCHD = 0 # recirc mode off
-    DSOUT = 1 # supply air sent to space (== supply duct)
     ilck61 = 0 # don't run DH
 
 
