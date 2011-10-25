@@ -295,6 +295,21 @@ def sim_line(z,h,s,rh,v):
     HUM_CNTL_type = 2
     ilck61 = 0 # don't run DH
 
+  if s==12:
+    HUM_CNTL_type = 0
+    ilck61 = 0 # don't run DH
+    # override AC to include heat pipe
+    # AC depends on HERS
+    if h==130:
+      ANO = 21
+    elif h==100:
+      ANO = 22
+    elif h==85:
+      ANO = 23
+    elif h==70:
+      ANO = 24
+    elif h==50:
+      ANO = 24
 
 # Ventilation systems
   if v==0: # No ventilation
@@ -535,5 +550,26 @@ def sys_10_11():
               out_csv.writerow(row)
     print("{} lines in {}".format(lcount, filename))
 
+def sys_12_13_14():
+# cf Task 4 report pg 32
+  # should be 28 simulations in this set
+  for s in [12]: # [12, 13, 14]
+    lcount = 0
+    filename = 's{0}.csv'.format(s)
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for h in [70, 100]:
+      for v in [1, 2, 4]:
+        for rh in [50, 60]:
+          row = sim_line(2, h, s, rh, v)
+          if row:
+            lcount += 1
+            row[head.index('Run')] = lcount
+            out_csv.writerow(row)
+    print("{} lines in {}".format(lcount, filename))
+
+
 by_system([1,2,3,4,5,6,7,8])
 sys_10_11()
+sys_12_13_14()
