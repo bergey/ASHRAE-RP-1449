@@ -9,7 +9,7 @@ def fordat(filename):
 # Open the file, read the first line, close the file
 # This is ugly; the commented out code would be nicer, but genfromtxt isn't reading names on Ubuntu
     handle = open(filename)
-    head = handle.next().split()
+    head = next(handle).split()
     handle.close()
     handle = open(filename)
 
