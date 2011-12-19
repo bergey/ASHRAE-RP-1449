@@ -5,7 +5,7 @@ from matplotlib import ticker
 from parametrics import by_month, month_names, daily_total, daily_mean
 from physics import humidity_ratio
 
-summary_path = '../summary'
+summary_path = 'summary'
 
 def plot_TRH(hourly, name='', interactive=False):
     fig = plt.figure()
@@ -106,7 +106,7 @@ def plot_window_gain(hourly, name='', interactive=False):
         for key in ['SOLS', 'SOLE', 'SOLN', 'SOLW']:
             helper('{0}-{1}'.format(name, key), hourly[key])
     except KeyError:
-        print "Not enough data for plot_window_gain; skipping: {0}".format(name)
+        print( "Not enough data for plot_window_gain; skipping: {0}".format(name))
 
 def rh_hist_compare(hs, names):
     ret = plt.hist(np.vstack([h.RHi for h in hs]).transpose(), np.linspace(0,100,51), label=names)
@@ -176,7 +176,7 @@ def plot_daily_psychrometric(hourly, name='', interactive=False):
         if not interactive:
             plt.close()
     
-def psych_chart(T, W):
+def psych_chart(T, W, lims = (0, 90, 0, 0.02)):
     fig = plt.figure()
     plt.scatter(T, W)
     ts = np.linspace(0,100,21)
@@ -184,12 +184,12 @@ def psych_chart(T, W):
         plt.plot(ts, humidity_ratio(rh, ts), 'k')
     plt.xlabel('Temperature [degF]')
     plt.ylabel('Humidity Ratio')
-    plt.ylim(0,0.02)
-    plt.xlim(0,90)
+    plt.ylim(lims[2], lims[3])
+    plt.xlim(lims[0], lims[1])
     # RH labels on right hand side
     ax1 = plt.axes()
     ax2 = ax1.twinx()
-    ax2.get_yaxis().set_major_locator(ticker.FixedLocator(humidity_ratio(np.linspace(0,1,11), 90)/0.020)) # TODO don't hardcode limits
+    ax2.get_yaxis().set_major_locator(ticker.FixedLocator(humidity_ratio(np.linspace(0,1,11), lims[1])/(lims[3]-lims[2])))
     ax2.get_yaxis().set_major_formatter(ticker.FixedFormatter(np.linspace(0,100,11)))
     plt.ylabel('Indoor RH [%]')
     return ax1

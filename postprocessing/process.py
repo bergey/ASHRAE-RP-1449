@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python0
 import datetime as dt
 import sys
 import csv
@@ -55,10 +55,10 @@ def collect_specs(spec_path, data_path):
 
 def output_row(desc, f, hourly, out_csv, first_run=False):
     #try:
-        h, sum_vals = f(**hourly.__dict__)
+        hr, sum_vals = f(**hourly.__dict__)
         if first_run: 
             # first row of output
-            out_csv.writerow( parse_name(None) + h )
+            out_csv.writerow( parse_name(None) + hr )
         out_csv.writerow(desc + sum_vals)
     #except TypeError:
         #print "Not enough data for {1}; skipping: {0}".format(desc, f.__name__)
@@ -72,9 +72,9 @@ def summarize_csv(specs):
   for desc, scenario_path in specs:
     name = desc[-1]
     if exists(scenario_path):
-        print "loading {0} from {1}".format(name, scenario_path)
+        print("loading {0} from {1}".format(name, scenario_path))
         hourly = hourly_data(scenario_path)
-        print "summarizing {0}".format(name)
+        print("summarizing {0}".format(name))
         output_row(desc, summarize_run, hourly, general_csv, first_run)
         output_row(desc, rh_stats, hourly, rh_csv, first_run)
         output_row(desc, check_loads, hourly, check_csv, first_run)
@@ -84,7 +84,7 @@ def summarize_csv(specs):
                 print("missing {0}".format(k))
         first_run = False # flag, never becomes true again in this call
         if graphs:
-            print "graphing {0}".format(name)
+            print("graphing {0}".format(name))
             plot_TRH(hourly, name)
             plot_humidity_ratio(hourly, name)
             #plot_Wrt(name, hourly)
@@ -94,7 +94,7 @@ def summarize_csv(specs):
             ac_bal_point(hourly, name)
     else:
 # scenario path does not exist
-        print "skipping {0}: path {1} does not exist".format(name, scenario_path)
+        print( "skipping {0}: path {1} does not exist".format(name, scenario_path))
 
 def contiguous_regions(condition):
     """Finds contiguous True regions of the boolean array "condition". Returns
@@ -274,7 +274,7 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
     }
 
 # submetered energy consumption
-    for key, value in annual_kWh.iteritems():
+    for key, value in annual_kWh.items():
       heads.append('annual {0} kWh'.format(key))
       vals.append(value)
 
@@ -336,7 +336,7 @@ def concat(lst):
   return ret
 
 def output_handle(name):
-  output_path = dt.datetime.now().strftime('../summary/%Y-%m-%d-%H%M-{0}.csv'.format(name))
+  output_path = dt.datetime.now().strftime('summary/%Y-%m-%d-%H%M-{0}.csv'.format(name))
   file = open(output_path, 'wb')
   return csv.writer(file)
 
@@ -347,7 +347,7 @@ if __name__ == '__main__':
     specs.sort()
     summarize_csv( specs )
   else:
-    print """{0} DATAPATH SPEC...
+    print("""{0} DATAPATH SPEC...
     look in DATAPATH for data files (for_##.dat)
     look in SPEC for descriptions of each run
 
@@ -356,4 +356,4 @@ if __name__ == '__main__':
     line, having the same name as SPEC without the .csv extension.
     Within each directory, there should be one folder named Run# for each line
     in SPEC.  Each Run# directory should have all for_##.dat files for that run.
-    """
+    """)
