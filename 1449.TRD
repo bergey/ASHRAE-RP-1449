@@ -21,7 +21,7 @@ EQUATIONS 4
   TSTART = 0
   TSTOP = 8760
   TSTEP = 0.02
-  ISTEP = 1.0
+  ISTEP = 1.00
 *
 SIMULATION TSTART TSTOP TSTEP
 TOLERANCE  0.001 0.001
@@ -67,7 +67,7 @@ EQUATIONS 5
 *|< Choose Weather Location   |TMY_Cities.txt|0|7|1
 *
 *
-ASSIGN Miami-FL.tm2               20
+ASSIGN Miami-FL-3.tm2               20
 *|< Choose Weather Location   |TMY_Cities.txt|0|4|1
 *|]
 *|[SCHEM|System Schematic
@@ -104,11 +104,11 @@ ASSIGN Miami-FL.tm2               20
 *|<style1> BOLD
 *
 EQUATIONS 19
-  Res_DNO = 1
+  Res_DNO = 21
 *|<Residential Dehumidifier Unit |Res_DH_units.txt|2|1|2
   DTYPE = 11
 *|<   |Res_DH_units.txt|0|3|2
-  DPAR3a = 220.
+  DPAR3a = 148.
 *|<   |Res_DH_units.txt|0|4|2
   DPAR4 = 0.0
 *|<   |Res_DH_units.txt|0|5|2
@@ -122,7 +122,7 @@ EQUATIONS 19
 *|<   |Res_DH_units.txt|0|9|2
   DPAR9 = 0
 *|<   |Res_DH_units.txt|0|10|2
-  DPAR10 = 1
+  DPAR10 = 6
 *|<   |Res_DH_units.txt|0|11|2
   DPAR11 = 0
 *|<   |Res_DH_units.txt|0|12|2
@@ -146,28 +146,28 @@ EQUATIONS 19
 EQUATIONS 11
   DS_TYPE = 0
 *|<     Dehumidifier Nominal Sizing            |pulldown_3.txt|4|2|27
-  DSET  = 4.0000000000000E+02
+  DSET  = 1.4800000000000E+02
 *|     New Dehumidifier Size (DSET)                   |use units above (0-5000)|use units above (0-5000)|0|1|0|50000|27
 *|*
 *
-  DCFM_AHU  = 4.0000000000000E+02
+  DCFM_AHU  = 1.4800000000000E+02
 *|     Dehumidifier Unit Process/Vent Air Flow when AHU is running (DCFM_AHU)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
-  DCFM_no_AHU  = 4.0000000000000E+02
+  DCFM_no_AHU  = 1.4800000000000E+02
 *|     Dehumidifier Unit Process/Vent Air Flow when AHU is not running (DCFM_no_AHU)   |scfm (0-50000)|scfm (0-50000)|0|1|0.0|50000.0|3
 *
 * CONFIGURATION - REGEN:  OA Regen=1, RA Regen=0       REHEAT:   no=0, yes=1
 *                 DSIN:   OA=0, RA=1                   DSOUT:    space=0, supply duct=1
 *
-  REGEN = 1
+  REGEN = 0
 *|<     Source of Regeneration Air (REGEN)             |pulldown_2.txt|3|2|4
-  DSIN_OPT = 0
+  DSIN_OPT = 1
 *|<     Source of Process Air/Unit Config (DSIN_OPT)      |pulldown_4.txt|4|2|5
   DSIN_VAL = 1.0000000000000E+00
 *|     Return/Space Air Fraction (DSIN_VAL)		  |(0-1)|(0-1)|0|1|0|1.00|3
 *
   DSIN = DSIN_OPT*lt(DSIN_OPT,2)  +  eql(DSIN_OPT,2)*DSIN_VAL + eql(DSIN_OPT,3)
 *
-  DSOUT = 0
+  DSOUT = 1
 *|<     DH Supply Air Sent to (DSOUT)                  |pulldown_2.txt|5|2|6
 *
   RSCHD = 0
@@ -191,15 +191,15 @@ EQUATIONS 11
 EQUATIONS 6
   HRV_ec = 0.
 *   HRV leakage or "crossover" (Not Used)
-  HRV_eS = 6.7000000000000E-01
+  HRV_eS = 7.0000000000000E-01
 *| Sensible Recovery Efficiency (HRV_eS) |(0-1)|(0-1)|0|1|0|1.00|9999
-  HRV_eL = 0.0000000000000E+00
+  HRV_eL = 6.0000000000000E-01
 *| Latent Recovery Efficiency (HRV_eL) |(0-1)|(0-1)|0|1|0|1.00|9999
-  HRV_CFM = 5.5000000000000E+01
+  HRV_CFM = 1.1600000000000E+02
 *| Supply Airflow (HRV_CFM) |CFM|CFM|0|1|0|1000|9999
   HRV_loc = 0
 *|< HRV Supply Air Sent to           |pulldown_3.txt|7|2|27
-  HRV_W = 2.5000000000000E+01
+  HRV_W = 5.8000000000000E+01
 *| Fan Power (total, both directions) (HRV_W) |W|W|0|1|0|500|9999
 *|]
 EQUATIONS 2
@@ -241,16 +241,16 @@ DPAR3 = EQL(DS_TYPE,0)*DPAR3a + EQL(DS_TYPE,1)*DSET + EQL(DS_TYPE,2)*DSET/(DCAP_
 *|<style1> BOLD
 *
 EQUATIONS 19
-  ANO = 20
+  ANO = 17
 *|< AC Type (ANO)   |AC_units.txt|2|1|9
-  IAC = 3
+  IAC = 4
 *|<           |AC_units.txt|0|3|9
-  AC_EER = 14.85
+  AC_EER = 13.80
 *|<           |AC_units.txt|0|4|9
   AC_SHR = 0.77
 *|<           |AC_units.txt|0|5|9
 * skip column 6
-  WCFM_AC = 0.15
+  WCFM_AC = 0.50
 *|<           |AC_units.txt|0|7|9
   chrg_ratio = 1
 *|<           |AC_units.txt|0|8|9
@@ -262,21 +262,21 @@ EQUATIONS 19
 *|<           |AC_units.txt|0|11|9
   ihp = 0
 *|<           |AC_units.txt|0|12|9
-  AC_EER_lo = 20.56
+  AC_EER_lo = 0
 *|<           |AC_units.txt|0|13|9
-  AC_SHR_lo = 0.77
+  AC_SHR_lo = 0
 *|<           |AC_units.txt|0|14|9
-  tons_frac_lo = 0.33
+  tons_frac_lo = 0
 *|<           |AC_units.txt|0|15|9
-  wcfm_ac_lo = 0.10
+  wcfm_ac_lo = 0.3
 *|<           |AC_units.txt|0|16|9
-  cfm_frac_lo = 0.3
+  cfm_frac_lo = 0
 *|<           |AC_units.txt|0|17|9
 *
   AC_coef = 1
-  ACTON = 2.0000000000000E+00
+  ACTON = 3.0000000000000E+00
 *|     AC Nominal Capacity (ACTON)               |tons (1-500)|tons (1-500)|0|1|0.0|500.0|10
-  ACCFM  = 8.0000000000000E+02
+  ACCFM  = 1.1250000000000E+03
 *|     AC Supply Air Flow (ACCFM)                |scfm (1-50000)|scfm (1-50000)|0|1|1|50000|11
   VCFM  = 0.0000000000000E+00
 *|     Additional Vent Air Flow (at AC) (VCFM)  |scfm (0-10000)|scfm (0-10000)|0|1|0.0|10000.0|12
@@ -352,15 +352,15 @@ EQUATIONS 5
 *|<color1> red
 *|<size1> 12
 *|<style1> BOLD
-sduct_area = 0.0000000000000E+00
+sduct_area = 5.4400000000000E+02
 *|       Supply Duct Surface Area (sduct_area)      | (ft^2)| (ft^2)|0|1|0.00000|10000.00000|12
-rduct_area = 0.0000000000000E+00
+rduct_area = 1.0000000000000E+02
 *|       Return Duct Surface Area (rduct_area)      | (ft^2)| (ft^2)|0|1|0.00000|10000.00000|12
-leaks = 0.0000000000000E+00
+leaks = 6.0000000000000E-02
 *|       Supply Duct Leakage Fraction (0=no leak) (leaks)  | (-)| (-)|0|1|0.00|1.00|12
-leakr = 0.0000000000000E+00
+leakr = 4.0000000000000E-02
 *|       Return Duct Leakage Fraction (0=no leak) (leakr) | (-)| (-)|0|1|0.00|1.00|12
-duct_Rval = 4.2000000000000E+00
+duct_Rval = 6.0000000000000E+00
 *|       Duct Insulation R-Value (duct_Rval)       | (ft^2-F/Btu)| (ft^2-F/Btu)|0|1|0.00|100.00|12
 *|]
 *
@@ -379,9 +379,9 @@ EQUATIONS 5
 *|<Heater Type (Hr_eff) |Htr.txt|1|2|2
   Ht_eff = 1.0
 *
-  HCFM  = 8.0000000000000E+02
+  HCFM  = 8.2500000000000E+02
 *|     Heating Supply Air Flow (HCFM)                 |scfm (1-50000)|scfm (1-50000)|0|1|1|50000|11
-  WCFM_H  = 3.0000000000000E-01
+  WCFM_H  = 5.0000000000000E-01
 *|     Heating Supply Fan Power (WCFM_H)               |W/cfm (0-5)|W/cfm (0-5)|0|1|0.00|5.00|11
   Ht_QIN  = 4.0000000000000E+04
 *|     Heater Input Rating (HT_QIN)                     |Btu/h (1-500000)| (1-500000)|0|1|1|500000|11
@@ -431,11 +431,11 @@ EQUATIONS 9
 *
 EQUATIONS 35
 *|[ STPT | AHU Fan (Device=5)
-  fctyp5 = 3
+  fctyp5 = 0
 *|<      Fan Control Type (fctyp5)              |pulldown_7.txt|3|2|18
-  ftim_ON5  = 2.0000000000000E-01
+  ftim_ON5  = 0.0000000000000E+00
 *|     Fan ON Time (ftim_ON5)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ftim_OFF5  = 3.0000000000000E-01
+  ftim_OFF5  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF5)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ilck51  = 1.0000000000000E+00
 *|     1st Interlock Device (ilck51)  |(-4 to +4)|(-4 to +4)|0|1|-4|4|12
@@ -463,13 +463,13 @@ EQUATIONS 35
 *|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
 *|]
 *|[ STPT | Vent Damper/Fan (Device=7)
-  fctyp7 = 5
+  fctyp7 = 0
 *|<      Fan Control Type (fctyp7)              |pulldown_7.txt|3|2|18
-  ftim_ON7  = 2.0000000000000E-01
+  ftim_ON7  = 0.0000000000000E+00
 *|     Fan ON Time (ftim_ON7)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ftim_OFF7  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF7)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ilck71  = 5.0000000000000E+00
+  ilck71  = 0.0000000000000E+00
 *|     1st Interlock Device (ilck71)  |(-6 to +6)|(-6 to +6)|0|1|-6|6|12
   ilck72  = 0.0000000000000E+00
 *|     2nd Interlock Device (ilck72) |(-6 to +6)|(-6 to +6)|0|1|-6|6|12
@@ -479,7 +479,7 @@ EQUATIONS 35
 *|     Fan Schedule    (specify schedule # from file: FAN_SCHED.COF)  |(0-12)|(0-12)|0|1|0|12|12
 *|]
 *|[ STPT | Exhaust Fan (Device=8)
-  fctyp8 = 0
+  fctyp8 = 1
 *|<      Fan Control Type (fctyp8)              |pulldown_7.txt|3|2|18
   ftim_ON8  = 0.0000000000000E+00
 *|     Fan ON Time (ftim_ON8) |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
@@ -501,7 +501,7 @@ EQUATIONS 35
 *|     Fan ON Time (ftim_ON9) |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
   ftim_OFF9  = 0.0000000000000E+00
 *|     Fan OFF Time (ftim_OFF9)  |hr (0-10)|hr (0-10)|0|1|0.00|10.00|12
-  ilck91  = -7.0000000000000E+00
+  ilck91  = 0.0000000000000E+00
 *|     1st Interlock Device (ilck91)  |(-8 to +8)|(-8 to +8)|0|1|-8|8|12
   ilck92  = 0.0000000000000E+00
 *|     2nd Interlock Device (ilck92) |(-8 to +8)|(-8 to +8)|0|1|-8|8|12
@@ -536,9 +536,9 @@ EQUATIONS 19
 *|<STYLE1> BOLD
 *
 *|[ STPT | Set Points
-  THhi    = 7.0000000000000E+01
+  THhi    = 7.2000000000000E+01
 *|        Heating Set Point - Day/Occupied (THhi)      |deg F (50-99)|deg F (50-99)|0|1|50|99|16
-  THlo    = 7.0000000000000E+01
+  THlo    = 7.2000000000000E+01
 *|                            - Night/Unoccupied (THlo) |deg F (50-99)|deg F (50-99)|0|1|50|99|16
   TClo    = 7.8000000000000E+01
 *|        Cooling Set Point - Day/Occupied (TChi)     |deg F (50-99)|deg F (50-99)|0|1|50|99|17
@@ -548,9 +548,9 @@ EQUATIONS 19
 *
   HTYPE = 0
 *|<        Humidity Set Point Type (HTYPE)              |pulldown_2.txt|7|2|18
-  Humlo_0 = 5.0000000000000E+01
+  Humlo_0 = 9.9000000000000E+01
 *|        Dehumid Set Point - Day/Occupied  (Humlo_0)     |% or degF (30-99)|% or degF (50-99)|0|1|30|999|19
-  Humhi_0 = 5.0000000000000E+01
+  Humhi_0 = 9.9000000000000E+01
 *|                            - Night/Unoccupied (Humhi_0) |% or degF (30-99)|% or degF (30-99)|0|1|30|999|19
   Trht_0  = 5.0000000000000E+01
 *|        RE-Heating Set Point (Reheat on only) (Trht_0) |deg F (50-99)|deg F (50-99)|0|1|50|99|20
@@ -593,9 +593,9 @@ EQUATIONS 19
 *
 *|[GAINS | Internal Gains
 EQUATIONS 2
-  SENS_DAILY = 5.1030000000000E+04
+  SENS_DAILY = 7.2700000000000E+04
 *| Daily Sensible Gain (SENS_DAILY)  | BTU (0--500000) | BTU (0-500000)|0|1|0|500000|9999
-  LATG_DAILY = 1.7000000000000E+01
+  LATG_DAILY = 1.2000000000000E+01
 *| Daily Latent Gain (LATG_DAILY) |lbs (0-100)|lbs (0-100)|0|1|0|100|9999
 *|]
 ********************************************************************************
@@ -609,7 +609,7 @@ EQUATIONS 2
 *|[BLD1| Single-Zone Building
 *
 EQUATIONS 9
-  SinZone_bno   = 32
+  SinZone_bno   = 35
 *|< Building Use Type (SinZone_bno)                   |Single_Zone_Buildings.txt|2|1|25
   btype = 8
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|3|25
@@ -627,7 +627,7 @@ EQUATIONS 9
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|10|25
   peop_Q = 0
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|11|25
-ASSIGN z1h50.bui 32
+ASSIGN z1h100.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
 *
 *
@@ -705,16 +705,16 @@ WW_G = 0.48
 *|< Infiltration type                  |Infiltration.txt|0|12|25
 ACH_SET = 0.0000000000000E+00
 *|    New Infiltration:(Custom Infiltration) (ACH_SET)   |(0-3 ACH)|(0-3 ACH )|0|1|0.0000|3.0000|29
-ELA = 5.5000000000000E+01
+ELA = 9.8110000000000E+01
 *|    Effective Leakage Area (Sherman-Grimsrud or Walker-Wilson) (ELA) |Sq.in|Sq.in|0|1|0.00|1000.00|29
-ELA_2 = 567.0
+ELA_2 = 5.6700000000000E+02
 *|    Effective Leakage Area for Attic(Walker-Wilson) (ELA) |Sq.in|Sq.in|0|1|0.00|2000.00|29
 *|]
 *
 *|<COLOR1> BLUE
 *|[exh|Exhaust/Vent Fans
 EQUATIONS 5
-exh_cfm = 5.0000000000000E+01
+exh_cfm = 5.8000000000000E+01
 *|    Exhaust Fan Air Flow (exh_cfm)  |cfm|cfm|0|1|0.00|1000.00|29
 exh_wcfm = 4.0000000000000E-01
 *|    Exhaust Fan Power (exh_wcfm) |W/cfm|W/cfm|0|1|0.00|2.00|29
@@ -945,7 +945,7 @@ WWA_Qw = WWA_c*WW_Cw*(WW_s*WW_G*VW_SI)^(2*WW_n) ! wind induced infiltration
 WWA_Q = (WWA_Qs^2 + WWA_Qw^2)^0.5 ! Q in m^3/s
 ACH_2_WW = WWA_Q*35.3147*3600/VOL2 ! VOL in cubic feet TODO VOL2 should be in building lookup table
 ACH_2 = GT(ACH_TYPE,10)*ACH_2_WW + LT(ACH_TYPE,11)*ACH0*10 ! Pick Infiltration Model
-
+*
 ************************************************************************
 UNIT 33 TYPE 33 PSYCH - Get Space Conditions for Zone 1(SI UNITS) 
 PARAMETERS 3
