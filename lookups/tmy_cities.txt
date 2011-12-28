@@ -1,4 +1,4 @@
-239
+245
 1,1-AK-Anchorage              ,61.17,Anchorage-AK.tm2          ,53,12,34
 2,2-AK-Annette                ,55.03,Annette-AK.tm2            ,53,12,37
 3,3-AK-Barrow                 ,71.30,Barrow-AK.tm2             ,53,12,36
