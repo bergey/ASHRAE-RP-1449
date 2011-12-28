@@ -336,7 +336,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                     
             elif Tag.upper() == LineArray[0].upper() and LineArray[1] == '=':
                 ##TempLine = TempLine.replace(LineArray[2], Var) ## This caused an error for "DPAR2a = 2" as the 2 in the DPAR2a is also replaced ##
-                TempLine = LineArray[0] + ' = '+ Var + '\n'
+                TempLine = LineArray[0] + ' = '+ Var + '\r\n'
                 var_changed[z] = 1
                 do_break = True
 
