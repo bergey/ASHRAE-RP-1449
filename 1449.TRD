@@ -624,7 +624,7 @@ EQUATIONS 9
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|7|25
   ACH_file = 0.495
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|8|25
-  WALLH  = 10
+  WALLH  = 8
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|9|25
   Peop   = 4
 *|< Building Use Type                   |Single_Zone_Buildings.txt|0|10|25
