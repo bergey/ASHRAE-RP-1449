@@ -210,7 +210,7 @@ def sim_line(z,h,s,rh,v):
     ilck61 = 0 # don't run DH
     Humlo_0 = 99 # actually not critical, because TRD does this internally
     Humhi_0 = 99
-  else: # all systems except 1
+  else: # all systems except 1, 3, 4
     Humlo_0 = rh
     Humhi_0 = rh
 
@@ -232,6 +232,8 @@ def sim_line(z,h,s,rh,v):
         raise UserException("Expected system 3 or 4")
     HUM_CNTL_type = 0  # No enhanced DH
     ilck61 = 0 # don't run DH
+    Humlo_0 = 99
+    Humhi_0 = 99
 
   if s==5:
       HUM_CNTL_type = 0 # No active dehumification by AC
