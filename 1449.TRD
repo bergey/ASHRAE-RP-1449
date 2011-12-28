@@ -282,7 +282,7 @@ EQUATIONS 19
 *|     Additional Vent Air Flow (at AC) (VCFM)  |scfm (0-10000)|scfm (0-10000)|0|1|0.0|10000.0|12
 *
 *
-EQUATIONS 10
+EQUATIONS 6
  
   HUM_CNTL_type = 0
 *|< AC Humidity Control Options (controlled by Humidity Set Pt) (HUM_CNTL_type)  |pulldown_6.txt|3|2|13
@@ -295,9 +295,8 @@ EQUATIONS 10
 * Option 5:  Lennox Humiditrol (OVR_cool = 2 & bpON=1 when overcooling)
 * Option 6:  Lennox Humiditrol (OVR_cool = 4 & bpON=1 when overcooling)
 *
-  hum_cntl_on = (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))
-
-  fspd_on = 1. - hum_cntl_on*GT(HUM_CTL,HMAX)*(1-0.533) - GT(HUM_CNTL_type,4)*GT(HUM_CTL,HMAX)*(1-0.65)
+*
+  fspd_on = 1. - (EQL(HUM_CNTL_type,3)+EQL(HUM_CNTL_type,4))*GT(HUM_CTL,HMAX)*EQL(RTFc,1)*(1-0.533) 
  
  THERMID  = eql(HUM_CNTL_type,2) + eql(HUM_CNTL_type,3) + GT(HUM_CNTL_type,4)
   REHEAT = eql(HUM_CNTL_type,1)
@@ -307,9 +306,6 @@ EQUATIONS 10
   OVR_cool = LT(HUM_CNTL_type,4)*THERMID*2. 			+ EQL(HUM_CNTL_type,5)*THERMID*2  + EQL(HUM_CNTL_type,6)*THERMID*4
 *
   T_Gain = LT(HUM_CNTL_type,4)*THERMID*0.1667 			+ GT(HUM_CNTL_type,4)*THERMID*5.
-  wcfm_factor_dh = 0.6 ! multiply AHU W/cfm by this value when lowering supply airflow for dehumidification
-  WCFM_AC_final = WCFM_AC * (1 - hum_cntl_on + hum_cntl_on * wcfm_factor_dh)
-  wcfm_ac_lo_final = wcfm_ac_lo * (1 - hum_cntl_on + hum_cntl_on * wcfm_factor_dh)
 *
 EQUATIONS 10
 *
@@ -388,17 +384,24 @@ EQUATIONS 5
 *
 *|]
 *
-EQUATIONS 9
+EQUATIONS 11
  
-  flg2 = GT(AC_EER_lo,0)*EQL(iac,4) + GT(AC_EER_lo,0)*EQL(iac,3)
-  fspd = flg2* ( Hi_STG_c*EQL(iac,4) + fhz*EQL(iac,3) )
+  flg2 = GT(AC_EER_lo,0)*EQL(iac,4) + GT(AC_EER_lo,0)*EQL(iac,3)            ! Is unit 2-spd or V-spd (1=yes)
+  fspd = flg2* ( Hi_STG_c*EQL(iac,4) + fhz*EQL(iac,3) ) * EQL(fspd_on,1)    ! what stage is unit 
   
   cfm_ON_c = ACCFM*(1-flg2)  + ACCFM*flg2*((1-fspd)*cfm_frac_lo + fspd)
+
+*                 ------ Single Speed -----------------------------------       --------------- 2-spd/V-spd ------------
+*                 -------Normal Mode---------    -----low airflow--------
+  Wcfm_ON_c = (1-flg2)*(wcfm_ac*EQL(fspd_on,1) + wcfm_ac_lo*LT(fspd_on,1))   +    flg2*(wcfm_ac*fspd + wcfm_ac_lo*(1-fspd))
+
   cfm_OFF  =  HCFM*(1-flg2)  + ACCFM*flg2*cfm_frac_lo
- 
+  wcfm_off =  wcfm_h*(1-flg2) + wcfm_ac_lo*flg2
+*
 * Convert to lb/h
 *
-  Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*cfm_ON_c) * 60 * 0.075 * fspd_on
+  Macmx0  = ( EQL(RTFh,1)*HCFM + EQL(RTFc+RTFh,0)*cfm_OFF + EQL(RTFc,1)*fspd_on*cfm_ON_c) * 60 * 0.075
+*
   Mvmx   = VCFM  * 60 * 0.075 * Macmx0 / (ACCFM * 60 * 0.075) ! scale nominal (VCFM) by total AHU airflow
 *
   Qh      = HT_QIN
@@ -1041,10 +1044,14 @@ EQUATIONS 13
   RTFvf  = [3,21]
   RTFxf  = [3,22] 
   RTFhf  = [3,23]
-*                   Only used for two stage AC
-  Hi_STG_c = [3,24]*flg2
-*		    Only Used for Variable speed AC
-  fhz     =   [3,25]
+*
+*                   Only used for two stage AC (disabled if in overcooling>0 or fsp_on < 1)
+*
+  Hi_STG_c = [3,24]*flg2*EQL(OVR_cool,0)*EQL(fspd_on,1)
+*
+*		    Only Used for Variable speed AC (disabled if in overcooling>0 or fsp_on < 1)
+*
+  fhz     =   [3,25]*EQL(OVR_cool,0)*EQL(fspd_on,1)
 *
   RTFacf_time = RTFacf
 *
@@ -1172,17 +1179,24 @@ PARAMETERS 35
 *  mtref  evapefc  none   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
     .90    0.0      0.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
 *  twet  gamma  Nmax  tcl NTUo_nom fspd_off2 none none   wcfm    chrg_ratio exp_type AC_COEF  
-   TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC_final chrg_ratio exp_type ac_coef
+   TWET  GAMMA  NMAX  45. NTUo_nom   0         0.   0.   WCFM_AC chrg_ratio exp_type ac_coef
 *  EER_rated_lo  SHR_rated_lo tons_frac_lo wcfm_ac_lo
-   AC_EER_lo     AC_SHR_lo    tons_frac_lo wcfm_ac_lo_final
+   AC_EER_lo     AC_SHR_lo    tons_frac_lo wcfm_ac_lo
 INPUTS 15
 * Tin  win   Tout  wout   macs    bpON  rtfacf  rtfc  toff_p  	 fspd_off       T_ON_c	T_OFF_c  fspd_off2_d Hi_STG_c  fhz
   Taci waci   TAO  WAO    Macmx0  bpON  rtfacf  rtfc  0,0      fspd_off_ac      T_ON_c  T_Off_c  fspd_off2_d Hi_STG_c  fhz
   95.  0.005  95    0.005 Macmx0   0.    0.	 0	0           0              0      0        0            0      0
 * trace 0 3450
 ************************************************************************
-EQUATIONS 5
-  Fhtac  = [4,7]*3413/Macmx/0.24
+EQUATIONS 6
+
+*   Fan power from [4,7] is no longer used.  Now all calcs are done below
+
+*                       Cooling			         OR       Heating                 OR    Fan Only
+
+  FANKW = (cfm_ON_c*fspd_on*wcfm_ON_c/1000.)*EQL(RTFc,1)  + hcfm*wcfm_h*EQL(Rtfh,1)/1000. +  cfm_off*wcfm_off*EQL(RTFc+RTFh,0)/1000.
+
+  Fhtac  = FANKW*3413/Macmx/0.24
 *
 *    Heating
   Th_rise =  Qh/Macmx/0.24
@@ -1496,7 +1510,7 @@ UNIT 67 TYPE 24 integrator - AC & DES MISC
 PARAMETERS 2
 ISTEP  0
 INPUTS 11
-RTFacf  4,4   4,7    4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time  fspd
+RTFacf  4,4  FANKW   4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time  fspd
 0       0     0      0     0      0       0     0    0     0            0
 ******************************************************************************
 UNIT 47 TYPE 25 summary printer - AC & Des misc.
