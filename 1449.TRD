@@ -1095,7 +1095,7 @@ EQUATIONS 12
    Macmx = max([4,3],1e-6)
 *
   Mac    = Macmx
-  DCFM   = DCFM_AHU * RTFc + DCFM_no_AHU * (1 - RTFc) ! RTFc is always 0 or 1
+  DCFM   = DCFM_AHU * RTFacf + DCFM_no_AHU * (1 - RTFacf) ! RTFacf is always 0 or 1
   Mdmx   = DCFM  * 60 * 0.075
   Md     = Mdmx  * RTFdf
   Mv     = Mvmx * RTFvf
