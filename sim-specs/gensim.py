@@ -432,7 +432,7 @@ def single_city(site):
             lcount += 1
             line[head.index('Run')] = lcount
             file.writerow(line)
-  print("{} lines in {}".format(lcount, filename))
+  print("{0} lines in {1}".format(lcount, filename))
 
 def full_parametric():
   for h in [50, 70, 85, 100, 130]:
@@ -449,7 +449,7 @@ def full_parametric():
             if row:
               row[head.index('Run')] = lcount + 1
               file.writerow(row)
-      print("{} lines in {}".format(lcount, filename))
+      print("{0} lines in {1}".format(lcount, filename))
 
 
 def by_system(systems):
@@ -473,7 +473,7 @@ def by_system(systems):
             handle.close()
             os.remove(filename)
     else:
-                  print("{} lines in {}".format(lcount, filename))
+                  print("{0} lines in {1}".format(lcount, filename))
 
 def just_one(z, h, s, rh, v):
   filename = 'z{0}h{1}s{2}v{3}rh{4}.csv'.format(z,h,s,v,rh)
@@ -499,7 +499,7 @@ def debug_runs():
                     lcount += 1
                     row[head.index('Run')] = lcount
                     out_csv.writerow(row)
-    print("{} lines in {}".format(lcount, filename))
+    print("{0} lines in {1}".format(lcount, filename))
 
 def florida(s):
     lcount = 0
@@ -513,7 +513,7 @@ def florida(s):
         lcount += 1
         row[head.index('Run')] = lcount
         out_csv.writerow(row)
-    print("{} lines in {}".format(lcount, filename))
+    print("{0} lines in {1}".format(lcount, filename))
 
 
 def thhi_72():
@@ -532,7 +532,7 @@ def thhi_72():
               lcount += 1
               row[head.index('Run')] = lcount
               out_csv.writerow(row)
-    print("{} lines in {}".format(lcount, filename))
+    print("{0} lines in {1}".format(lcount, filename))
 
 def sys_10_11():
   # cf Task 4 report pg 32
@@ -552,7 +552,7 @@ def sys_10_11():
               lcount += 1
               row[head.index('Run')] = lcount
               out_csv.writerow(row)
-    print("{} lines in {}".format(lcount, filename))
+    print("{0} lines in {1}".format(lcount, filename))
 
 def sys_12_13_14():
 # cf Task 4 report pg 32
@@ -571,7 +571,7 @@ def sys_12_13_14():
             lcount += 1
             row[head.index('Run')] = lcount
             out_csv.writerow(row)
-    print("{} lines in {}".format(lcount, filename))
+    print("{0} lines in {1}".format(lcount, filename))
 
 
 by_system([1,2,3,4,5,6,7,8])
