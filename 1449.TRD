@@ -291,7 +291,7 @@ EQUATIONS 10
 * Option 1:  condenser reheat (REHEAT=1)
 * Option 2:  thermidistat control (THERMID=1)
 * Option 3:  SUPER thermidistat control (THERMID=1 & fspd_on=53%)
-* Option 4:  lower supply airflow to 80% when in dehumid mode (fspd_on=53%) 
+* Option 4:  lower supply airflow to 53% when in dehumid mode (fspd_on=53%)
 * Option 5:  Lennox Humiditrol (OVR_cool = 2 & bpON=1 when overcooling)
 * Option 6:  Lennox Humiditrol (OVR_cool = 4 & bpON=1 when overcooling)
 *
