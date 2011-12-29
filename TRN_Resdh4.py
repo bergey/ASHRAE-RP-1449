@@ -157,7 +157,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
         RunColumn = CaseTags.index('Run')
         #print "Run is in column %s" % RunColumn
         for line in CaseLines:
-            line = line.replace('\n','').split(',')
+            line = line.replace('\r', '').replace('\n','').split(',')
             #print "line is %s long" % len(line)
             id = int(float(line[RunColumn]))
             #print "scanning Run Number %s" % id
