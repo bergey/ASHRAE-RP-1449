@@ -505,14 +505,15 @@ def debug_runs():
                     out_csv.writerow(row)
     print("{0} lines in {1}".format(lcount, filename))
 
-def florida(s):
+def short(*systems):
+  for s in systems:
     lcount = 0
-    filename = 's{0}_florida.csv'.format(s)
+    filename = 's{0}_short.csv'.format(s)
     handle = open(filename, 'w')
     out_csv = csv.writer(handle)
     out_csv.writerow(head)
-    for z in xrange(2):
-      row = sim_line(z, 100, s, 50, 0)
+    for v in xrange(5):
+      row = sim_line(1, 100, s, 50, v)
       if row:
         lcount += 1
         row[head.index('Run')] = lcount
@@ -578,6 +579,7 @@ def sys_12_13_14():
     print("{0} lines in {1}".format(lcount, filename))
 
 
-by_system([1,2,3,4,5,6,7,8])
-sys_10_11()
-sys_12_13_14()
+#by_system([1,2,3,4,5,6,7,8])
+#sys_10_11()
+#sys_12_13_14()
+short(1, 2, 3, 4, 5, 6,7,8,)
