@@ -192,7 +192,7 @@ def sim_line(z,h,s,rh,v):
   HCFM = ACTON*275
   Res_DNO = 21
   DS_TYPE = 0
-  DSET = 60 # not used
+  DSET = 45 # not used
   DCFM_AHU = 148
   DCFM_no_AHU = 148
   REGEN = 0
@@ -257,7 +257,8 @@ def sim_line(z,h,s,rh,v):
   if s==6:
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
-      DS_TYPE = 0 # DSET from lookup file
+      DS_TYPE = 2
+      DSET = 65
       DCFM_AHU = 100
       DCFM_no_AHU = 120
       REGEN = 0 # reject heat to interior
@@ -274,9 +275,9 @@ def sim_line(z,h,s,rh,v):
       HUM_CNTL_type = 0 # No active dehumification by AC
       Res_DNO = 21 # TODO will be 22; for now we use system 5 DH
       DS_TYPE = 2 # DSET from lookup file
-      DSET = 90
-      DCFM_AHU = 183
-      DCFM_no_AHU = 220
+      DSET = 90 # based on email <87ehy0z0y2.wl%daniel@buildingscience.com>
+      DCFM_AHU = 183 # scaling DCFM_no_AHU by 100/120, from system 6
+      DCFM_no_AHU = 220 # from Armin's email cited above
       REGEN = 0 # reject heat to interior
       DSIN_OPT = 2 # mix indoor and outdoor air
       DSIN_VAL = 0.67 # 100 CFM recirc, 50 CFM OA
