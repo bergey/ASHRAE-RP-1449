@@ -18,10 +18,13 @@ def order_line(d):
 bno_file = open('../buildings/Single_Zone_Buildings.txt')
 bno_lines = csv.reader(bno_file)
 bno = dict()
-next(bno_lines) # drop header (line count)
+bno_ct = next(bno_lines)[0] #  header (line count)
 for line in bno_lines:
   bno[line[3].strip()] = line[0].strip()
 bno_file.close()
+if len(bno) != int(bno_ct):
+  print("""you should update header of Single_Zone_Buildings to match contents
+        length is {0}, header says {1}""".format(len(bno), bno_ct))
 
 def recirc(tons):
     "return on-time (in hours) to provide 0.5 ACH"
