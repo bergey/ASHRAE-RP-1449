@@ -385,7 +385,33 @@ def renew_log():
         os.rename('batch-log', 'batch-log.0')
     log = open('batch-log', 'w')
 
+def usage():
+    print("""
+      Operates on TRNSYS results to generate data summaries and figures
+
+      TRN_Resdh2 -option
+      Options:
+        -load run	If run is 0, data summaries and figure are generated.
+          Otherwise data summaries and figures are reloaded into the
+          "Current" directory from the corresponding "Archived_Run"
+          directory.
+        -archive run	Archives data summaries and figures in the "Current" directory
+          into the appropriate "Archived_Run" directory.
+        -copy file	Copies file into "Current" Directory.
+        -listdir str 	Outputs results for search criteria into the file "dir.out".
+          "str" is a search string and can contain wildcard entries.
+        -rmdir run	Removes "Archived_Run" directory for the desired run.
+        -runsim file  Launches TRNExe and executes specified file for simulation.
+        -edit file	Launches TRNEdit and loads specified file.
+        -case		Conditions Parametric Case File
+        -batch  Run simulations as specified in a csv file(s), one per row
+        -dryrun  Generate TRD files from specified csv file(s), do not run simulations
+      """)
+
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        usage()
+        exit()
     from time import sleep
     if len(sys.argv) > 2: path = sys.argv[2]
 
@@ -486,26 +512,4 @@ if __name__ == "__main__":
             MakeCaseFile(i, line['BaseFile'], dirname, trd)
             shutil.move(trd, os.path.join(dirname, trd))
     else:
-          #raise
-#except:
-          print("""
-      Operates on TRNSYS results to generate data summaries and figures
-
-      TRN_Resdh2 -option
-      Options:
-        -load run	If run is 0, data summaries and figure are generated.
-          Otherwise data summaries and figures are reloaded into the
-          "Current" directory from the corresponding "Archived_Run"
-          directory.
-        -archive run	Archives data summaries and figures in the "Current" directory
-          into the appropriate "Archived_Run" directory.
-        -copy file	Copies file into "Current" Directory.
-        -listdir str 	Outputs results for search criteria into the file "dir.out".
-          "str" is a search string and can contain wildcard entries.
-        -rmdir run	Removes "Archived_Run" directory for the desired run.
-        -runsim file  Launches TRNExe and executes specified file for simulation.
-        -edit file	Launches TRNEdit and loads specified file.
-        -case		Conditions Parametric Case File
-        -batch  Run simulations as specified in a csv file(s), one per row
-        -dryrun  Generate TRD files from specified csv file(s), do not run simulations
-      """)
+        usage()
