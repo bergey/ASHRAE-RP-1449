@@ -134,38 +134,38 @@ def GetMnuOption(col, Opt, OptFile):
                 break
             else:
                 row = None                     
-    #print "MnuOption is %s" % row
+    #print("MnuOption is %s" % row)
     return row
 
 
 def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
 # OBS by DictReader
-    #print DestFolder
+    #print(DestFolder)
     fcase = open("%s/SimRuns.csv" % DestFolder)
-    #print fcase
-    #print "Opened SimRuns.csv"
+    #print(fcase)
+    #print("Opened SimRuns.csv")
     CaseLines = fcase.readlines()
     fcase.close()
-    #print "Closed SimRuns.csv"
+    #print("Closed SimRuns.csv")
 
-    #print Run
-    #print len(CaseLines)
+    #print(Run)
+    #print(len(CaseLines))
 
 # OBS by DictReader
     CaseTags = CaseLines.pop(0).replace('\r', '').replace('\n', '').split(',') # remove 0 line
     try:
         RunColumn = CaseTags.index('Run')
-        #print "Run is in column %s" % RunColumn
+        #print("Run is in column %s" % RunColumn)
         for line in CaseLines:
             line = line.replace('\r', '').replace('\n','').split(',')
-            #print "line is %s long" % len(line)
+            #print("line is %s long" % len(line))
             id = int(float(line[RunColumn]))
-            #print "scanning Run Number %s" % id
+            #print("scanning Run Number %s" % id)
             if id == Run: # breaks if Run is not a number
                 CaseVars = line
                 break
     except:
-        print "Couldn't use Run Column; Assuming in order from 1"
+        print("Couldn't use Run Column; Assuming in order from 1")
         CaseVars = CaseLines[Run-1] # removed 0 line, above
     
     #fcurrCase = open('casefile','w')
@@ -173,12 +173,12 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     #fcurrCase.write(CaseLines[Run-1])
 
     #fcurrCase.close()
-    #print "closed casefile"
+    #print("closed casefile")
     f1 = open(TRDFile, 'r')
     TRDLines = f1.readlines()
     f1.close()
-    #print "read %s" % TRDFile;
-    #print CaseTags
+    #print("read %s" % TRDFile;)
+    #print(CaseTags)
     
     for i,case in enumerate(CaseTags[:]):
         if CaseVars[i] == "-":
@@ -224,7 +224,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
             CaseTags.extend(['TDBND','Ta_o','Taua','taue','HDBND','CDBND'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7]])        
     var_changed = [0]*len(CaseTags)
-    #print "extended CaseTags"
+    #print("extended CaseTags")
     
     for z in range(1, len(CaseTags)):
         Tag = CaseTags[z]
@@ -245,7 +245,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                     warray = wline.replace('\n', '').split(',')
                     break
             f.close()
-            #print "rewrote weather location"
+            #print("rewrote weather location")
 
         if Tag.upper() == 'TESSMODEL':
             tess_path = '../../rice_dh/'
@@ -300,7 +300,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                         id = line_array[-1].index('"')
                         line_array[-1] = buifile + line_array[-1][id:]
                         TRDLines[x] = '\\'.join(line_array)
-                    #print "rewrote building assignment"
+                    #print("rewrote building assignment")
                     break
             
 
@@ -322,7 +322,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 if 'ASSIGN' in LineArray and '20' in LineArray and warray != False:
                     TempLine = TempLine.replace(LineArray[1], Var.upper() + '.tm2')
                     do_break = True
-                    #print LineArray, TempLine, Var
+                    #print(LineArray, TempLine, Var)
                 elif "CITYNO" == LineArray[0].upper() and warray != False:
                     TempLine = TempLine.replace(LineArray[2], warray[0])
                 elif "LAT" == LineArray[0].upper() and warray != False:
@@ -348,7 +348,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 var_changed[z] = 1
                 if do_break: break
     
-    #print "opening %s" % DestTRD
+    #print("opening %s" % DestTRD)
     fout = open(DestTRD, 'wb')
     fout.writelines(TRDLines)
     fout.close()
@@ -434,12 +434,12 @@ if __name__ == "__main__":
         TRNSYSPath = '.'
         system('""%s\%s" "%s"' % (TRNSYSPath, "Exe\TRNEdit.exe", sys.argv[2]))
     elif sys.argv[1] == '-trd_write':
-        print sys.argv
+        print(sys.argv)
         Run = int(sys.argv[2])
         DestFolder = sys.argv[3]
         TRDFile = sys.argv[4]
         DestTRD = sys.argv[5]
-        print DestTRD
+        print(DestTRD)
         MakeCaseFile(Run, TRDFile, DestFolder, DestTRD)
     
     elif sys.argv[1] == '-batch':
@@ -447,7 +447,7 @@ if __name__ == "__main__":
 
         # per argument
         for csvname in sys.argv[2:]:
-            print "beginning file: %s" % csvname
+            print("beginning file: %s" % csvname)
             renew_log()
 
             # store the results of each csv in a separate directory
@@ -463,7 +463,7 @@ if __name__ == "__main__":
             # loop over sims in this file
             for line in parametrics:
                 desc = line['Desc'].replace(' ', '-')
-                print "Starting run {0}".format(desc)
+                print("Starting run {0}".format(desc))
                 # Create the TRD
                 trd = '{0}.trd'.format(desc)
                 i = int(float(line['Run']))
@@ -488,7 +488,7 @@ if __name__ == "__main__":
     else:
           #raise
 #except:
-          print """
+          print("""
       Operates on TRNSYS results to generate data summaries and figures
 
       TRN_Resdh2 -option
@@ -508,4 +508,4 @@ if __name__ == "__main__":
         -case		Conditions Parametric Case File
         -batch  Run simulations as specified in a csv file(s), one per row
         -dryrun  Generate TRD files from specified csv file(s), do not run simulations
-      """
+      """)
