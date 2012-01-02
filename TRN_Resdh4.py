@@ -411,7 +411,7 @@ def usage():
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         usage()
-        exit()
+        sys.exit() # plain exit() isn't portable
     from time import sleep
     if len(sys.argv) > 2: path = sys.argv[2]
 
