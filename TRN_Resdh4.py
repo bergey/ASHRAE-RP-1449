@@ -6,6 +6,7 @@ from os.path import exists
 from glob import glob
 from subprocess import check_call, call
 import datetime as dt
+import sys
 #from matplotlib import use
 #import matplotlib.backends.backend_tkagg as backend
 #from post_install import _get_key_val, _winreg
@@ -15,7 +16,13 @@ from csv import reader,writer,DictWriter, DictReader
 # path to external harddrive dir
 external = '/cygdrive/c/'
 
-    
+def crlf_print(item, file=sys.stdout):
+    """Make lineending CRLF regardless of platform"""
+    if os.linesep == '\r\n':
+        file.write(item)
+    else:
+        file.write(item.replace('\n', '\r\n'))
+        
 ##    ##### Plots Section #####
 ##    # Indoor-Outdoor Humidity Plot
 ##    close()
@@ -339,7 +346,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                     
             elif Tag.upper() == LineArray[0].upper() and LineArray[1] == '=':
                 ##TempLine = TempLine.replace(LineArray[2], Var) ## This caused an error for "DPAR2a = 2" as the 2 in the DPAR2a is also replaced ##
-                TempLine = LineArray[0] + ' = '+ Var + '\r\n'
+                TempLine = LineArray[0] + ' = '+ Var + '\n'
                 var_changed[z] = 1
                 do_break = True
 
@@ -353,7 +360,8 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     
     #print("opening %s" % DestTRD)
     fout = open(DestTRD, 'w')
-    fout.writelines(TRDLines)
+    for line in TRDLines:
+        crlf_print(line, file=fout)
     fout.close()
     return
 
