@@ -157,6 +157,9 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
         RunColumn = CaseTags.index('Run')
         #print("Run is in column %s" % RunColumn)
         for line in CaseLines:
+            if line == '\n':
+                continue # native windows takes \r as newline
+                         # reads \n as a second, blank line
             line = line.replace('\r', '').replace('\n','').split(',')
             #print("line is %s long" % len(line))
             id = int(float(line[RunColumn]))
@@ -349,7 +352,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
                 if do_break: break
     
     #print("opening %s" % DestTRD)
-    fout = open(DestTRD, 'wb')
+    fout = open(DestTRD, 'w')
     fout.writelines(TRDLines)
     fout.close()
     return
