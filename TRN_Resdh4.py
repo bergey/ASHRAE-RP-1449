@@ -393,7 +393,7 @@ def renew_log():
     if 'log' in dir():
         log.close()
     if os.path.exists('batch-log'):
-        os.rename('batch-log', 'batch-log.0')
+        shutil.move('batch-log', 'batch-log.0')
     log = open('batch-log', 'w')
 
 def usage():
