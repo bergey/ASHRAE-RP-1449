@@ -13,8 +13,8 @@ import sys
 from csv import reader,writer,DictWriter, DictReader
 #use('Agg')
 
-# path to external harddrive dir
-external = '/cygdrive/c/'
+# path to store output .dat files
+output_dir = 'output'
 
 def crlf_print(item, file=sys.stdout):
     """Make lineending CRLF regardless of platform"""
@@ -465,7 +465,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == '-runsim':
         for trd in sys.argv[2:]:
             renew_log()
-            run_trd(trd, external)
+            run_trd(trd, output_dir)
 
     elif sys.argv[1] == '-edit':
         TRNSYSPath = '.'
@@ -488,7 +488,7 @@ if __name__ == "__main__":
             renew_log()
 
             # store the results of each csv in a separate directory
-            dirname = os.path.join( external, csvname.replace(' ','-').replace('.csv','') )
+            dirname = os.path.join( output_dir, csvname.replace(' ','-').replace('.csv','') )
     
             # initialize 
             if not exists(dirname):
