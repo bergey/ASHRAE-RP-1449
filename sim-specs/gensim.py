@@ -127,7 +127,6 @@ def sim_line(z,h,s,rh,v):
 
   ACCFM = ACTON*375
 
-  # TODO system 12
   if s==3:
     ANO = 19
   elif s==4:
@@ -147,7 +146,7 @@ def sim_line(z,h,s,rh,v):
             70: 19,
             50: 19}[h]
 
-  if h<=70 or z==1: # TODO add z==0
+  if h<=70 or z<=1:
     Ht_QIN = 40000
   else:
     Ht_QIN = 60000
@@ -280,12 +279,11 @@ def sim_line(z,h,s,rh,v):
     ilck71 = 5
     ftim_ON7 = 0.17
     ftim_OFF7 = 0.33
-# TODO add this back in when passes regression
-  # elif s==7: # never when v==2
-  #   fctyp7 = 5
-  #   ilck71 = 3
-  #   ftim_ON7 = vent0 / (DCFM_no_AHU * (1-DSIN_VAL)) # on time to achieve 62.2
-  #   ftim_OFF7 = 1 - ftim_ON7
+  elif s==7: # never when v==2
+    fctyp7 = 5
+    ilck71 = 3
+    ftim_ON7 = vent0 / (DCFM_no_AHU * (1-DSIN_VAL)) # on time to achieve 62.2
+    ftim_OFF7 = 1 - ftim_ON7
   else:
     fctyp7 = 0
     ilck71 = 0
