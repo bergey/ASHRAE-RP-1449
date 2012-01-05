@@ -178,7 +178,7 @@ def sim_line(z,h,s,rh,v):
   elif s==7:
     Res_DNO = 21 # TODO get line for s7
   else:
-    Res_DNO = 21 # TODO change default to 1
+    Res_DNO = 1
   
   if s in (6,7):
     DS_TYPE = 2
@@ -202,8 +202,8 @@ def sim_line(z,h,s,rh,v):
     DCFM_AHU = 183
     DCFM_no_AHU = 220
   else:
-    DCFM_AHU = 148 # TODO default to 0 after passing regr
-    DCFM_no_AHU = 148
+    DCFM_AHU = 0
+    DCFM_no_AHU = 0
   
   REGEN = 0 # TODO where does this change?
   
