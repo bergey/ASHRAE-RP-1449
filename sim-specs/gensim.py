@@ -100,7 +100,7 @@ def sim_line(z,h,s,rh,v):
   # or HRV in warm climates; z3 gets both
   # unventilated HERS 130, except system 1 comparison
 #  if (rh==60 and s in [1, 3, 4]) or (v==3 and z>3) or (v==4 and z<3) or (h==130 and v!=0 and s!=1) or (v==0 and h!= 130 and s!=1)
-  if (s==1 and rh==60) or (v==1 and h==130 and s!=1) or (v==2 and h==130) or (v in (3,4) and h==130) or (v in (3,4) and s in (5,6,7,9)) or (v==4 and z>3) or (v==3 and z<3):
+  if (s==1 and rh==60) or (v==1 and h==130 and s!=1) or (v==2 and h==130) or (v in (3,4) and h==130) or (v in (3,4) and s in (6,7,9)) or (v==4 and z>3) or (v==3 and z<3):
      return None
      
 
