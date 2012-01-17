@@ -190,8 +190,8 @@ def sim_line(z,h,s,rh,v):
     DCFM_AHU = 183
     DCFM_no_AHU = 220
   else:
-    DCFM_AHU = 0
-    DCFM_no_AHU = 0
+    DCFM_AHU = 1 # cannot be zero or TRNSYS tries to divide by 0
+    DCFM_no_AHU = 1
   
   REGEN = 0 # TODO where does this change?
   
