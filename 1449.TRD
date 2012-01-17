@@ -1477,6 +1477,17 @@ EQUATIONS 5
 * Sum of all latent loads minus AC (Zone transfers balance out)   
 *  INFW = ([5,13]*.947187 + [4,6]*rtfc)/1060.
 *
+
+EQUATIONS 8
+  ACKW_rt = [4,4]*RTFc
+  KWHT_rt = KWHT * RTFh
+  FANKW_rt = FANKW * RTFacf
+  DKW_rt = [9,3] * RTFd
+  DFANKW_rt = [9,6] * RTFdf
+  KWVF_rt = KWVF * rtfvf
+  KWXF_rt = KWXF * rtfxf
+  KWHF_rt = KWHF * rtfhf
+
 *************************************************************************** 
 UNIT 65 TYPE 24 integrator - Space
 PARAMETERS 2
@@ -1510,7 +1521,7 @@ UNIT 67 TYPE 24 integrator - AC & DES MISC
 PARAMETERS 2
 ISTEP  0
 INPUTS 11
-RTFacf  4,4  FANKW   4,8   RTFdf  9,6     RTFrh Qrh RTFe RTFacf_time  fspd
+RTFacf  ACKW_rt  FANKW_rt   4,8   RTFdf  DFANKW_rt     RTFrh Qrh RTFe RTFacf_time  fspd
 0       0     0      0     0      0       0     0    0     0            0
 ******************************************************************************
 UNIT 47 TYPE 25 summary printer - AC & Des misc.
@@ -1524,7 +1535,7 @@ UNIT 68 TYPE 24 integrator - Desiccant
 PARAMETERS 2
 ISTEP  0
 INPUTS 10
-Md  Tdi  Wdi  Tdo  Wdo  9,4  9,5  RTFd  9,7   9,3
+Md  Tdi  Wdi  Tdo  Wdo  9,4  9,5  RTFd  9,7   DKW_rt
 0    0    0    0    0    0    0     0    0     0
 ******************************************************************************
 UNIT 48 TYPE 25 summary printer - Desiccant
@@ -1580,7 +1591,7 @@ UNIT 71 TYPE 24 integrator - Other Data
 PARAMETERS 2
 ISTEP  0
 INPUTS 13
- RTFv  C_i   Cs2   rtfvf   rtfxf   KWVF  KWXF   ANO  DNO  btype   KWHT   rtfhf  KWHF
+ RTFv  C_i   Cs2   rtfvf   rtfxf   KWVF_rt  KWXF_rt   ANO  DNO  btype   KWHT_rt   rtfhf  KWHF_rt
   0       0     0    0       0       0     0      0     0    0      0     0.0    0
 ******************************************************************************
 UNIT 52 TYPE 25 summary printer - Other data
