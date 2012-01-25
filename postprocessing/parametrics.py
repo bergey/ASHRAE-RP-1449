@@ -1,19 +1,24 @@
+
 # library of utility functions for analyzing and graphing large datasets
 # much of this is specific to TRNSYS output
 from os.path import join, isdir
 import os.path
 import numpy as np
 from glob import glob
+import gzip
 
 def fordat(filename):
 # Open the file, read the first line, close the file
 # This is ugly; the commented out code would be nicer, but genfromtxt isn't reading names on Ubuntu
-    handle = open(filename)
+    if filename[-3:] == ".gz":
+        handle = gzip.open(filename)
+    else:
+        handle = open(filename)
     head = next(handle).split()
     handle.close()
-    handle = open(filename)
+    #handle = open(filename)
 
-    arr = np.loadtxt(handle, skiprows=1) # test using loadtxt instead of genfromtxt
+    arr = np.loadtxt(filename, skiprows=1)
     ret = dict()
     #for n in arr.dtype.names:
         #ret[n] = arr[n]
@@ -39,7 +44,7 @@ class Hourly_Data:
 def hourly_data(path):
   ret = Hourly_Data()
   ret.name = path
-  for filename in glob(join(path, "for_*.dat")):
+  for filename in glob(join(path, "for_*.dat")) + glob(join(path, "for_*.dat.gz")):
     #handle = open(filename)
     ret.__dict__.update(fordat(filename))
   return ret
