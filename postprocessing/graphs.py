@@ -56,7 +56,7 @@ def plot_rh_hist(hourly, name='', interactive=False):
     
 def plot_rh_hist_daily(hourly, name='', interactive=False):
     fig = plt.figure()
-    plt.hist(hourly.RHi,50)
+    plt.hist(hourly.RHi.reshape(-1,24).mean(axis=1),50)
     plt.xlabel('average RH [%]')
     plt.ylabel('Number of Days')
     plt.title('{0}: Indoor RH Histogram'.format(name))
