@@ -9,7 +9,8 @@ import re
 import shutil
 import platform
 from parametrics import hourly_data, daily_total, daily_mean
-graphs = platform.system() == 'Linux'
+#graphs = platform.system() == 'Linux'
+graphs = False
 if graphs:
     from graphs import *
 
@@ -222,7 +223,7 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
       vals.append( (Qsac).sum() /  ac_btu_yr )
 
     heads.append('Annual Avg EER')
-    ac_kwh_yr = (ACKW * RTFc).sum()
+    ac_kwh_yr = ACKW.sum()
     if ac_kwh_yr == 0:
       vals.append('No kWh')
     else:
@@ -263,14 +264,14 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
 
 # Don't bother reporting Qrh; RTFrh should be 0
     annual_kWh = {
-      'cooling': (ACKW * RTFc).sum(),      # AC Electric Use (kWh)
-      'heating': (KWHT * RTFh).sum(),      # Heater Electric Use (kWh)
-      'AHU': (RTFacf * FANKW).sum(),       # Supply Fan Electric Use (kWh)
-      'dehumidifier': (RTFd * DKW).sum(),  # Des Unit Electric Use (kWh)
-      'DH fan': (RTFdf * DFANKW).sum(),    # Des FAN Electric Use (kWh)
-      'vent damper': (rtfvf * KWVF).sum(), # Vent Damp/Fan Electric Use (kWh)
-      'exhaust fan': (rtfxf * KWXF).sum(),     # Exhaust Fan Electric Use (kWh)
-      'HRV': (rtfhf * KWHF).sum(),         # HRV Electric Use (kWh)
+      'cooling': ACKW.sum(),      # AC Electric Use (kWh)
+      'heating': KWHT.sum(),      # Heater Electric Use (kWh)
+      'AHU': FANKW.sum(),       # Supply Fan Electric Use (kWh)
+      'dehumidifier': DKW.sum(),  # Des Unit Electric Use (kWh)
+      'DH fan': DFANKW.sum(),    # Des FAN Electric Use (kWh)
+      'vent damper': KWVF.sum(), # Vent Damp/Fan Electric Use (kWh)
+      'exhaust fan': KWXF.sum(),     # Exhaust Fan Electric Use (kWh)
+      'HRV': KWHF.sum(),         # HRV Electric Use (kWh)
     }
 
 # submetered energy consumption
@@ -278,14 +279,17 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
       heads.append('annual {0} kWh'.format(key))
       vals.append(value)
 
-    heads.append('AHU Fan energy for Cooling')
-    vals.append( (RTFc * FANKW).sum() )
+    # FANKW is already multiplied by RTFacf
+    # RTFc / RTFacf * FANKW has the right form, but results in divide-by-zero
+    # Skip these unless they turn out to be important
+    # heads.append('AHU Fan energy for Cooling')
+    # vals.append( (RTFc * FANKW).sum() )
 
-    heads.append('AHU Fan energy for Heating')
-    vals.append( (RTFh * FANKW).sum() )
+    # heads.append('AHU Fan energy for Heating')
+    # vals.append( (RTFh * FANKW).sum() )
 
-    heads.append('AHU fan energy for Ventilation and Mixing')
-    vals.append( ( (RTFacf - RTFc - RTFh) * FANKW ).sum() )
+    # heads.append('AHU fan energy for Ventilation and Mixing')
+    # vals.append( ( (RTFacf - RTFc - RTFh) * FANKW ).sum() )
 
 # Infiltration --- mechanical and natural
     heads.append('Lowest Infiltration in one hour')
