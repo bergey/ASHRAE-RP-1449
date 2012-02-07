@@ -176,7 +176,11 @@ def plot_daily_psychrometric(hourly, name='', interactive=False):
         if not interactive:
             plt.close()
     
-def psych_chart(T, W, lims = (0, 90, 0, 0.02)):
+def psych_chart(T, W=None, RH=None, lims = (0, 90, 0, 0.02)):
+    if (W==None) & (RH==None):
+        return None # TODO exception?
+    elif W==None:
+        W = humidity_ratio(RH, T)
     fig = plt.figure()
     plt.scatter(T, W)
     ts = np.linspace(0,100,21)
