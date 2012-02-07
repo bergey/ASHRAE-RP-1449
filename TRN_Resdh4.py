@@ -165,6 +165,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
         #print("Run is in column %s" % RunColumn)
         for line in CaseLines:
             if line == '\n':
+                print("dropped blank line")
                 continue # native windows takes \r as newline
                          # reads \n as a second, blank line
             line = line.replace('\r', '').replace('\n','').split(',')
@@ -185,7 +186,7 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     #fcurrCase.close()
     #print("closed casefile")
     f1 = open(TRDFile, 'r')
-    TRDLines = f1.readlines()
+    TRDLines = [line.replace('\r', '') for line in f1.readlines()]
     f1.close()
     #print("read %s" % TRDFile;)
     #print(CaseTags)
