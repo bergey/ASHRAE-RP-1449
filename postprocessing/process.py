@@ -172,7 +172,7 @@ def rh_stats(RHi, **hourly):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, **hourly):
+def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, FANKW_c, FANKW_h, FANKW_v, **hourly):
     heads = []
     vals = []
 
@@ -281,15 +281,18 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
 
     # FANKW is already multiplied by RTFacf
     # RTFc / RTFacf * FANKW has the right form, but results in divide-by-zero
-    # Skip these unless they turn out to be important
-    # heads.append('AHU Fan energy for Cooling')
+    # New versions multiplying by runtime at each timestep, in TRD
+    heads.append('AHU Fan energy for Cooling')
     # vals.append( (RTFc * FANKW).sum() )
+    vals.append( FANKW_c.sum() )
 
-    # heads.append('AHU Fan energy for Heating')
+    heads.append('AHU Fan energy for Heating')
     # vals.append( (RTFh * FANKW).sum() )
+    vals.append( FANKW_h.sum() )
 
-    # heads.append('AHU fan energy for Ventilation and Mixing')
+    heads.append('AHU fan energy for Ventilation and Mixing')
     # vals.append( ( (RTFacf - RTFc - RTFh) * FANKW ).sum() )
+    vals.append( FANKW_v.sum() )
 
 # Infiltration --- mechanical and natural
     heads.append('Lowest Infiltration in one hour')

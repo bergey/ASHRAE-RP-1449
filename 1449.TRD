@@ -1478,7 +1478,7 @@ EQUATIONS 5
 *  INFW = ([5,13]*.947187 + [4,6]*rtfc)/1060.
 *
 
-EQUATIONS 8
+EQUATIONS 11
   ACKW_rt = [4,4]*RTFc
   KWHT_rt = KWHT * RTFh
   FANKW_rt = FANKW * RTFacf
@@ -1487,6 +1487,9 @@ EQUATIONS 8
   KWVF_rt = KWVF * rtfvf
   KWXF_rt = KWXF * rtfxf
   KWHF_rt = KWHF * rtfhf
+  FANKW_h = FANKW * RTFh
+  FANKW_c = FANKW * RTFc
+  FANKW_v = FANKW * (RTFacf - RTFc - RTFh)
 
 *************************************************************************** 
 UNIT 65 TYPE 24 integrator - Space
@@ -1520,16 +1523,16 @@ Mac   Taci  Waci  Taco  Waco  Qsac  Qlac  RTFc   RTFh  Qh    Qh_gas
 UNIT 67 TYPE 24 integrator - AC & DES MISC
 PARAMETERS 2
 ISTEP  0
-INPUTS 11
-RTFacf  ACKW_rt  FANKW_rt   4,8   RTFdf  DFANKW_rt     RTFrh Qrh RTFe RTFacf_time  fspd
-0       0     0      0     0      0       0     0    0     0            0
+INPUTS 14
+RTFacf  ACKW_rt  FANKW_rt   4,8   RTFdf  DFANKW_rt     RTFrh Qrh RTFe RTFacf_time  fspd FANKW_c FANKW_h FANKW_v
+0       0     0      0     0      0       0     0    0     0            0 0 0 0
 ******************************************************************************
 UNIT 47 TYPE 25 summary printer - AC & Des misc.
 PARAMETERS 10
 ISTEP ISTEP TSTOP 41 0 0 0 0 0 1
-INPUTS 11
-67,1    67,2  67,3   67,4  67,5   67,6    67,7  67,8 67,9 67,10        67,11
-RTFacf  ACKW  FANKW  Tadp  RTFdf  DFANKW  RTFrh Qrh  RTFe RTFacf_time  fspd
+INPUTS 14
+67,1    67,2  67,3   67,4  67,5   67,6    67,7  67,8 67,9 67,10        67,11 67,12 67,13 67,14
+RTFacf  ACKW  FANKW  Tadp  RTFdf  DFANKW  RTFrh Qrh  RTFe RTFacf_time  fspd FANKW_c FANKW_h FANKW_v
 ******************************************************************************
 UNIT 68 TYPE 24 integrator - Desiccant
 PARAMETERS 2
