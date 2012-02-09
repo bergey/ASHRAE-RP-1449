@@ -7,6 +7,7 @@ from glob import glob
 from subprocess import check_call, call
 import datetime as dt
 import sys
+import json
 #from matplotlib import use
 #import matplotlib.backends.backend_tkagg as backend
 #from post_install import _get_key_val, _winreg
@@ -14,7 +15,7 @@ from csv import reader,writer,DictWriter, DictReader
 #use('Agg')
 
 # path to store output .dat files
-output_dir = 'output'
+output_dir = json.loads(open('trnbatch.conf').read())['output_dir']
 
 def crlf_print(item, file=sys.stdout):
     """Make lineending CRLF regardless of platform"""
