@@ -176,13 +176,16 @@ def plot_daily_psychrometric(hourly, name='', interactive=False):
         if not interactive:
             plt.close()
     
-def psych_chart(T, W=None, RH=None, lims = (0, 90, 0, 0.02)):
+def psych_chart(T, W=None, RH=None, heatplot=False, lims = (0, 90, 0, 0.02), **kwargs):
     if (W==None) & (RH==None):
         return None # TODO exception?
     elif W==None:
         W = humidity_ratio(RH, T)
     fig = plt.figure()
-    plt.scatter(T, W)
+    if heatplot:
+        plt.hexbin(T, W, extent=lims, **kwargs)
+    else:
+        plt.scatter(T, W, **kwargs)
     ts = np.linspace(0,100,21)
     for rh in np.linspace(0.1,1,10):
         plt.plot(ts, humidity_ratio(rh, ts), 'k')
@@ -195,5 +198,5 @@ def psych_chart(T, W=None, RH=None, lims = (0, 90, 0, 0.02)):
     ax2 = ax1.twinx()
     ax2.get_yaxis().set_major_locator(ticker.FixedLocator(humidity_ratio(np.linspace(0,1,11), lims[1])/(lims[3]-lims[2])))
     ax2.get_yaxis().set_major_formatter(ticker.FixedFormatter(np.linspace(0,100,11)))
-    plt.ylabel('Indoor RH [%]')
+    plt.ylabel('Relative Humidity [%]')
     return ax1
