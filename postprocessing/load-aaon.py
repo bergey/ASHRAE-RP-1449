@@ -90,13 +90,13 @@ aaon_columns = [("TIMESTAMP", 't'),
                 ("EP_AH_kW_AVG", 'kWah'),
                 ("T_Refrig1_C_AVG", 'Tr1'), # outdoor coil
                 ("T_Refrig2_C_AVG", 'Tr2'), # indoor coil, heated by return air
-                ("T_Extra1_C_AVG", 'Te1'),
+                ("T_Extra1_C_AVG", 'Te1'), # reheat coil
                 ("T_Extra2_C_AVG", 'Te2'),
 #                ("T_Extra3_C_AVG",
  #               ("T_Extra4_C_AVG",
   #              ("T_Extra5_C_AVG",
-                ("P_Refrig1_kPa_AVG", 'Pev_i'), # liquid evap
-                ("P_Refrig2_kPa_AVG", 'Pev_o'), # vapor evap
+                ("P_Refrig1_kPa_AVG", 'Pev_i'), # inlet outdoor
+                ("P_Refrig2_kPa_AVG", 'Pev_o'), # outlet outdoor
                 ("F_TipBucket_l_TOT", 'cond'),
                 ("RH_1stFlr1_frc_AVG", 'RH1'),
                 ("T_1stFloor1_C_AVG", 'T1') ]

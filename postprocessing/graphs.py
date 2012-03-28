@@ -187,8 +187,12 @@ def psych_chart(T, W=None, RH=None, heatplot=False, lims = (0, 90, 0, 0.02), **k
     else:
         plt.scatter(T, W, **kwargs)
     ts = np.linspace(0,100,21)
+    if heatplot:
+        linecolor = 'w'
+    else:
+        linecolor = 'k'
     for rh in np.linspace(0.1,1,10):
-        plt.plot(ts, humidity_ratio(rh, ts), 'k')
+        plt.plot(ts, humidity_ratio(rh, ts), linecolor)
     plt.xlabel('Temperature [degF]')
     plt.ylabel('Humidity Ratio')
     plt.ylim(lims[2], lims[3])
