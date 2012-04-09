@@ -3,6 +3,7 @@ from matplotlib.pyplot import *
 from physics import *
 import numpy.lib as nplib
 import scikits.statsmodels.api as sm
+from process import contiguous_regions
 
 def wgraph(a):
     figure()
@@ -15,6 +16,12 @@ def wgraph(a):
     xlabel('Humidity Ratio, Return')
     ylabel('Humidity Ratio, Supply')
     savefig('aaon-w-scatter-all.png')
+
+def Wsup(a):
+    return humidity_ratio(a.RHsup, a.Tsup*1.8+32)
+
+def Wret(a):
+    return humidity_ratio(a.RHret, a.Tret*1.8+32)
 
 def coil_w_scat(a, subset=None, color='k'):
     if subset==None:
@@ -178,29 +185,61 @@ def hour_state(a):
 def coil_dw(arr):
     return humidity_ratio(arr.RHsup, arr.Tsup*1.8+32) - humidity_ratio(arr.RHret, arr.Tret*1.8+32)
 
-def state_hist(states, var, bins=50):
+def state_hist(states, var, bins=50, labels=None, xl=None):
     for i, s in enumerate(states):
         subplot(len(states), 1, i)
-        hist(s.__dict__[var], bins)
+        if type(var) is str:
+            hist(s.__dict__[var], bins)
+        elif type(var) is type(coil_dw):
+            hist(var(s), bins)
+        else:
+            raise(Exception('var must be str or function'))
+    if xl:
+        xlabel(xl)
+    if labels:
+        for i, s in enumerate(labels):
+            subplot(len(states), 1, i)
+            title(s)
+
+def cent_diff(ar):
+    # special case endpoints
+    d0 = (ar[1] - ar[-1])/2
+    dn = (ar[0] - ar[-2])/2
+    d  = (ar[2:] - ar[:-2])/2
+    return hstack((d0, d, dn))
 
 def dh_subset_by_Trefr(a, dt):
     '''cooling coil is cold & reheat coil is hot defines DH mode
-    1 C is a first pass to avoid noise near the many zero points; tune empirically
-    No dehumidification happens when Tevap is above about -4'''
-    Tevap = force_reshape(a.Tr2, dt).mean(axis=1)
-    Tret = force_reshape(a.Tret, dt).mean(axis=1)
-    Treheat = force_reshape(a.Te1, dt).mean(axis=1)
-    return (Tevap - Tret < -4) & (Treheat - Tret > 1)
+    No dehumidification happens when Tevap is above about -4
+    +10 threshold from 2012-04-04-kWah-dT.png; could justify going to +6 or +20,
+    but it's hard to imagine DH with reheat that low,
+    and I think the Tevap constraint will filter in between.'''
+# TODO derivative with time average makes no sense
+    if dt==1:
+        Tevap = a.Tr2
+        Tret = a.Tret
+        Treheat = a.Te1
+    else:
+        Tevap = force_reshape(a.Tr2, dt).mean(axis=1)
+        Tret = force_reshape(a.Tret, dt).mean(axis=1)
+        Treheat = force_reshape(a.Te1, dt).mean(axis=1)
+    return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (abs(cent_diff(Treheat)) < 3)
+
+def dh_by_Trefr_t(a, dt):
+    ret = Empty()
+    dh = dh_subset_by_Trefr(a, dt)
+    for key, value in a.__dict__.iteritems():
+        if dt==1:
+            ret.__dict__[key] = value[dh]
+        else:
+            if key == 'cond':
+                ret.__dict__[key] = sum(force_reshape(value, dt), axis=1)[dh]
+            else:
+                ret.__dict__[key] = mean(force_reshape(value, dt), axis=1)[dh]
+    return ret
 
 def dh_by_Trefr(a):
-    ret = Empty()
-    dh = dh_subset_by_Trefr(a, 5)
-    for key, value in a.__dict__.iteritems():
-        if key == 'cond':
-            ret.__dict__[key] = sum(force_reshape(value, 5), axis=1)[dh]
-        else:
-            ret.__dict__[key] = mean(force_reshape(value, 5), axis=1)[dh]
-    return ret
+    return dh_by_Trefr_t(a, 5)
 
 def state_plot(a, dt):
     Lht = plot( force_reshape(a.Sht, dt).mean(axis=1) + 3.6, 'r')
@@ -238,3 +277,35 @@ def tamb_wret(a):
     Wret = humidity_ratio(a.RHret, a.Tret*1.8+32)
     return sm.add_constant(column_stack((
         a.Tamb, Wret, a.Tamb*Wret)))
+
+def tamb2(a):
+    return sm.add_constant(column_stack((
+        a.Tamb**2, a.Tamb)))
+
+def wret2(a):
+    Wret = humidity_ratio(a.RHret, a.Tret*1.8+32)
+    return sm.add_constant(column_stack((
+        Wret**2, Wret)))
+
+def ts_to_minute(time):
+    '''convert a timestep of the form yyyyjjjhhmmss to a minute from 0 AD'''
+    s = time % 10**2
+    m = (time // 10**2) % 10**2
+    h = (time // 10**4) % 10**2
+    j = (time // 10**6) % 10**3
+    y = (time // 10**9) % 10**4
+    #return (y,j,h,m,s) # test
+    return m + 60*h + 60*24*j + 60*8760*y
+
+def long_events(condition, length):
+    bounds = contiguous_regions(condition)
+    long_enough =  (bounds[:,1] - bounds[:,0] >= length)
+    return bounds[long_enough]
+
+def subplot_f(n, f, *argc):
+    for i in xrange(1,n+1):
+        subplot(n,1,i)
+        f(*argc)
+
+def ts_to_julian(time):
+    return (time // 10**6) % 10**3
