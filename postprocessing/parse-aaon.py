@@ -223,7 +223,7 @@ def dh_subset_by_Trefr(a, dt):
         Tevap = force_reshape(a.Tr2, dt).mean(axis=1)
         Tret = force_reshape(a.Tret, dt).mean(axis=1)
         Treheat = force_reshape(a.Te1, dt).mean(axis=1)
-    return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (abs(cent_diff(Treheat)) < 3)
+    return (Tamb > 20) &(Tevap - Tret < -4) & (Treheat - Tret > 10) & (abs(cent_diff(Treheat)) < 3)
 
 def dh_by_Trefr_t(a, dt):
     ret = Empty()
