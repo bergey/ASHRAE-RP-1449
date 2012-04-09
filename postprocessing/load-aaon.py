@@ -134,7 +134,7 @@ def load_aaon(lo, hi):
 
 if __name__ == '__main__':
     print("loading data")
-    all_data = load_aaon(0,1083438)
+    a = load_aaon(0,1083438)
     #a = load_aaon(470000,1083438)
 
     # cndn = ((a.Stat_Dehum_AVG==0) & (a.Stat_CoolStg1_AVG==0))
