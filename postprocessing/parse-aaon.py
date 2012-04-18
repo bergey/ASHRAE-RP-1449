@@ -60,6 +60,13 @@ def force_reshape(arr, n):
     drop = arr.reshape(-1).shape[0] % n
     return arr[:-drop].reshape(-1, n)
 
+def reshape_all(a, n):
+    ret = Empty()
+    for k, v in a.__dict__.iteritems():
+        ret.__dict__[k] = force_reshape(v,n)
+    return ret
+
+# TODO add some useful methods to this
 class Empty:
     pass
 
@@ -208,38 +215,22 @@ def cent_diff(ar):
     d  = (ar[2:] - ar[:-2])/2
     return hstack((d0, d, dn))
 
-def dh_subset_by_Trefr(a, dt):
+def dh_subset_by_Trefr(a):
     '''cooling coil is cold & reheat coil is hot defines DH mode
     No dehumidification happens when Tevap is above about -4
     +10 threshold from 2012-04-04-kWah-dT.png; could justify going to +6 or +20,
     but it's hard to imagine DH with reheat that low,
     and I think the Tevap constraint will filter in between.'''
-# TODO derivative with time average makes no sense
-    if dt==1:
-        Tevap = a.Tr2
-        Tret = a.Tret
-        Treheat = a.Te1
-    else:
-        Tevap = force_reshape(a.Tr2, dt).mean(axis=1)
-        Tret = force_reshape(a.Tret, dt).mean(axis=1)
-        Treheat = force_reshape(a.Te1, dt).mean(axis=1)
-    return (Tamb > 20) &(Tevap - Tret < -4) & (Treheat - Tret > 10) & (abs(cent_diff(Treheat)) < 3)
-
-def dh_by_Trefr_t(a, dt):
-    ret = Empty()
-    dh = dh_subset_by_Trefr(a, dt)
-    for key, value in a.__dict__.iteritems():
-        if dt==1:
-            ret.__dict__[key] = value[dh]
-        else:
-            if key == 'cond':
-                ret.__dict__[key] = sum(force_reshape(value, dt), axis=1)[dh]
-            else:
-                ret.__dict__[key] = mean(force_reshape(value, dt), axis=1)[dh]
-    return ret
+    Tevap = a.Tr2
+    Tret = a.Tret
+    Treheat = a.Te1
+    Tamb = a.Tamb
+    return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (a.kWah < 0.15) & (a.t > 2010197000000)
+    # isnan conditions make a mess of the ontime calcs, because they don't reflect the actual state of the AAON, but rather sensor / datalogger problems
+    # & (isnan(a.kWhp) == False) & (isnan(a.kWah) == False)
 
 def dh_by_Trefr(a):
-    return dh_by_Trefr_t(a, 5)
+    return afilter(a, dh_subset_by_Trefr(a))
 
 def state_plot(a, dt):
     Lht = plot( force_reshape(a.Sht, dt).mean(axis=1) + 3.6, 'r')
@@ -268,6 +259,11 @@ def wyes(c):
     """returns a function of exes using the provided coefficients"""
     return (lambda a: dot(a,c))
 
+def by_wret(Tamb, Tret, Wret):
+    o = ones(Wret.shape)
+    return sm.add_constant(column_stack( (
+        Tamb*o, Tret*o, Wret, Tamb**2*o, (Tamb*o)*Wret, Wret**2, Tret**2*o )))
+
 def tret_wret(a):
     Wret = humidity_ratio(a.RHret, a.Tret*1.8+32)
     return sm.add_constant(column_stack((
@@ -277,6 +273,15 @@ def tamb_wret(a):
     Wret = humidity_ratio(a.RHret, a.Tret*1.8+32)
     return sm.add_constant(column_stack((
         a.Tamb, Wret, a.Tamb*Wret)))
+
+def ret2(a):
+    return sm.add_constant(column_stack((
+        a.Tret, Wret(a), a.Tret**2, a.Tret*Wret(a), Wret(a)**2)))
+
+def by_wret2(Tret, Wret):
+    o = ones(Wret.shape)
+    return sm.add_constant(column_stack((
+        Tret*o, Wret, Tret**2*o, (Tret*o)*Wret, Wret**2)))
 
 def tamb2(a):
     return sm.add_constant(column_stack((
@@ -309,3 +314,15 @@ def subplot_f(n, f, *argc):
 
 def ts_to_julian(time):
     return (time // 10**6) % 10**3
+
+
+def ontime(st):
+    ret = zeros(st.t.shape)
+    for i in xrange(ret.shape[0]):
+        if i == 0:
+            continue
+        if ts_to_minute(st.t[i]) - ts_to_minute(st.t[i-1]) == 1:
+            ret[i] = ret[i-1]+1
+        else:
+            ret[i] = 0
+    return ret
