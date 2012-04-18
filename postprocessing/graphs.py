@@ -186,7 +186,7 @@ def psych_chart(T, W=None, RH=None, heatplot=False, lims = (0, 90, 0, 0.02), **k
         plt.hexbin(T, W, extent=lims, **kwargs)
     else:
         plt.scatter(T, W, **kwargs)
-    ts = np.linspace(0,100,21)
+    ts = np.linspace(lims[0],lims[1],21)
     if heatplot:
         linecolor = 'w'
     else:
