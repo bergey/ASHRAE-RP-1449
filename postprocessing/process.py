@@ -179,7 +179,7 @@ def rh_stats(RHi, **hourly):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, FANKW_c, FANKW_h, FANKW_v, **hourly):
+def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, **hourly):#FANKW_c, FANKW_h, FANKW_v, **hourly):
     heads = []
     vals = []
 
@@ -286,20 +286,21 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
       heads.append('annual {0} kWh'.format(key))
       vals.append(value)
 
-    # FANKW is already multiplied by RTFacf
-    # RTFc / RTFacf * FANKW has the right form, but results in divide-by-zero
-    # New versions multiplying by runtime at each timestep, in TRD
-    heads.append('AHU Fan energy for Cooling')
-    # vals.append( (RTFc * FANKW).sum() )
-    vals.append( FANKW_c.sum() )
+    if 'FANKW_c' in hourly.__dict__.keys():
+        # temporary hack transitioning from TRD without these values
+        FANKW_c = hourly['FANKW_c']
+        FANKW_h = hourly['FANKW_h']
+        FANKW_v = hourly['FANKW_v']
 
-    heads.append('AHU Fan energy for Heating')
-    # vals.append( (RTFh * FANKW).sum() )
-    vals.append( FANKW_h.sum() )
+        # New versions multiplying by runtime at each timestep, in TRD
+        heads.append('AHU Fan energy for Cooling')
+        vals.append( FANKW_c.sum() )
 
-    heads.append('AHU fan energy for Ventilation and Mixing')
-    # vals.append( ( (RTFacf - RTFc - RTFh) * FANKW ).sum() )
-    vals.append( FANKW_v.sum() )
+        heads.append('AHU Fan energy for Heating')
+        vals.append( FANKW_h.sum() )
+
+        heads.append('AHU fan energy for Ventilation and Mixing')
+        vals.append( FANKW_v.sum() )
 
 # Infiltration --- mechanical and natural
     heads.append('Lowest Infiltration in one hour')
