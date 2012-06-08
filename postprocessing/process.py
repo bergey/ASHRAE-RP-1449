@@ -78,6 +78,10 @@ def summarize_csv(specs):
     if exists(scenario_path):
         print("loading {0} from {1}".format(name, scenario_path))
         hourly = hourly_data(scenario_path)
+        duration = len(hourly.TIME)
+        if duration  != 8760:
+            print("skipping {0}: {1} hours of data instead of 8760".format(name, duration))
+            continue
         print("summarizing {0}".format(name))
         output_row(desc, summarize_run, hourly, general_csv, first_run)
         output_row(desc, rh_stats, hourly, rh_csv, first_run)
