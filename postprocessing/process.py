@@ -55,14 +55,17 @@ def collect_specs(spec_path, data_path):
   return [(parse_name(s), scenario_path(s)) for s in spec]
 
 def output_row(desc, f, hourly, out_csv, first_run=False):
-    #try:
+    try:
         hr, sum_vals = f(**hourly.__dict__)
         if first_run: 
             # first row of output
             out_csv.writerow( parse_name(None) + hr )
         out_csv.writerow(desc + sum_vals)
-    #except TypeError:
-        #print "Not enough data for {1}; skipping: {0}".format(desc, f.__name__)
+    except TypeError as e:
+        print "Not enough data for {1}; skipping: {0}".format(desc, f.__name__)
+        print(len(hourly.__dict__.keys()))
+        print(hourly.__dict__.keys())
+        raise e
 
 def summarize_csv(specs):
   first_run = True
