@@ -1,7 +1,6 @@
 from numpy import loadtxt, nan
 from datetime import datetime
 import csv
-import sys
 
 filepath = '/home/bergey/bsc/dh/references/aaon-one-minute.csv'
 
@@ -126,9 +125,9 @@ def load_aaon(lo, hi):
                    delimiter=',',
                    converters = aaon_converters(head),
                    skiprows = 3,
-                   usecols = [head.index(c) for (c,n) in aaon_columns])
+                   usecols = [head.index(c) for (c,_) in aaon_columns])
     labeled = Empty()
-    for i, (col, name) in enumerate(aaon_columns):
+    for i, (_, name) in enumerate(aaon_columns):
         labeled.__dict__[name] = unlabeled[lo:hi,i]
     return labeled
 
@@ -141,5 +140,3 @@ if __name__ == '__main__':
     # cydn = ((a.Stat_Dehum_AVG==0) & (a.Stat_CoolStg1_AVG==1))
     # cydy = ((a.Stat_Dehum_AVG==1) & (a.Stat_CoolStg1_AVG==1))
     # cndy = ((a.Stat_Dehum_AVG==1) & (a.Stat_CoolStg1_AVG==0))
-
-    
