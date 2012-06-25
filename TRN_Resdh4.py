@@ -8,11 +8,7 @@ from subprocess import check_call, call
 import datetime as dt
 import sys
 import json
-#from matplotlib import use
-#import matplotlib.backends.backend_tkagg as backend
-#from post_install import _get_key_val, _winreg
 from csv import reader,writer,DictWriter, DictReader
-#use('Agg')
 
 # path to store output .dat files
 output_dir = json.loads(open('trnbatch.conf').read())['output_dir']
@@ -23,114 +19,6 @@ def crlf_print(item, file=sys.stdout):
         file.write(item)
     else:
         file.write(item.replace('\n', '\r\n'))
-        
-##    ##### Plots Section #####
-##    # Indoor-Outdoor Humidity Plot
-##    close()
-##    figure(1)
-##    ax = subplot(111)
-##    res_Wo = reshape(Wo, 365, 24)*7000.
-##    res_Wi = reshape(Wi, 365, 24)*7000.
-##    i = where(OCC == 1, 1, 0)
-##    i = reshape(i, 365, 24)
-##    
-##    d_Wo = []
-##    d_Wi = []
-##    for x in range(len(res_Wo)):
-##        try:
-##            d_Wo.append((compress(i[x], res_Wo[x])).mean())
-##            d_Wi.append((compress(i[x], res_Wi[x])).mean())
-##        except:
-##            d_Wo.append(-99.)
-##            d_Wi.append(-99.)
-##        
-##    d_Wo = asarray(d_Wo)
-##    d_Wi = asarray(d_Wi)
-##    
-##    i = where(d_Wo != -99, 1, 0) * where(d_Wi != -99, 1, 0)
-##    plot(compress(i, d_Wo), compress(i, d_Wi), "rx")
-##    
-##    d_Wo = asarray([each.mean() for each in res_Wo])
-##    d_Wi = asarray([each.mean() for each in res_Wi])
-##    plot(d_Wo, d_Wi, "g+")
-##    
-##    title("Indoor-Outdoor Humidity Comparison")
-##    ax.set_ylim([0,150])
-##    ax.set_xlim([0,150])
-##    ax.set_yticks(asarray(range(6))*30)
-##    ax.set_xticks(asarray(range(6))*30)
-##    ylabel("Daily Indoor Humidity (gr/lb)")
-##    xlabel("Daily Outdoor Humidity (gr/lb)")
-##    legend(["Occupied", "All Hours"], 'best')
-##    
-##    plot([0,150],[0,150], 'k')
-##    a = savefig('Humidity Trend Plot.png')
-##    close()
-##    
-##    # Load Lines
-##    figure(1)
-##    d_Qcool = asarray([each.sum() for each in reshape((Qsac+Qlac)*RTFc, 365, 24)/1.e6])
-##    d_Qheat = asarray([each.sum() for each in reshape(Qh*RTFh, 365, 24)/1.e6])
-##    d_tao = asarray([each.mean() for each in reshape(To, 365, 24)])
-##    
-##    i = where(d_Qcool > 0, 1, 0)
-##    j = where(d_Qheat > 0, 1, 0)
-##    labels = []
-##    if i.sum():
-##        plot(compress(i, d_tao), compress(i, d_Qcool), "bx")
-##        labels.append("Daily Cooling Load")
-##    if j.sum():
-##        plot(compress(j, d_tao), compress(j, d_Qheat), "ro")
-##        labels.append("Daily Heating Load")
-##    if i.sum() or j.sum(): legend(labels, 'upper center')
-##    title("Daily Cooling and Heating Loads")
-##    ylabel("Daily Load (MMBtu/day)")
-##    xlabel("Daily Outdoor Temperature (F)")
-##    a = savefig('Daily Load Lines.png')
-##    close()
-##    
-##    # Ambient Humidity Histogram
-##    hist_plot(Wo*7000., 5, var_range = [0, 150], color = 'r', filename = "Ambient Humidity Histogram.png",
-##        y_label = "Number of Hours", x_label = "Ambient Humidity", units = "gr/lb",
-##        h_title = "Ambient Humidity Histogram", dpi=100)
-##    
-##    # Space Relative Humidity Histogram
-##    hist_plot(RHi, 1, var2 = compress(OCC, RHi), color = 'g', color2 = 'r',
-##        y_label = "Number of Hours", x_label = "Space Relative Humidity", units = "%", 
-##        h_title = "Space Relative Humidity Histogram", dpi=100)
-##        
-##    ax = subplot(111)
-##    x_range = ax.get_xlim()
-##    y_range = ax.get_ylim()
-##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'gs')
-##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'rs')
-##    legend(["Unoccupied", "Occupied"])
-##    
-##    a = savefig(filename = "Space Relative Humidity Histogram.png")
-##    close()
-##    
-##    # Space Temperature Histogram
-##    hist_plot(Ti, 0.2, var2 = compress(OCC, Ti), color = 'b', color2 = 'y',
-##        y_label = "Number of Hours", x_label = "Space Temperature", units = "F",
-##        h_title = "Space Temperature Histogram", dpi=100)
-##        
-##        
-##    ax = subplot(111)
-##    x_range = ax.get_xlim()
-##    y_range = ax.get_ylim()
-##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'bs')
-##    plot([(x_range[1]-x_range[0])*.95+x_range[0]], [(y_range[1]-y_range[0])*.95+y_range[0]], 'ys')
-##    legend(["Unoccupied", "Occupied"])
-##    
-##    a = savefig(filename = "Space Temperature Histogram.png")
-##    close()
-##    
-##    # Cooling Runtime Histogram
-##    i = where(RTFc > 0, 1, 0)
-##    if i.sum():
-##        hist_plot(compress(i, RTFc), .025, var_range = [0, 1], filename = "Cooling Runtime Histogram.png", 
-##            color = 'b', y_label = "Number of Hours", x_label = "Cooling Runtime Fraction",  
-##            units = "-", h_title = "Cooling Runtime Histogram", dpi=100)
 
 def GetMnuOption(col, Opt, OptFile):
     from csv import reader, writer, DictWriter
