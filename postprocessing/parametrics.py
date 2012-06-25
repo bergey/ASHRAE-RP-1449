@@ -51,11 +51,12 @@ def hourly_data(path):
 
 month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
 short_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+month_splits = [31,59,90,120,151,181,212,243,273,304,334]
+
 
 def by_month(hours):
-    splits = [31,59,90,120,151,181,212,243,273,304,334]
     by_day = hours.reshape(365, 24) # throw error if not 8760 long
-    return np.array_split(by_day, splits, axis=0)
+    return np.array_split(by_day, month_splits, axis=0)
 
 def daily_total(hours):
     return hours.reshape(-1, 24).sum(axis=1)
