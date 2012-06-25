@@ -145,8 +145,7 @@ def GetMnuOption(col, Opt, OptFile):
     #print("MnuOption is %s" % row)
     return row
 
-
-def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
+def CaseFileFromCSV(Run, TRDFile, DestFolder, DestTRD):
 # OBS by DictReader
     #print(DestFolder)
     fcase = open("%s/SimRuns.csv" % DestFolder)
@@ -191,7 +190,13 @@ def MakeCaseFile(Run, TRDFile, DestFolder, DestTRD):
     f1.close()
     #print("read %s" % TRDFile;)
     #print(CaseTags)
+    spec = dict(zip(CaseTags, CaseVars))
+    MakeCaseFile(spec, DestTRD)
     
+
+def MakeCaseFile(spec, DestTRD):
+    CaseTags = spec.keys()
+    CaseVars = spec.values()
     for i,case in enumerate(CaseTags[:]):
         if CaseVars[i] == "-":
             continue
@@ -479,7 +484,7 @@ if __name__ == "__main__":
         TRDFile = sys.argv[4]
         DestTRD = sys.argv[5]
         print(DestTRD)
-        MakeCaseFile(Run, TRDFile, DestFolder, DestTRD)
+        CaseFileFromCSV(Run, TRDFile, DestFolder, DestTRD)
     
     elif sys.argv[1] == '-batch':
     # read input from 1+ CSVs, run a simulation for each row, save results
@@ -495,8 +500,8 @@ if __name__ == "__main__":
             # initialize 
             if not exists(dirname):
                 os.mkdir(dirname)
-            # TODO remove whole simruns shenanigans, once MakeCaseFile doesn't need it
-            make_simruns(csvname, dirname) # csv file used by MakeCaseFile
+            # TODO remove whole simruns shenanigans, once CaseFileFromCSV doesn't need it
+            make_simruns(csvname, dirname) # csv file used by CaseFileFromCSV
 
             parametrics = DictReader(open(csvname))
             # loop over sims in this file
@@ -506,7 +511,7 @@ if __name__ == "__main__":
                 # Create the TRD
                 trd = '{0}.trd'.format(desc)
                 i = int(float(line['Run']))
-                MakeCaseFile(i, line['BaseFile'], dirname, trd)
+                CaseFileFromCSV(i, line['BaseFile'], dirname, trd)
                 run_trd(trd, dirname)
 
     elif sys.argv[1]=='-dryrun':
@@ -522,7 +527,7 @@ if __name__ == "__main__":
             trd = '{0}.trd'.format(line['Desc'].replace(' ','-'))
             print("creating {0}".format(trd))
             i = int(float(line['Run']))
-            MakeCaseFile(i, line['BaseFile'], dirname, trd)
+            CaseFileFromCSV(i, line['BaseFile'], dirname, trd)
             shutil.move(trd, os.path.join(dirname, trd))
     else:
         usage()
