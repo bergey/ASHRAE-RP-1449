@@ -4,6 +4,7 @@ from physics import *
 import numpy.lib as nplib
 import scikits.statsmodels.api as sm
 from process import contiguous_regions
+from parametrics import month_splits
 
 def wgraph(a):
     figure()
@@ -225,7 +226,9 @@ def dh_subset_by_Trefr(a):
     Tret = a.Tret
     Treheat = a.Te1
     Tamb = a.Tamb
-    return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (a.kWah < 0.15) & (a.t > 2010197000000)
+    #return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (a.kWah < 0.15) & (a.t > 2010197000000)
+    # try accepting more data, to see beginning of DH call
+    return (Tevap < Tret) & (Treheat > Tret) & (a.kWah < 0.15) & (a.t > 2010197000000)
     # isnan conditions make a mess of the ontime calcs, because they don't reflect the actual state of the AAON, but rather sensor / datalogger problems
     # & (isnan(a.kWhp) == False) & (isnan(a.kWah) == False)
 
@@ -248,6 +251,11 @@ def afilter(a, cond):
     for key, value in a.__dict__.iteritems():
         ret.__dict__[key] = value[cond]
     return ret
+
+def nfilter(a, n, start=0):
+    if start+n > a.t.size:
+        n = a.t.size - start -1
+    return afilter(a, (a.t<a.t[n+start]) & (a.t>= a.t[start]))
 
 def exes(a):
     """returns an array with a bunch of inputs for OLS regression"""
@@ -294,7 +302,7 @@ def wret2(a):
 
 def ts_to_minute(time):
     '''convert a timestep of the form yyyyjjjhhmmss to a minute from 0 AD'''
-    s = time % 10**2
+    # s = time % 10**2
     m = (time // 10**2) % 10**2
     h = (time // 10**4) % 10**2
     j = (time // 10**6) % 10**3
@@ -316,13 +324,82 @@ def ts_to_julian(time):
     return (time // 10**6) % 10**3
 
 
-def ontime(st):
-    ret = zeros(st.t.shape)
-    for i in xrange(ret.shape[0]):
-        if i == 0:
-            continue
-        if ts_to_minute(st.t[i]) - ts_to_minute(st.t[i-1]) == 1:
-            ret[i] = ret[i-1]+1
+# def ontime(st):
+#     ret = zeros(st.t.shape)
+#     for i in xrange(ret.shape[0]):
+#         if i == 0:
+#             continue
+#         if ts_to_minute(st.t[i]) - ts_to_minute(st.t[i-1]) == 1:
+#             ret[i] = ret[i-1]+1
+#         else:
+#             ret[i] = 0
+#     return ret
+
+# This code takes about an hour to run, with dh and ontime(dh) as st and ont:
+# def bad_ontime0(a, st, ont):
+#     ret = zeros(a.shape)
+#     for o, t in zip(ont, dh.t):
+#         dh_ont[a.t == t] = o
+#     return ret
+
+# the uncommented ontime below takes 0.3 seconds
+# It took me all day to come up with this version, but really, 4 orders of magnitude?
+# it still has the for loop, it ditches the zip, but it looks like a.t == t is actually the problem
+
+# In [435]: %timeit a.t == a.t[500000]
+# 10 loops, best of 3: 53.1 ms per loop
+# (* .053 (expt 10 6) (/ 1 3600.0)) 14.722222222222221
+# so O(n^2) is bad
+
+# def ontime1(cond):
+#     ret = np.zeros(cond.shape)
+#     for i in xrange(ret.size):
+#         if i == 0:
+#             continue
+#         if cond[i]:
+#             ret[i] = ret[i-1]+1
+#         else:
+#             ret[i] = 0
+#     return ret
+
+def ontime(cond):
+    ret = np.zeros(cond.shape)
+    ontime = 0
+    for i in xrange(ret.size):
+        if cond[i]:
+            ontime += 1
+            ret[i] = ontime
         else:
-            ret[i] = 0
+            ontime = 0
     return ret
+
+# this looks O(n), like ontime2
+# extra inputs, to keep extraneous calculations out of what is measured
+# def bad_ontime3(at, ct, ont):
+#     i = 0
+#     j = 0
+#     ret = zeros(at.shape)
+#     while (i < at.size) & (j < ont.size):
+#         if at[i] == ct[j]:
+#             ret[i] = ont[j]
+#         elif at[i] < ct[j]:
+#             i += 1
+#         else:
+#             j += 1
+
+def ts_to_iso(date):
+    j = ts_to_julian(date)
+    y = int((date // 10**9) % 10**4)
+    # count how many last-days-of-month are less than j
+    ms = array([0]+month_splits)
+    m = (j > ms).sum()
+    d = int(j - ms[m-1]) # days after last day of previous month
+    return '{y}-{m:02}-{d:02}'.format(**locals())
+
+def iso_to_ts(date):
+    y = int(date[:4])
+    m = int(date[5:7])
+    d = int(date[8:10])
+    ms = array([0]+month_splits)
+    j = ms[m-1] + d
+    return y*10**9 + j*10**6
