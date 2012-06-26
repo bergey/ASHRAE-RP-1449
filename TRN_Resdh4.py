@@ -128,15 +128,11 @@ def MakeCaseFile(spec, DestTRD):
             if opt == None: continue
             CaseTags.extend(['TDBND','Ta_o','Taua','taue','HDBND','CDBND'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7]])        
-    var_changed = [0]*len(CaseTags)
     #print("extended CaseTags")
     
-    for z in range(1, len(CaseTags)):
-        Tag = CaseTags[z]
-        Var = CaseVars[z]
+    for Tag, Var in zip(CaseTags, CaseVars):
         # Replacement Conditioning Section
         if Var == "-":
-            var_changed[z] = 1      
             continue
             
         
@@ -220,7 +216,6 @@ def MakeCaseFile(spec, DestTRD):
             elif Tag.upper() == 'BUIFILE' and LineArray[0].upper() == 'ASSIGN' and LineArray[2] == '32':
                 TempLine = TempLine.replace(LineArray[1], Var + '.bui')
                 do_break = True
-                var_changed[z] = 1
 
             elif Tag.upper() == 'WEATHERFILE':
 #               if LineArray[0].upper() == 'ASSIGN' and LineArray[2] == '20' and warray != False:               
@@ -242,7 +237,6 @@ def MakeCaseFile(spec, DestTRD):
             elif Tag.upper() == LineArray[0].upper() and LineArray[1] == '=':
                 ##TempLine = TempLine.replace(LineArray[2], Var) ## This caused an error for "DPAR2a = 2" as the 2 in the DPAR2a is also replaced ##
                 TempLine = LineArray[0] + ' = '+ Var + '\n'
-                var_changed[z] = 1
                 do_break = True
 
             else:
@@ -250,7 +244,6 @@ def MakeCaseFile(spec, DestTRD):
             
             if TempLine != TRDLine:
                 TRDLines[TRDLines.index(TRDLine)] = TempLine
-                var_changed[z] = 1
                 if do_break: break
     
     #print("opening %s" % DestTRD)
