@@ -90,42 +90,42 @@ def MakeCaseFile(spec, DestTRD):
             continue
         elif case.upper() == 'RES_DNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'res_dh_units.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in res_dh_units.txt'.format(CaseVars[i])))
             CaseTags.extend(['DTYPE','DPAR3a','DPAR4','DPAR5','DPAR6','DPAR7','DPAR8','DPAR9','DPAR10','DPAR11','DPAR12','DPAR13','DPAR14','DPAR15','DPAR16','DPAR17','DPAR18'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11],opt[12],opt[13],opt[14],opt[15],opt[16],opt[17],opt[18]])
         elif case.upper() == 'COM_DNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Com_Des_units.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in Com_Des_units.txt'.format(CaseVars[i])))
             CaseTags.extend(['DTYPE','DPAR3a','DPAR4','DPAR5','DPAR6','DPAR7','DPAR8','DPAR9','DPAR10','DPAR11','DPAR12','DPAR13','DPAR14','DPAR15','DPAR16','DPAR17','DPAR18'])
             CaseVars.extend(opt[2:])
         elif case.upper() == 'ANO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'ac_units.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in ac_units.txt'.format(CaseVars[i])))
             CaseTags.extend(['IAC','AC_EER','AC_SHR','WCFM_AC','chrg_ratio','exp_type','rown','hparea','ihp','AC_EER_lo', 'AC_SHR_lo', 'tons_frac_lo', 'wcfm_ac_lo', 'cfm_frac_lo'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[6],opt[7],opt[8],opt[9],opt[10],opt[11], opt[12], opt[13], opt[14], opt[15], opt[16]])
         elif case.upper() == 'LNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'LatDeg.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in LatDeg.txt'.format(CaseVars[i])))
             CaseTags.extend(['TWET','GAMMA','NTUo_nom','fspd_off2','ISHRF'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[8]])
         elif case.upper() == 'SINZONE_BNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Single_Zone_Buildings.txt')
-            if opt == None: continue            
+            if opt == None: raise(Exception('Option {0} not found in Single_Zone_Buildings.txt'.format(CaseVars[i])))
             CaseTags.extend(['btype','ZAR','NO_ZONE','Xdep','ACH_file','WALLH','Peop','peop_Q','Lt_WPerFt','Eq_WPerFt','BUIFILE'])
             CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],  opt[7], opt[8],opt[9], opt[10], opt[11], opt[12],   opt[3].split('.')[0]])
         elif case.upper() == 'TWOZONE_BNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Two_Zone_Buildings.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in Two_Zone_Buildings.txt'.format(CaseVars[i])))
             CaseTags.extend(['btype','ZAR','NO_ZONE','Xdep','ACH_file','WALLH','Peop','peop_Q','Lt_WPerFt','Eq_WPerFt','BUIFILE'])
             CaseVars.extend([opt[2], opt[4],   opt[5],opt[6],   opt[7], opt[8],opt[9], opt[10], opt[11],    opt[12],    opt[3].split('.')[0]])
         elif case.upper() == 'ACH_TYPE':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'Infiltration.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in Infiltration.txt'.format(CaseVars[i])))
             CaseTags.extend(['K1','K2','K3','A','B','C'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7]])
         elif case.upper() == 'TNO':
             opt = GetMnuOption(0,str(int(float(CaseVars[i]))),'tstat.txt')
-            if opt == None: continue
+            if opt == None: raise(Exception('Option {0} not found in tstat.txt'.format(CaseVars[i])))
             CaseTags.extend(['TDBND','Ta_o','Taua','taue','HDBND','CDBND'])
             CaseVars.extend([opt[2],opt[3],opt[4],opt[5],opt[6],opt[7]])        
     #print("extended CaseTags")
