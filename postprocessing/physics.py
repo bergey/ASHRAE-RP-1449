@@ -59,6 +59,14 @@ def wavelength2frequency(wavelength):
 def vapour_PF(T):
     return vapour_P((T-32)/1.8+273.25)
 
+def W_dewpt(dp):
+    """dewpoint in F; returns humidity ratio kg H2O per kg dry air (equiv lb/lb)"""
+    P = 101325
+    pws = vapour_PF(dp)
+    xw = pws/P
+    w = 0.621945*xw*P/(P-xw*P)
+    return w
+
 def humidity_ratio(rh, T):
     """rh in range [0,1]; T in F; returns humidity ratio kg H2O per kg dry air (equiv lb/lb)"""
     P = 101325
