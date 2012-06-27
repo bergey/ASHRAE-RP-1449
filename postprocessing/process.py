@@ -179,7 +179,7 @@ def rh_stats(RHi, **hourly):
 
 # take the simulation outputs and summarize
 # return a pair: headings in order, value list in matching order
-def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, **hourly):#FANKW_c, FANKW_h, FANKW_v, **hourly):
+def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFacf, RTFd, RTFdf, rtfvf, rtfxf, rtfhf, KWHT, FANKW, DKW, DFANKW, KWVF, KWXF, KWHF, ACH, Wi, **hourly):#FANKW_c, FANKW_h, FANKW_v, **hourly):
     heads = []
     vals = []
 
@@ -315,6 +315,14 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
 # Total energy consumption
     heads.append('Total annual kWh')
     vals.append(sum(annual_kWh.values()))
+
+# W thresholds
+    # dewpoint of 55F is about 50% RH at 75F
+    # dewpoint of 60F is about 60^ RH at 75F
+    for dewpoint in (55, 60)
+        Wthresh = W_dewpt(dewpoint)
+        vals.append(np.where(Wi > Wthresh, 1, 0).sum())
+        heads.append('hours above {0} W'.format(threshold))
 
     return (heads, vals)
 
