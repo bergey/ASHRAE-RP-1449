@@ -10,8 +10,15 @@ import sys
 import json
 from csv import reader,writer,DictWriter, DictReader
 
+from boto.sqs.connection import SQSConnection
+from time import sleep
+from boto.s3.connection import S3Connection
+
+configuration = json.loads(open('trnbatch.conf').read())
+
 # path to store output .dat files
-output_dir = json.loads(open('trnbatch.conf').read())['output_dir']
+output_dir = configuration['output_dir']
+user_data =  configuration['user_data']
 
 def crlf_print(item, file=sys.stdout):
     """Make lineending CRLF regardless of platform"""
@@ -410,5 +417,32 @@ if __name__ == "__main__":
             i = int(float(line['Run']))
             CaseFileFromCSV(i, line['BaseFile'], dirname, trd)
             shutil.move(trd, os.path.join(dirname, trd))
+
+    elif sys.argv[1]=='--aws':
+      user_data = configuration['AWS']
+      # work items come in on this queue
+      sqs = SQSConnection(user_data['AWS_ACCESS_KEY'], user_data['AWS_SECRET_ACCESS_KEY'])
+      q = sqs.get_queue(user_data['TRN_ResDH_INPUT_QUEUE'])
+      # results go to S3
+      s3conn = S3Connection(user_data['AWS_ACCESS_KEY'], user_data['AWS_SECRET_ACCESS_KEY'])
+      bucket = s3conn.create_bucket(user_data['AWS_BUCKET'])
+      while True:
+          msg = q.read()
+          if msg == None:
+              sleep(10)
+              continue
+          spec = json.loads(msg)
+          # make TRD
+          trd = "{0}.trd".format(spec['Desc'].replace(' ', '-'))
+          print("creating {0}".format(trd))
+          MakeCaseFile(spec, trd)
+          # run TRNSYS
+          run_trd(trd, output_dir)
+          # put outputs in S3
+          k = Key(bucket)
+          dirname = trd[:-4]
+          for fname in os.listdir(os.path.join(output_dir, dirname)):
+              k.key = '/'.join(dirname, fname)
+              k.set_contents_from_filename(os.path.join(dirname, fname))
     else:
         usage()
