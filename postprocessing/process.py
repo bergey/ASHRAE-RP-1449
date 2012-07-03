@@ -9,6 +9,7 @@ import re
 import shutil
 import platform
 from parametrics import hourly_data, daily_total, daily_mean
+from physics import W_dewpt
 #graphs = platform.system() == 'Linux'
 graphs = False
 if graphs:
@@ -286,21 +287,21 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
       heads.append('annual {0} kWh'.format(key))
       vals.append(value)
 
-    if 'FANKW_c' in hourly.__dict__.keys():
+    heads.append('AHU Fan energy for Cooling')
+    heads.append('AHU Fan energy for Heating')
+    heads.append('AHU fan energy for Ventilation and Mixing')
+    if 'FANKW_c' in hourly.keys():
         # temporary hack transitioning from TRD without these values
         FANKW_c = hourly['FANKW_c']
         FANKW_h = hourly['FANKW_h']
         FANKW_v = hourly['FANKW_v']
 
         # New versions multiplying by runtime at each timestep, in TRD
-        heads.append('AHU Fan energy for Cooling')
         vals.append( FANKW_c.sum() )
-
-        heads.append('AHU Fan energy for Heating')
         vals.append( FANKW_h.sum() )
-
-        heads.append('AHU fan energy for Ventilation and Mixing')
         vals.append( FANKW_v.sum() )
+    else:
+        vals += [-1,-1,-1] # error values to make columns align
 
 # Infiltration --- mechanical and natural
     heads.append('Lowest Infiltration in one hour')
@@ -319,10 +320,10 @@ def summarize_run(RHi, Ti, C_i, Qsac, Qlac, ACKW, RTFc, RTFe, RTFh, RTFrh, RTFac
 # W thresholds
     # dewpoint of 55F is about 50% RH at 75F
     # dewpoint of 60F is about 60^ RH at 75F
-    for dewpoint in (55, 60)
+    for dewpoint in (55, 60):
         Wthresh = W_dewpt(dewpoint)
         vals.append(np.where(Wi > Wthresh, 1, 0).sum())
-        heads.append('hours above {0} W'.format(threshold))
+        heads.append('hours above {0}F dewpoint'.format(dewpoint))
 
     return (heads, vals)
 
