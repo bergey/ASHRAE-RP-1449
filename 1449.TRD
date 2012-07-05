@@ -1312,7 +1312,7 @@ UNIT 6 TYPE 151 CO2 Balance
 PARAMETERS 2
 VOL VOL2
 INPUTS 9
-icfm1    0,0  icfm2   0,0   iccfm  Q_co2  Q_co2_2  C_o     Cs2
+icfm1    0,0  icfm2   0,0   0,0  Q_co2  Q_co2_2  C_o     Cs2
  0       0        0    0       0    0       0   350e-6  350e-6
 * trace 0 1000
 ********************************************************************************
