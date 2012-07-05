@@ -25,14 +25,17 @@ def push(o):
         sleep(5)
         push(o)
 
-for csvname in sys.argv[1:]:
-    for row in DictReader(open(csvname)):
-        push(row)
-    print("finished {0}".format(csvname))
+if len(sys.argv) > 1:
+  for csvname in sys.argv[1:]:
+      for row in DictReader(open(csvname)):
+          push(row)
+      print("finished {0}".format(csvname))
+
+# report log
 while True:
     msg = logq.read()
     if msg == None:
         sleep(10)
         continue
     print(msg.get_body())
-    q.delete_message(msg)
+    logq.delete_message(msg)
