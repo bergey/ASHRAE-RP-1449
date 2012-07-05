@@ -13,6 +13,7 @@ from csv import reader,writer,DictWriter, DictReader
 from boto.sqs.connection import SQSConnection
 from time import sleep
 from boto.s3.connection import S3Connection
+from boto.sqs.message import Message
 
 configuration = json.loads(open('trnbatch.conf').read())
 
