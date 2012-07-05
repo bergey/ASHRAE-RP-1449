@@ -605,12 +605,7 @@ EQUATIONS 2
 *|]
 ********************************************************************************
 * Building Model
-*|(ZONE | Number of Zones
-*|Single-Zone Building           |BLD1|_BLD2//checked
-*|Two-Zone Building              |_BLD1|BLD2
-*|)
 *
-*|* 
 *|[BLD1| Single-Zone Building
 *
 EQUATIONS 9
@@ -636,53 +631,13 @@ ASSIGN z1h100.bui 32
 *|< Building Description                |Single_Zone_Buildings.txt|0|4|25
 *
 *
-EQUATIONS 3
+EQUATIONS 2
   SUP_PER = 0
   zn_ctl = 0
-  ic_area = 0
+*
 *|]
 *
 *
-*|#*|[BLD2| Two-Zone Building
-*|#*
-*|#EQUATIONS 11
-*|#  TwoZone_bno   = 1
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|2|1|25 
-*|#  btype = 8
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|3|25
-*|#  ZAR  = 1600
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|5|25
-*|#  NO_ZONE = 2
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|6|25
-*|#  Xdep = 8
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|7|25
-*|#  ACH_file= 0.70
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|8|25
-*|#  WALLH  = 8
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|9|25
-*|#  Peop   = 4.3
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|10|25
-*|#  peop_Q = 0.464
-*|#*|< Building Use Type                   |Two_Zone_Buildings.txt|0|12|25
-*|#  Lt_WPerFt = 0
-*|#*|< Light Watt Per Ft2                  |Two_Zone_Buildings.txt|0|13|25
-*|#  Eq_WPerFt = 
-*|#*|< Equipment Watt Per Ft2              |Two_Zone_Buildings.txt|0|14|25  
-*|#*
-*|#ASSIGN res_2story_basement.bui 32
-*|#*|< Building Description                |Two_Zone_Buildings.txt|0|4|25
-*|#*
-*|#EQUATIONS 3
-*|#  SUP_PER = 5.0000000000000E+01
-*|#*| Percent of Supply Air to Zone 2                 |%|%|0|100|0|100|26
-*|#  zn_ctl = 0
-*|#*|< Zone for Setpoint Control           |pulldown_2.txt|10|2|27
-*|#  ic_area = 8.0000000000000E+02
-*|#*| Zone Interconnection Area  |ft2|ft2|0|99999|0|99999|26
-*|#* 
-*|#*|]
-*
-* 
 *|<COLOR1> BLUE
 *|[Inf|Infiltration Type
 EQUATIONS 14
@@ -730,17 +685,17 @@ KWVF = vnt_wcfm*vcfm/1000.
 KWXF = exh_wcfm*exh_cfm/1000. 
 *|]
 *
-EQUATIONS 7
-  VOL =  ZAR * WALLH / NO_ZONE
+EQUATIONS 6
+  VOL =  ZAR * WALLH
   sfac1 = (3.14159/365/.6)^0.5
   sfac2 = (365./3.14159/.6)^0.5 
   Tslab_SI  = ( Tga - Tgs*0.5*(exp(-Xdep*sfac1))*COS(2*180./365.*([3,5]/24.0 - Dmin - 0.5*Xdep*sfac2)) - 32.) / 1.8
 * Convert to kg/hr using 10 UA: 9R/5K, 1.055 kJ/Btu
 *	cp of air: 1.006 kJ/kg*K
 * Total Maximum Mass based on 10 UA~18.88 kg
-  mic = 10*1.8*1.055/1.006*ic_area
+  mic = 0
   iccfm = mic * 2.2/(0.075*60.)
-  zn_frac = sup_per / 100.
+*
 *
 *|<COLOR1> BLACK
 *|<SIZE1> 10
@@ -982,14 +937,14 @@ HAI_SI2 = [36,3]
 ************************************************************************
 * Mix Return Air from Spaces
 EQUATIONS 6
-TAI = (1-ZN_FRAC)*TAI_1 + ZN_FRAC*TAI_2
-WAI = (1-ZN_FRAC)*WAI_1 + ZN_FRAC*WAI_2
-TAI_SI = (1-ZN_FRAC)*TAI_SI1 + ZN_FRAC*TAI_SI2 
-RHI = (1-ZN_FRAC)*RHI_1 + ZN_FRAC*RHI_2
-*TDP = (1-ZN_FRAC)*TDP_1 + ZN_FRAC*TDP_2
+TAI = TAI_1
+WAI = WAI_1
+TAI_SI = TAI_SI1
+RHI = RHI_1
+*TDP = TDP_1
 *HUM = (1-HTYPE)*RHI + HTYPE*TDP
-HAI_SI = (1-ZN_FRAC)*HAI_SI1 + ZN_FRAC*HAI_SI2
-C_i = (1-ZN_FRAC)*C_i1 + ZN_FRAC*C_i2
+HAI_SI = HAI_SI1
+C_i = C_i1
 ************************************************************************
 UNIT 34 TYPE 33 PSYCH - Get Outdoor ENTHALPY (SI UNITS)
 PARAMETERS 3
@@ -1003,9 +958,9 @@ HAO_SI = [34,3]
 * trace 5900 5910
 *********************************************************************
 EQUATIONS 3
-T_CTL = (1-ZN_CTL)*TAI_1 + ZN_CTL*TAI_2
-HUM_CTL = (1-ZN_CTL)*HUM_1 + ZN_CTL*HUM_2
-RH_CTL = (1-ZN_CTL)*RHI_1 + ZN_CTL*RHI_2
+T_CTL = TAI_1
+HUM_CTL = HUM_1
+RH_CTL = RHI_1
 *
 *********************************************************************
 UNIT 3 TYPE 152 SHORT TIMESTEP Controller
@@ -1325,17 +1280,14 @@ EQUATIONS 12
   Tsupp_SI = (Tsupp2-32.)/1.8
   msupp_SI = msupp2/2.2
 *
-EQUATIONS 9
-  ZN_FRAC_S = ZN_FRAC + leaks
-  Supp_cfm = msupp2/(0.075*60.)
+EQUATIONS 6
 *
 * Assume 0.3 lit/min at 1.2 met --- FOR ALL PEOPLE ---
-  Q_co2 = NPEOP*(0.3)/28.317/NO_ZONE
+  Q_co2 = NPEOP*(0.3)/28.317
 *
-  rcfm  = Mret/(0.075*60.)*(1 - ZN_FRAC_S)
   Q_co2_2 = leaks*Supp_cfm*Cs2 - leakr*rcfm*Cret
-  scfm1 = (1 - ZN_FRAC_S) * Supp_cfm
-  scfm2 = ZN_FRAC_S * Supp_cfm
+  scfm1 = (1 - leaks) * Supp_cfm
+  scfm2 = leaks * Supp_cfm
 *
 *  
 * THE supp_CFM caused a numerical instability.  Now it has been "re"-eliminated.  The
@@ -1366,8 +1318,8 @@ Tsupp_SI  Wsupp2  PATM
 *
 EQUATIONS 4
 RHsupp_SI = [35,6]
-VolFlow_1 = (1 - ZN_FRAC_S) * supp_cfm * 0.3048**3 * 60 ! cfm to m^3/hr
-VolFlow_2 = ZN_FRAC_S * supp_cfm * 0.3048**3 * 60       ! cfm to m^3/hr
+VolFlow_1 = (1 - leaks) * supp_cfm * 0.3048**3 * 60 ! cfm to m^3/hr
+VolFlow_2 = leaks * supp_cfm * 0.3048**3 * 60       ! cfm to m^3/hr
 Q2_EQ_KJHR = (qs_tloss + qr_tloss)*1.055
 *
 *******************************************************************************
