@@ -419,10 +419,11 @@ if __name__ == "__main__":
             shutil.move(trd, os.path.join(dirname, trd))
 
     elif sys.argv[1]=='--aws':
-      user_data = configuration['AWS']
+      user_data = configuration["user_data"]
       # work items come in on this queue
       sqs = SQSConnection(user_data['AWS_ACCESS_KEY'], user_data['AWS_SECRET_ACCESS_KEY'])
       q = sqs.get_queue(user_data['TRN_ResDH_INPUT_QUEUE'])
+      logq = sqs.create_queue(user_data['TRN_ResDH_INPUT_QUEUE']+'-log')
       # results go to S3
       s3conn = S3Connection(user_data['AWS_ACCESS_KEY'], user_data['AWS_SECRET_ACCESS_KEY'])
       bucket = s3conn.create_bucket(user_data['AWS_BUCKET'])
@@ -431,18 +432,27 @@ if __name__ == "__main__":
           if msg == None:
               sleep(10)
               continue
-          spec = json.loads(msg)
+          spec = json.loads(msg.get_body())
           # make TRD
           trd = "{0}.trd".format(spec['Desc'].replace(' ', '-'))
-          print("creating {0}".format(trd))
+          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: creating {0}'.format(trd))
+          print(lmsg)
+          logq.write(Message().set_body(lmsg))
           MakeCaseFile(spec, trd)
           # run TRNSYS
           run_trd(trd, output_dir)
+          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: finished running {0}'.format(trd))
+          logq.write(Message().set_body(lmsg))
+          print(lmsg)
           # put outputs in S3
           k = Key(bucket)
           dirname = trd[:-4]
           for fname in os.listdir(os.path.join(output_dir, dirname)):
               k.key = '/'.join(dirname, fname)
               k.set_contents_from_filename(os.path.join(dirname, fname))
+          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: saved {0}'.format(trd))
+          logq.write(Message().set_body(lmsg))
+          print(lmsg)
+          q.delete_message(msg) # success
     else:
         usage()
