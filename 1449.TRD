@@ -1131,7 +1131,7 @@ T_OFF_c = [3,12]
 UNIT 4 TYPE 140  AC -  TYPE7SUP Standard Electric AC
 PARAMETERS 35
 *  imode  iac  tons  dpsys  fnstef  ipflag  rown  hparea  ihp   wdepth
-    1     IAC   ACTON  1.5    .50    1      rown  hparea  ihp     0.0
+    1     IAC   ACTON  1.5    .50    0      rown  hparea  ihp     0.0
 *  mtref  evapefc  none   rhkw  frac  SHR_rated  EER_rated  bpfrc  ishrf
     .90    0.0      0.   0.0   0.0    AC_SHR    AC_EER        0.  ISHRF
 *  twet  gamma  Nmax  tcl NTUo_nom fspd_off2 none none   wcfm    chrg_ratio exp_type AC_COEF  
