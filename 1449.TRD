@@ -1255,24 +1255,33 @@ EQUATIONS 5
 ******************************************************************
 EQUATIONS 12
 * HVAC Loads
-* Infiltration only when AC unit is off for commercial buildings (btype=9)
 * Infiltration is always on for residential btype=8
 *
-  IACH    = EQL(btype,8)*ACH0 + EQL(btype,9)*ACH0*(1-RTFacf) + EQL(btype,10)*ACH0*EQL(RTFacf+RTFdf,0)
+  IACH    = ACH0
   NPEOP   = OCC*Peop
   PEOPLE  = NPEOP
 *
 *
-  cfm_in = Mv/60/0.075 + DCFM*eql(DSIN1,0)*rtfdf + HRV_cfm*RTFhf
-  cfm_out = exh_cfm*rtfxf + DCFM*eql(REGEN,0)*rtfdf + HRV_cfm*RTFhf 
+  Supp_cfm = msupp2/(0.075*60.)
+  rcfm  = Mret/(0.075*60.)
+*
+*
+  cfm_in_unb = Mv/60/0.075 + DCFM*(1-DSIN1)*rtfdf
+*
+  cfm_in = cfm_in_unb + HRV_cfm*RTFhf
+  cfm_out = exh_cfm*rtfxf + DCFM*eql(REGEN,0)*rtfdf + HRV_cfm*RTFhf  + (supp_cfm*leaks - rcfm*leakr)
+*
+* duct leakage/infiltration NOW ENABLED (ACH > 0)
+*
 *
   bal_cfm = min( cfm_in,cfm_out )
   unbal_cfm = max( cfm_in,cfm_out ) - bal_cfm
   inf_cfm = IACH * VOL / 60.
 *
-*           [combination of inf & unbalanced]  +  [balanced]    - [incoming vent already included above]
-  ICFM = max(unbal_cfm,inf_cfm + 0.5*unbal_cfm) + bal_cfm - cfm_in
-* ICFM = (unbal_cfm^2+inf_cfm^2)^0.5 + bal_cfm - cfm_in		MAx sherman approach
+*           [combination of inf & unbalanced]     - [remove INcoming unbalanced vent(s) already included in system calcs]
+*
+  ICFM = max ( max(unbal_cfm,inf_cfm + 0.5*unbal_cfm) - cfm_in_unb   ,0)
+*
   ACH  = ICFM*60/VOL
 *
 *
