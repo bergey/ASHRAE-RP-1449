@@ -436,24 +436,30 @@ if __name__ == "__main__":
           spec = json.loads(msg.get_body())
           # make TRD
           trd = "{0}.trd".format(spec['Desc'].replace(' ', '-'))
-          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: creating {0}'.format(trd))
-          print(lmsg)
-          logq.write(Message().set_body(lmsg))
+          logtext = dt.datetime.now().strftime('%Y-%m-%d-%H%M: creating {0}'.format(trd))
+          print(logtext)
+          lmsg = Message()
+          lmsg.set_body(logtext))
+          logq.write(lmsg)
           MakeCaseFile(spec, trd)
           # run TRNSYS
           run_trd(trd, output_dir)
-          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: finished running {0}'.format(trd))
-          logq.write(Message().set_body(lmsg))
-          print(lmsg)
+          logtext = dt.datetime.now().strftime('%Y-%m-%d-%H%M: finished running {0}'.format(trd))
+          lmsg = Message()
+          lmsg.set_body(logtext))
+          logq.write(lmsg)
+          print(logtext)
           # put outputs in S3
           k = Key(bucket)
           dirname = trd[:-4]
           for fname in os.listdir(os.path.join(output_dir, dirname)):
               k.key = '/'.join(dirname, fname)
               k.set_contents_from_filename(os.path.join(dirname, fname))
-          lmsg = dt.datetime.now().strftime('%Y-%m-%d-%H%M: saved {0}'.format(trd))
-          logq.write(Message().set_body(lmsg))
-          print(lmsg)
+          logtext = dt.datetime.now().strftime('%Y-%m-%d-%H%M: saved {0}'.format(trd))
+          lmsg = Message()
+          lmsg.set_body(logtext))
+          logq.write(lmsg)
+          print(logtext)
           q.delete_message(msg) # success
     else:
         usage()
