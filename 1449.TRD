@@ -1343,9 +1343,6 @@ EQUATIONS 9
 * at outdoor conditions.  This is added into the infiltration airflow
 * This eliminates the supply flow term in CO2 balance, so these inputs are set to zero below
 * Implemented  Mar-3-05 and again on May 26, 2006
-* the attic ACH is automatically set to be 10 times the space ACH, or a minimum of 2
-*
-* This volume calc is terrible, and the icfm2 line actually sets to 20 ACH natural
 *
   icfm1 = icfm 			    + scfm1*min(max((Cs2-C_i1)/(C_o-C_i1+1e-16),0.),1.)
   icfm2 = ACH_2*VOL2/60   + scfm2*min(max((Cs2-C_i2)/(C_o-C_i2+1e-16),0.),1.)
