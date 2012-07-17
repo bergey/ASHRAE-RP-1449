@@ -7,8 +7,6 @@ run_index = head.index('Run')
 
 
 
-vent0 = 58 # cfm, 62.2 rate, 2016 sf, 4 bedrooms
-# TODO adjust vent for different house sizes in parametric
 SENS_BASE = 72700 # BTU/day
 LATG_BASE = 12 # lbs/day
 
@@ -30,15 +28,6 @@ if len(bno) != int(bno_ct):
   print("""you should update header of Single_Zone_Buildings to match contents
         length is {0}, header says {1}""".format(len(bno), bno_ct))
 
-def recirc(tons):
-    "return on-time (in hours) to provide 0.5 ACH"
-    if tons==2:
-        return 0.18
-    elif tons==2.5:
-        return 0.14
-    elif tons==3:
-        return 0.12
-
 def get_bno(z,h):
   if z==0:
     building_zone=1
@@ -46,8 +35,24 @@ def get_bno(z,h):
     building_zone=z
   return bno['z{0}h{1}.bui'.format(building_zone,h)]
 
-def ach_to_ela(ach):
-  v = 2016*8 # volume
+def sf_by_size(sz):
+  if sz == 'sm':
+    return 1198
+  elif sz == 'md':
+    return 2016
+  elif sz == 'lg':
+    return 3495
+  else:
+    raise Error("Unknown size {0}".format(sz))
+
+def recirc(cfm, sz):
+    "return on-time (in hours) to provide 0.5 ACH"
+    vol = 8*sf_by_size(sz)
+    runtime =  0.5*vol/(60*cfm) # fraction of hour
+    return (0.02*round(runtime/0.02)) # round to multiple of timestep
+
+def ach_to_ela(ach, sz):
+  v = sf_by_size(sz)*8 # volume
   n = 0.67
   cfm4 = v*ach/60*(4./50)**n
   cmps = cfm4/35.3147/60 # cubic meters per second at 4 Pa
@@ -93,7 +98,7 @@ def hers_to_ach(h):
 #   ventilation rate
 #   moisture generation
 #   add heat pipe or dessicant unit
-def sim_line(z,h,s,rh,v):
+def sim_line(z,h,s,rh,v,sz):
 # exclude unimplemented scenarios
   # no explicit rh control
   # don't use ERV in cold climates
@@ -104,26 +109,41 @@ def sim_line(z,h,s,rh,v):
      return None
      
 
-
   Run = 1 # update in enclosing code
 
   BaseFile = '1449.TRD'
 
-  Desc = 'z{0}h{1}s{2}rh{3}v{4}'.format(z,h,s,rh,v) # TODO add more parameters for sensitivity
+  if sz == 'md':
+    Desc = 'z{0}h{1}s{2}rh{3}v{4}'.format(z,h,s,rh,v)
+  else:
+    Desc = 'z{0}h{1}s{2}rh{3}v{4}-{5}'.format(z,h,s,rh,v,sz)
   
   SinZone_bno = get_bno(z,h)
 
-  ELA = ach_to_ela(hers_to_ach(h))
+  ELA = ach_to_ela(hers_to_ach(h), sz)
+
+  vent0 = {'sm': 35, 'md': 58, 'lg': 73}[sz]
   
   WeatherFile = ['Orlando-FL-3', 'Miami-FL-3', 'Houston-TX-3', 'Atlanta-GA-3', 'Nashville-TN-3', 'Indianapolis-IN-3'][z]
   
   # vector is: Orlando, Miami, Houston, Atlanta, Nashville, Indianapolis
-  hp_tonnage = {130: [3,3,3,2.,2.5,2.5],
-                100: [3,3,3,2.5,2.5,2.5],
-                 85: [2.5,2.5,2.5,2,2,2],
-                 70: [2.5,2,2,2,2,2],
-                 50: [2,2,2,2,2,2]}
-  ACTON = hp_tonnage[h][z] # 0-indexed array, starting with Orlando
+  hp_tonnage = {'md':{130: [3,3,3,2.5,2.5,2.5],
+                      100: [3,3,3,2.5,2.5,2.5],
+                       85: [2.5,2.5,2.5,2,2,2],
+                       70: [2.5,2,2,2,2,2],
+                       50: [2,2,2,2,2,2]},
+                'sm':{130: [2.5,2.5,2,2,2,2],
+                      100: [2.5,2.5,2.5,2,2,2],
+                       85: [2,2,2,2,2,2],
+                       70: [2,2,2,2,2,2],
+                       50: [2,2,2,2,2,2]},
+                'lg':{130: [4.5,4.5,4.5,4,3.5,3.5],
+                      100: [4.5,4.5,4,3.5,3.5,3],
+                       85: [3,3,3,3,2.5,2.5],
+                       70: [2.5,2.5,2.5,2.5,2,2],
+                       50: [2,2,2,2,2,2]}}
+
+  ACTON = hp_tonnage[sz][h][z] # 0-indexed array, starting with Orlando
 
   ACCFM = ACTON*375
 
@@ -255,7 +275,7 @@ def sim_line(z,h,s,rh,v):
     ftim_OFF5 = 0.5
   elif s in [5, 6, 7]:
     fctyp5 = 3
-    ftim_ON5 = recirc(ACTON)
+    ftim_ON5 = recirc(ACCFM, sz)
     ftim_OFF5 = 1 - ftim_ON5
   else:
     fctyp5 = 0
@@ -294,13 +314,18 @@ def sim_line(z,h,s,rh,v):
     ftim_OFF9 = 0.0
     ilck91 = 0
 
-    
+
   if s==4 or h==50:
-    sduct_area = 0
+    duct_area = 0
   elif h==70:
-    sduct_area = [544, 544, 544, 544, 250, 100][z]
+      if sz=='md':
+          sduct_area = [544, 544, 544, 544, 250, 100][z]
+      elif sz=='sm':
+          sduct_area = [325, 325, 325, 325, 150, 65][z]
+      elif sz=='lg':
+          sduct_area = [945, 945, 945, 945, 475, 180][z]
   else:
-    sduct_area = 544
+    sduct_area = {'md':544, 'sm': 325, 'lg': 945}[sz]
 
   if s==4 or h==50:
     rduct_area = 0
@@ -494,7 +519,28 @@ def sys_12_13_14():
     print("{0} lines in {1}".format(lcount, filename))
 
 
-by_system([1,2,3,4,5,6,7,8])
-sys_10_11()
-sys_12_13_14()
+def sensitivity_size():
+    lcount = 0
+    filename = 'size.csv'
+    handle = open(filename, 'w')
+    out_csv = csv.writer(handle)
+    out_csv.writerow(head)
+    for sz in ['sm', 'lg']:
+        for s in [1,6]:
+            for h in [70,100]:
+                for z in [2,4]:
+                    for rh in [50, 60]:
+                        for v in [1,2,3,4]:
+                            row = sim_line(z,h,s,rh,v,sz)
+                            if row:
+                                lcount += 1
+                                row[head.index('Run')] = lcount
+                                out_csv.writerow(row)
+    print("{0} lines in {1}".format(lcount, filename))
+
+
+# by_system([1,2,3,4,5,6,7,8])
+# sys_10_11()
+#sys_12_13_14()
 #short(1, 2, 3, 4, 5, 6,7,8,)
+sensitivity_size()
