@@ -525,7 +525,7 @@ def sensitivity_size():
     handle = open(filename, 'w')
     out_csv = csv.writer(handle)
     out_csv.writerow(head)
-    for sz in ['sm', 'lg']:
+    for sz in ['sm', 'md', 'lg']:
         for s in [1,6]:
             for h in [70,100]:
                 for z in [2,4]:
