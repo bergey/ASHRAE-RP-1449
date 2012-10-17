@@ -36,6 +36,7 @@ def get_bno(z,h):
   return bno['z{0}h{1}.bui'.format(building_zone,h)]
 
 def sf_by_size(sz):
+  # for use in calculating ELA, infiltration
   if sz == 'sm':
     return 1198
   elif sz == 'md':
@@ -315,9 +316,9 @@ def sim_line(z,h,s,rh,v,sz):
     ilck91 = 0
 
 
-  if s==4 or h==50:
+  if s==4 or h==50: # minisplits or ducts inside
     duct_area = 0
-  elif h==70:
+  elif h==70: # reduced attic duct area in cold zones
       if sz=='md':
           sduct_area = [544, 544, 544, 544, 250, 100][z]
       elif sz=='sm':
