@@ -226,11 +226,10 @@ def dh_subset_by_Trefr(a):
     Tret = a.Tret
     Treheat = a.Te1
     Tamb = a.Tamb
-    #return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (a.kWah < 0.15) & (a.t > 2010197000000)
+    return (Tevap - Tret < -4) & (Treheat - Tret > 10) & (a.kWah < 0.15) & (a.t > 2010197000000)  & (isnan(a.kWhp) == False) & (isnan(a.kWah) == False) & (Tamb > 20)
     # try accepting more data, to see beginning of DH call
-    return (Tevap < Tret) & (Treheat > Tret) & (a.kWah < 0.15) & (a.t > 2010197000000)
+    #return (Tevap < Tret) & (Treheat > Tret) & (a.kWah < 0.15) & (a.t > 2010197000000)
     # isnan conditions make a mess of the ontime calcs, because they don't reflect the actual state of the AAON, but rather sensor / datalogger problems
-    # & (isnan(a.kWhp) == False) & (isnan(a.kWah) == False)
 
 def dh_by_Trefr(a):
     return afilter(a, dh_subset_by_Trefr(a))
