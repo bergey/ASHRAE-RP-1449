@@ -24,6 +24,10 @@ def Wsup(a):
 def Wret(a):
     return humidity_ratio(a.RHret, a.Tret*1.8+32)
 
+def dW_cond(a, cond):
+    b = afilter(a, cond)
+    return Wsup(b) - Wret(b)
+
 def coil_w_scat(a, subset=None, color='k'):
     if subset==None:
         subset = ones(a.RHret.shape).fill(True)
@@ -402,3 +406,26 @@ def iso_to_ts(date):
     ms = array([0]+month_splits)
     j = ms[m-1] + d
     return y*10**9 + j*10**6
+
+def fencepost_hist(plot_var, part_var, posts, colormap='jet', nbins=50):
+    conditions = []
+    conditions.append(part_var<posts[0])
+    for lo, hi in zip(posts[:-1], posts[1:]):
+        conditions.append((part_var>=lo) & (part_var<hi))
+        print([c.sum() for c in conditions])
+    conditions.append(part_var>=posts[-1])
+
+    print([c.sum() for c in conditions])
+
+    labels = []
+    labels.append('<{0}'.format(posts[0]))
+    for lo, hi in zip(posts[:-1], posts[1:]):
+        labels.append('{0}-{1}'.format(lo,hi))
+    labels.append('>{0}'.format(posts[-1]))
+
+    print(labels)
+
+    return hist([plot_var[c] for c in conditions],
+         nbins, histtype='barstacked',
+         label=labels,
+         color=map(cm.get_cmap(colormap), linspace(0,1,len(conditions))))
