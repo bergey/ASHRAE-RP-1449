@@ -76,6 +76,16 @@ def hers_to_ach(h):
   else:
     raise
 
+def gains_factor(sz):
+  if sz == 'md':
+    return 1
+  elif sz == 'sm':
+    return 2.0/3.0
+  elif sz == 'large':
+    return 4.0/3.0
+  else:
+    raise Error("Unknown house size: {0}".format(sz))
+
 # simulations are parameterized as follows:
 # z zone 1--5
 #
@@ -349,13 +359,13 @@ def sim_line(z,h,s,rh,v,sz):
   else:
     duct_Rval = 6
 
-  SENS_DAILY = SENS_BASE*{130: 1,
-                          100: 1,
-                           85: 0.9,
-                           70: 0.8,
-                           50: 0.7}[h]
+  SENS_DAILY = gains_factor(sz)*SENS_BASE*{130: 1,
+                                           100: 1,
+                                           85: 0.9,
+                                           70: 0.8,
+                                           50: 0.7}[h]
   
-  LATG_DAILY = LATG_BASE # TODO add sensitivity cases
+  LATG_DAILY = gains_factor(sz)*LATG_BASE
 
 
 # put all of the variables used above into a list in a consistent order
