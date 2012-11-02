@@ -177,8 +177,14 @@ def sim_line(z,h,s,rh,v,sz):
             70: 19,
             50: 19}[h]
 
-  if h<=70 or z<=1:
+  if sz=='md' and (h<=70 or z<=1):
     Ht_QIN = 40000
+  elif sz=='sm':
+    Ht_QIN = 40000
+  elif sz=='lg' and h==50:
+    Ht_QIN = 40000
+  elif sz=='lg' and h>=100 and z>1:
+    Ht_QIN = 80000
   else:
     Ht_QIN = 60000
   
