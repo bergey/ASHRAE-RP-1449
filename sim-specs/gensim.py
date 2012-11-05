@@ -44,7 +44,7 @@ def sf_by_size(sz):
   elif sz == 'lg':
     return 3495
   else:
-    raise Error("Unknown size {0}".format(sz))
+    raise UserWarning("Unknown size {0}".format(sz))
 
 def recirc(cfm, sz):
     "return on-time (in hours) to provide 0.5 ACH"
@@ -81,10 +81,10 @@ def gains_factor(sz):
     return 1
   elif sz == 'sm':
     return 2.0/3.0
-  elif sz == 'large':
+  elif sz == 'lg':
     return 4.0/3.0
   else:
-    raise Error("Unknown house size: {0}".format(sz))
+    raise UserWarning("Unknown house size: {0}".format(sz))
 
 # simulations are parameterized as follows:
 # z zone 1--5
