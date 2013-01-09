@@ -1,0 +1,8 @@
+﻿Isolating Dehumidification Periods
+The state variables representing thermostat wires (Stat_HPheat_AVG, Stat_CoolStg1_AVG, Stat_CoolStg2_AVG, Stat_Dehum_AVG, Stat_DehDisabl_AVG) are not adequate to isolate periods of dehumidification.  (Throughout, dehumidification implies the operation mode with dehumidification and minimal sensible heating or cooling.)  The variables seem to do a good job of indicating periods of heating and cooling.
+
+Relying on state variables alone results in a large number of false positives---times labeled as dehumidification when no moisture is actually being removed.  The black line in Error: Reference source not found indicates humidity ratio of the supply air equal to the return air.  The majority of the data (red, yellow) has no moisture removal.
+The above figure does show some periods of dehumidification, however.  These periods can be defined empirically in terms of the temperatures and relative humidities that define dehumidification.  
+Error: Reference source not found is one way of describing the operation of the system, in terms of temperature change and moisture change across the air handler.  The heating and cooling periods are well defined, but the dehumidification periods are not clearly separated from the cooling periods.
+
+
