@@ -110,6 +110,12 @@ def gains_factor(sz):
 #   moisture generation
 #   add heat pipe or dessicant unit
 def sim_line(z,h,s,rh,v,sz):
+  """sim_line takes the following parameters:
+  - Climate Zone (0-5)
+  - HERS level (50-130)
+  - DH System (1-14)
+  - RH Setpoint (50-60)
+  - House Size (sm, md, lg)"""
 # exclude unimplemented scenarios
   # no explicit rh control
   # don't use ERV in cold climates
